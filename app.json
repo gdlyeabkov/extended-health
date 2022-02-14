@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "health",
+    "slug": "health",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  },
+  "name": "health"
+}
