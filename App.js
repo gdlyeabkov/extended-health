@@ -28,8 +28,64 @@ export function MainPageActivity() {
 }
 
 export function TogetherActivity() {
+  
+  const userLogoImg = require('./assets/user_logo.png')
+
   return (
-    <View></View>
+    <View style={styles.togetherContainer}>
+      <View style={styles.togetherContainerHeader}>
+        <Image style={styles.togetherContainerHeaderImg} source={userLogoImg} />
+        <View style={styles.togetherContainerHeaderColumn}>
+          <Text style={styles.togetherContainerHeaderColumnLabel}>
+            glebdyakov
+          </Text>
+          <Text style={styles.togetherContainerHeaderColumnLevel}>
+            Уровень 1
+          </Text>
+        </View>
+        <View style={styles.togetherContainerHeaderTasksWrap}>
+          <Button style={styles.togetherContainerHeaderTasks} color={'rgb(0, 0, 0)'} title="Задачи" />
+        </View>
+      </View>
+      <View style={styles.togetherContainerFriends}>
+        <View style={styles.togetherContainerFriendsAside}>
+          <Text style={styles.togetherContainerFriendsAsideLabel}>
+            Друзья
+          </Text>
+          <Text style={styles.togetherContainerFriendsAsideCount}>
+            0
+          </Text>
+        </View>
+        <View style={styles.togetherContainerFriendsAddBtnWrap}>
+          <Button title={'Добавить'} style={styles.togetherContainerFriendsAddBtn} />
+        </View>
+      </View>
+      <View style={styles.togetherContainerStrongerTogether}>
+        <Text style={styles.togetherContainerStrongerTogetherHeader}>
+          #Stronger Together
+        </Text>
+        <Text style={styles.togetherContainerStrongerTogetherLabel}>
+          Присоединяйтесь к соревнованию чтобы подде...
+        </Text>
+        <View style={styles.togetherContainerStrongerTogetherBody}>
+          <View style={styles.togetherContainerStrongerTogetherBodyAside}>
+            <Text style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsLabel}>
+              Участники
+            </Text>
+            <Text style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsCount}>
+              723882
+            </Text>
+            <View style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtnWrap}>
+              <Button title={'Присоединиться'} style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtn} />
+            </View>
+          </View>
+          <Image source={''} style={styles.togetherContainerStrongerTogetherBodyImg} />
+        </View>
+      </View>
+      <View style={styles.togetherContainerSpa}>
+        
+      </View>
+    </View>
   )
 }
 
@@ -1295,5 +1351,98 @@ const styles = StyleSheet.create({
   },
   fitnessContainerInnovationDuration: {
     color: 'rgb(150, 150, 150)'
+  },
+  togetherContainer: {
+    backgroundColor: 'rgb(225, 225, 225)'
+  },
+  togetherContainerHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: 'auto',
+    width: '95%',
+    marginVertical: 15
+  },
+  togetherContainerHeaderImg: {
+    width: 50,
+    height: 50,
+  },
+  togetherContainerHeaderColumn: {
+
+  },
+  togetherContainerHeaderColumnLabel: {
+    fontWeight: 700
+  },
+  togetherContainerHeaderColumnLevel: {
+    fontSize: 24
+  },
+  togetherContainerHeaderTasksWrap: {
+
+  },
+  togetherContainerHeaderTasks: {
+    color: 'rgb(0, 0, 0)'
+  },
+  togetherContainerFriends: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
+    width: '95%',
+    marginHorizontal: 'auto',
+    marginVertical: 15
+  },
+  togetherContainerFriendsAside: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  togetherContainerFriendsAsideLabel: {
+    fontWeight: 700
+  },
+  togetherContainerFriendsAsideCount: {
+    color: 'rgb(0, 100, 0)',
+    fontWeight: 700,
+    marginHorizontal: 5
+  },
+  togetherContainerFriendsAddBtnWrap: {
+    
+  },
+  togetherContainerFriendsAddBtn: {
+
+  },
+  togetherContainerStrongerTogether: {
+    padding: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    width: '95%',
+    marginHorizontal: 'auto',
+    marginVertical: 15
+  },
+  togetherContainerStrongerTogetherHeader: {
+    fontWeight: 700
+  },
+  togetherContainerStrongerTogetherLabel: {
+    color: 'rgb(150, 150, 150)'
+  },
+  togetherContainerStrongerTogetherBody: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  togetherContainerStrongerTogetherBodyAside: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  togetherContainerStrongerTogetherBodyAsideParticipantsLabel: {
+
+  },
+  togetherContainerStrongerTogetherBodyAsideParticipantsCount: {
+    fontWeight: 700
+  },
+  togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtnWrap: {
+
+  },
+  togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtn: {
+    
   }
 })
