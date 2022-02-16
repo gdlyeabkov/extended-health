@@ -34,8 +34,894 @@ export function TogetherActivity() {
 }
 
 export function FitnesActivity() {
+  
+  const fitnesImg = require('./assets/fitnes.jpg')
+
   return (
-    <View></View>
+    <ScrollView style={styles.fitnessContainer}>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Новшества
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Фитнес для женщин
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Похудение
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Наращивание мышечной массы
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Работа над балансом
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Тренировка на выносливость
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Бег
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+            <Text style={styles.fitnessContainerInnovationDuration}>
+              1 неделя
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            Майндфулнес
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+            <Text style={styles.fitnessContainerInnovationName}>
+              Упражнения для сжигания ...
+            </Text>
+          </View>
+        </ScrollView>
+      </View>
+      <View style={styles.fitnessContainerInnovations}>
+        <View style={styles.fitnessContainerInnovationsHeader}>
+          <Text style={styles.fitnessContainerInnovationsHeaderLabel}>
+            По поставщику
+          </Text>
+          <Ionicons name="chevron-forward" size={24} color="black" />
+        </View>
+        <ScrollView style={styles.fitnessContainerInnovationsList} horizontal={true}>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+          <View style={styles.fitnessContainerInnovation}>
+            <Image source={fitnesImg} style={styles.fitnessContainerInnovationImg} />
+          </View>
+        </ScrollView>
+      </View>
+    </ScrollView>
   )
 }
 
@@ -372,5 +1258,42 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     marginHorizontal: 25
+  },
+  fitnessContainer: {
+    
+  },
+  fitnessContainerInnovations: {
+    width: '95%',
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto',
+    padding: 15,
+    marginVertical: 15
+  },
+  fitnessContainerInnovation: {
+    width: 250
+  },
+  fitnessContainerInnovationsHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 15
+  },
+  fitnessContainerInnovationsHeaderLabel: {
+    fontWeight: 700,
+    fontSize: 20
+  },
+  fitnessContainerInnovationsList: {
+
+  },
+  fitnessContainerInnovationImg: {
+    width: 100,
+    height: 100,
+    marginVertical: 5
+  },
+  fitnessContainerInnovationName: {
+    fontWeight: 700
+  },
+  fitnessContainerInnovationDuration: {
+    color: 'rgb(150, 150, 150)'
   }
 })
