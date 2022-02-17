@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Image, Button, ScrollView } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundation, Ionicons } from '@expo/vector-icons'
+import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundation, Ionicons, AntDesign } from '@expo/vector-icons'
 
 const Tab = createBottomTabNavigator();
 
@@ -22,8 +22,45 @@ function MainTabsActivity() {
 }
 
 export function MainPageActivity() {
+  
+  const activityLogo = require('./assets/activity_logo.png')
+  
   return (
-    <View></View>
+    <ScrollView style={styles.mainPageContainer}>
+      <View style={styles.mainPageContainerActiveBlock}>
+        <View style={styles.mainPageContainerBlockHeader}>
+          <AntDesign name="minuscircle" size={24} color="red" />
+        </View>
+        <View style={styles.mainPageContainerActiveBlockBody}>
+          <View style={styles.mainPageContainerActiveBlockBodyAside}>
+            <Text style={styles.mainPageContainerActiveBlockBodyAsideHeader}>
+              Активность
+            </Text>
+            <View style={styles.mainPageContainerActiveBlockBodyAsideBody}>
+              <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
+                <FontAwesome5 name="walking" size={36} color="green" />
+                <Text>
+                  0
+                </Text>
+              </View>
+              <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
+                <Ionicons name="time" size={36} color="blue" />
+                <Text>
+                  0
+                </Text>
+              </View>
+              <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
+                <Octicons name="flame" size={36} color="red" />
+                <Text>
+                  0
+                </Text>
+              </View>
+            </View>
+          </View>
+          <Image source={activityLogo} style={styles.mainPageContainerActiveBlockBodyImg} />
+        </View>
+      </View>
+    </ScrollView>
   )
 }
 
@@ -79,11 +116,30 @@ export function TogetherActivity() {
               <Button title={'Присоединиться'} style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtn} />
             </View>
           </View>
-          <Image source={''} style={styles.togetherContainerStrongerTogetherBodyImg} />
+          <Image source={userLogoImg} style={styles.togetherContainerStrongerTogetherBodyImg} />
         </View>
       </View>
-      <View style={styles.togetherContainerSpa}>
-        
+      <View style={styles.togetherContainerStrongerTogether}>
+        <Text style={styles.togetherContainerStrongerTogetherHeader}>
+          Спа, февраль
+        </Text>
+        <Text style={styles.togetherContainerStrongerTogetherLabel}>
+          {'Присоединяйтесь к соревнованию чтобы\nподдерживать форму вместе с другими.'}
+        </Text>
+        <View style={styles.togetherContainerStrongerTogetherBody}>
+          <View style={styles.togetherContainerStrongerTogetherBodyAside}>
+            <Text style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsLabel}>
+              Участники
+            </Text>
+            <Text style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsCount}>
+              723882
+            </Text>
+            <View style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtnWrap}>
+              <Button title={'Присоединиться'} style={styles.togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtn} />
+            </View>
+          </View>
+          <Image source={userLogoImg} style={styles.togetherContainerStrongerTogetherBodyImg} />
+        </View>
       </View>
     </View>
   )
@@ -1431,18 +1487,108 @@ const styles = StyleSheet.create({
   },
   togetherContainerStrongerTogetherBodyAside: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
+    justifyContent: 'space-between'
   },
   togetherContainerStrongerTogetherBodyAsideParticipantsLabel: {
-
+    fontWeight: 700
   },
   togetherContainerStrongerTogetherBodyAsideParticipantsCount: {
-    fontWeight: 700
+    fontWeight: 700,
+    fontSize: 20
   },
   togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtnWrap: {
 
   },
   togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtn: {
     
-  }
+  },
+  togetherContainerStrongerTogetherBodyImg: {
+    width: 100,
+    height: 100
+  },
+  mainPageContainer: {
+
+  },
+  mainPageContainerActiveBlock: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
+  mainPageContainerBlockHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
+  },
+  mainPageContainerActiveBlockBody: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerActiveBlockBodyAside: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  mainPageContainerActiveBlockBodyAsideHeader: {
+    fontWeight: 700,
+    fontSize: 20
+  },
+  mainPageContainerActiveBlockBodyAsideBody: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  mainPageContainerActiveBlockBodyAsideBodyItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    marginHorizontal: 25,
+    alignItems: 'center'
+  },
+  mainPageContainerActiveBlockBodyImg: {
+    width: 100,
+    height: 100
+  },
+  mainPageContainerWalkBlock: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
+  mainPageContainerExerciseBlock: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
+  mainPageContainerFoodBlock: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
+  mainPageContainerSleepBlock: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
+  mainPageContainerBodyBlock: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
+  mainPageContainerWaterBlock: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
 })
