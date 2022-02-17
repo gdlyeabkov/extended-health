@@ -1,30 +1,110 @@
 import { StatusBar } from 'expo-status-bar'
-import React from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView } from 'react-native'
+import { React, useState } from 'react'
+import { StyleSheet, Text, View, Image, Button, ScrollView, Touchable } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundation, Ionicons, AntDesign } from '@expo/vector-icons'
+import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundation, Ionicons, AntDesign, Entypo, Fontisto, Feather, FontAwesome } from '@expo/vector-icons'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const Tab = createBottomTabNavigator();
 
 function MainTabsActivity() {
   return (
     <Tab.Navigator screenOptions={{
-      
+      tabBarShowIcon: true
     }}>
-      <Tab.Screen name="Главная" component={MainPageActivity} />
-      <Tab.Screen name="Together" component={TogetherActivity} />
-      <Tab.Screen name="Фитнес" component={FitnesActivity} />
-      <Tab.Screen name="Моя стр." component={MyPageActivity} />
+      <Tab.Screen
+        name="Главная"
+        component={MainPageActivity}
+        options={{
+          tabBarIcon: ({ focused, horizontal, tintColor }) => <MaterialCommunityIcons name="home-heart" size={24} color="black" />,
+          tabBarLabelStyle: {
+            marginTop: 25,
+            marginLeft: -25
+          },
+          tabBarIconStyle: {
+            marginTop: -25,
+            marginLeft: 75
+          }
+        }}
+      />
+      <Tab.Screen
+        name="Together"
+        component={TogetherActivity}
+        options={{
+          tabBarIcon: ({ focused, horizontal, tintColor }) => <FontAwesome5 name="flag" size={24} color="black" />,
+          tabBarLabelStyle: {
+            marginTop: 25,
+            marginLeft: -25
+          },
+          tabBarIconStyle: {
+            marginTop: -25,
+            marginLeft: 75
+          }
+        }}
+      />
+      <Tab.Screen
+        name="Фитнес"
+        component={FitnesActivity}
+        options={{
+          tabBarIcon: ({ focused, horizontal, tintColor }) => <MaterialIcons name="ondemand-video" size={24} color="black" />,
+          tabBarLabelStyle: {
+            marginTop: 25,
+            marginLeft: -25
+          },
+          tabBarIconStyle: {
+            marginTop: -25,
+            marginLeft: 75
+          }
+        }}
+      />
+      <Tab.Screen
+        name="Моя стр."
+        component={MyPageActivity}
+        options={{
+          tabBarIcon: ({ focused, horizontal, tintColor }) => <FontAwesome name="user-o" size={24} color="black" />,
+          tabBarLabelStyle: {
+            marginTop: 25,
+            marginLeft: -25
+          },
+          tabBarIconStyle: {
+            marginTop: -25,
+            marginLeft: 75
+          }
+        }}
+      />
     </Tab.Navigator>
   )
 }
 
-export function MainPageActivity() {
+export function MainPageActivity({ navigation }) {
   
   const activityLogo = require('./assets/activity_logo.png')
   
+  const [countGlasses, setCountGlasses] = useState(0)
+  
+  const [isRemoveGlassBtnDisabled, setIsRemoveGlassBtnDisabled] = useState(false)
+
+  const goToActivity = (navigation, activityName) => {
+    navigation.navigate(activityName)
+  }
+  
+  const addGlass = () => {
+    const updatedCountGlasses = countGlasses + 1
+    setCountGlasses(updatedCountGlasses)
+    setIsRemoveGlassBtnDisabled(false)
+  }
+
+  const removeGlass = () => {
+    const updatedCountGlasses = countGlasses - 1
+    setCountGlasses(updatedCountGlasses)
+    const isCountGlassesEmpty = countGlasses <= 1
+    if (isCountGlassesEmpty) {
+      setIsRemoveGlassBtnDisabled(true)
+    }
+  }
+
   return (
     <ScrollView style={styles.mainPageContainer}>
       <View style={styles.mainPageContainerActiveBlock}>
@@ -60,6 +140,179 @@ export function MainPageActivity() {
           <Image source={activityLogo} style={styles.mainPageContainerActiveBlockBodyImg} />
         </View>
       </View>
+      <View style={styles.mainPageContainerWalkBlock}>
+        <View style={styles.mainPageContainerBlockHeader}>
+          <AntDesign name="minuscircle" size={24} color="red" />
+        </View>
+        <View style={styles.mainPageContainerWalkBlockBody}>
+          <Text style={styles.mainPageContainerWalkBlockBodyLabel}>
+            Шаги
+          </Text>
+          <View style={styles.mainPageContainerWalkBlockBodyRow}>
+            <View style={styles.mainPageContainerWalkBlockBodyRowAside}>
+              <Text style={styles.mainPageContainerWalkBlockBodyRowCountLabel}>
+                0
+              </Text>
+              <Text style={styles.mainPageContainerWalkBlockBodyRowMaxCountLabel}>
+                /6000
+              </Text>
+            </View>
+            <View>
+              <Text>
+                0%
+              </Text>
+              <Text>
+                ------------------------------------
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={styles.mainPageContainerExerciseBlock}>
+        <View style={styles.mainPageContainerBlockHeader}>
+          <AntDesign name="minuscircle" size={24} color="red" />
+        </View>
+        <View style={styles.mainPageContainerExerciseBlockBody}>
+          <View style={styles.mainPageContainerExerciseBlockBodyHeader}>
+            <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLabel}>
+              Упражнение
+            </Text>
+            <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLog}>
+              Посмотреть журнал
+            </Text>
+          </View>
+          <View style={styles.mainPageContainerExerciseBlockBodyExercises}>
+            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+              <FontAwesome5 name="walking" size={36} color="black" />
+            </View>
+            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+              <FontAwesome5 name="running" size={36} color="black" />
+            </View>
+            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+              <Ionicons name="bicycle-sharp" size={36} color="black" />
+            </View>
+            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+              <Feather name="list" size={36} color="black" />
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={styles.mainPageContainerFoodBlock}>
+        <View style={styles.mainPageContainerBlockHeader}>
+          <AntDesign name="minuscircle" size={24} color="red" />
+        </View>
+        <View style={styles.mainPageContainerFoodBlockBody}>
+          <Text style={styles.mainPageContainerFoodBlockLabel}>
+            Еда
+          </Text>
+          <View style={styles.mainPageContainerFoodBlockRow}>
+            <View style={styles.mainPageContainerFoodBlockRowAside}>
+              <Text style={styles.mainPageContainerFoodBlockRowAsideLabel}>
+                0
+              </Text>
+              <Text style={styles.mainPageContainerFoodBlockRowAsideMaxCount}>
+                /1779 ккал
+              </Text>
+            </View>
+            <View style={styles.mainPageContainerFoodBlockRecordBtnWrap}>
+              <Button title="Запись" style={styles.mainPageContainerFoodBlockRecordBtn} />
+            </View>
+          </View>        
+        </View>
+      </View>
+      <View style={styles.mainPageContainerSleepBlock}>
+        <View style={styles.mainPageContainerBlockHeader}>
+          <AntDesign name="minuscircle" size={24} color="red" />
+        </View>
+        <View style={styles.mainPageContainerSleepBlockBody}>
+          <Text style={styles.mainPageContainerSleepBlockLabel}>
+            Сон
+          </Text>
+          <View style={styles.mainPageContainerSleepBlockRow}>
+            <Text style={styles.mainPageContainerSleepBlockRowLabel}>
+              Как вам спалось?
+            </Text>
+            <View style={styles.mainPageContainerSleepBlockRecordBtnWrap}>
+              <Button title="Запись" style={styles.mainPageContainerSleepBlockRecordBtn} />
+            </View>
+          </View>
+        </View>
+      </View>
+      <View style={styles.mainPageContainerBodyBlock}>
+        <View style={styles.mainPageContainerBlockHeader}>
+          <AntDesign name="minuscircle" size={24} color="red" />
+        </View>
+        <View style={styles.mainPageContainerBodyBlockBody}>
+          <Text style={styles.mainPageContainerBodyBlockBodyHeader}>
+            Состав тела
+          </Text>
+          <View style={styles.mainPageContainerBodyBlockBodyRow}>
+            <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
+              <Entypo name="home" size={24} color="green" />
+              <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
+                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
+                  0
+                </Text>
+                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
+                  кг
+                </Text>
+              </View>              
+            </View>
+            <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
+              <Fontisto name="spinner-fidget" size={24} color="brown" />
+              <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
+                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
+                  0
+                </Text>
+                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
+                  %
+                </Text>
+              </View>              
+            </View>
+            <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
+              <MaterialCommunityIcons name="human" size={24} color="blue" />
+              <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
+                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
+                  0
+                </Text>
+                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
+                  кг
+                </Text>
+              </View>              
+            </View>
+          </View>
+        </View>
+      </View>
+      <TouchableOpacity style={styles.mainPageContainerWaterBlock} onPress={() => goToActivity(navigation, 'WaterActivity')}>
+        <View style={styles.mainPageContainerBlockHeader}>
+          <AntDesign name="minuscircle" size={24} color="red" />
+        </View>
+        <View style={styles.mainPageContainerWaterBody}>
+          <View style={styles.mainPageContainerWaterBodyAside}>
+            <Text style={styles.mainPageContainerWaterBodyAsideLabel}>
+              Вода
+            </Text>
+            <View style={styles.mainPageContainerWaterBodyAsideRow}>
+              <Text style={styles.mainPageContainerWaterBodyAsideRowCount}>
+                {
+                  countGlasses
+                }
+              </Text>
+              <Text style={styles.mainPageContainerWaterBodyAsideRowMeasure}>
+                стак.
+              </Text>
+            </View>
+          </View>
+          <View style={styles.mainPageContainerWaterBodyRow}>
+            <View style={styles.mainPageContainerWaterBodyRowRemoveBtnWrap}>
+              <Button title="-" style={styles.mainPageContainerWaterBodyRowRemoveBtn} disabled={isRemoveGlassBtnDisabled} onPress={() => removeGlass()} />
+            </View>
+            <View style={styles.mainPageContainerWaterBodyRowAddBtnWrap}>
+              <Button title="+" style={styles.mainPageContainerWaterBodyRowAddBtn} onPress={() => addGlass()} />
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
     </ScrollView>
   )
 }
@@ -1233,6 +1486,49 @@ export function MyPageActivity() {
   )
 }
 
+export function WaterActivity() {
+  
+  const glassCalculatorImg = require('./assets/glass_calculator.png')
+  
+  const [countGlasses, setCountGlasses] = useState(0)
+
+  const [isRemoveGlassBtnDisabled, setIsRemoveGlassBtnDisabled] = useState(false)
+
+  const addGlass = () => {
+    const updatedCountGlasses = countGlasses + 1
+    setCountGlasses(updatedCountGlasses)
+    setIsRemoveGlassBtnDisabled(false)
+  }
+
+  const removeGlass = () => {
+    const updatedCountGlasses = countGlasses - 1
+    setCountGlasses(updatedCountGlasses)
+    const isCountGlassesEmpty = countGlasses <= 1
+    if (isCountGlassesEmpty) {
+      setIsRemoveGlassBtnDisabled(true)
+    }
+  }
+
+  return (
+    <ScrollView style={styles.waterActivityScroll}>
+      <Image source={glassCalculatorImg} style={styles.waterActivityGlassCalculator} />
+      <View style={styles.waterActivityRow}>
+        <View style={styles.waterActivityRowRemoveBtnWrap}>
+          <Button title="-" style={styles.waterActivityRowRemoveBtn} disabled={isRemoveGlassBtnDisabled} onPress={() => removeGlass()} />
+        </View>
+        <Text style={styles.waterActivityRowLabel}>
+          {
+            countGlasses
+          }
+        </Text>
+        <View style={styles.waterActivityRowAddBtnWrap}>
+          <Button title="+" style={styles.waterActivityRowAddBtn} onPress={() => addGlass()} />
+        </View>
+      </View>
+    </ScrollView>
+  )
+}
+
 const Stack = createStackNavigator()
 
 export default function App() {
@@ -1241,6 +1537,13 @@ export default function App() {
       <Stack.Navigator initialRouteName='MainTabsActivity'>
         <Stack.Screen name="MainTabsActivity" component={MainTabsActivity}
           options={{ title: 'Softtrack Здоровье' }} />
+        <Stack.Screen
+          name="WaterActivity"
+          component={WaterActivity}
+          options={{
+            title: 'Вода'
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -1556,12 +1859,70 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
+  mainPageContainerWalkBlockBody: {
+    
+  },
+  mainPageContainerWalkBlockBodyLabel: {
+    fontWeight: 700,
+    fontSize: 24
+  },
+  mainPageContainerWalkBlockBodyRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerWalkBlockBodyRowAside: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end'
+  },
+  mainPageContainerWalkBlockBodyRowCountLabel: {
+    fontWeight: 700,
+    fontSize: 24,
+    marginHorizontal: 10
+  },
+  mainPageContainerWalkBlockBodyRowMaxCountLabel: {
+
+  },
   mainPageContainerExerciseBlock: {
     width: '95%',
     padding: 15,
     marginVertical: 15,
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
+  },
+  mainPageContainerExerciseBlockBody: {
+
+  },
+  mainPageContainerExerciseBlockBodyHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerExerciseBlockBodyHeaderLabel: {
+    fontWeight: 700,
+    fontSize: 20
+  },
+  mainPageContainerExerciseBlockBodyHeaderLog: {
+    fontWeight: 700,
+    fontSize: 20,
+    color: 'rgb(150, 150, 150)'
+  },
+  mainPageContainerExerciseBlockBodyExercises: {
+    marginVertical: 25,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  mainPageContainerExerciseBlockBodyExercisesItem: {
+    borderRadius: '100%',
+    borderColor: 'rgb(0, 0, 0)',
+    borderWidth: 1,
+    width: 75,
+    height: 75,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   mainPageContainerFoodBlock: {
     width: '95%',
@@ -1570,12 +1931,58 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
+  mainPageContainerFoodBlockLabel: {
+    fontSize: 24,
+    fontWeight: 700
+  },
+  mainPageContainerFoodBlockRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerFoodBlockRowAside: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  mainPageContainerFoodBlockRowAsideLabel: {
+    fontWeight: 700,
+    fontSize: 24, 
+    marginRight: 15
+  },
+  mainPageContainerFoodBlockRowAsideMaxCount: {
+    
+  },
+  mainPageContainerFoodBlockRecordBtnWrap: {
+    
+  },
+  mainPageContainerFoodBlockRecordBtn: {
+
+  },
   mainPageContainerSleepBlock: {
     width: '95%',
     padding: 15,
     marginVertical: 15,
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
+  },
+  mainPageContainerSleepBlockLabel: {
+    fontSize: 24,
+    fontWeight: 700
+  },
+  mainPageContainerSleepBlockRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerSleepBlockRowLabel: {
+    
+  },
+  mainPageContainerSleepBlockRecordBtnWrap: {
+    
+  },
+  mainPageContainerSleepBlockRecordBtn: {
+
   },
   mainPageContainerBodyBlock: {
     width: '95%',
@@ -1584,6 +1991,35 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
+  mainPageContainerBodyBlockBodyHeader: {
+    fontWeight: 700,
+    fontSize: 20
+  },
+  mainPageContainerBodyBlockBodyRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerBodyBlockBodyRowItem: {
+    marginHorizontal: 25  
+  },
+  mainPageContainerBodyBlockBodyRowItemIcon: {
+    
+  },
+  mainPageContainerBodyBlockBodyRowItemFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  mainPageContainerBodyBlockBodyRowItemFooterLabel: {
+    marginRight: 10,
+    fontWeight: 700,
+    fontSize: 24
+  },
+  mainPageContainerBodyBlockBodyRowItemFooterMeasure: {
+    
+  },
   mainPageContainerWaterBlock: {
     width: '95%',
     padding: 15,
@@ -1591,4 +2027,81 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
+  mainPageContainerWaterBody: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerWaterBodyAside: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-end'
+  },
+  mainPageContainerWaterBodyAsideLabel: {
+    fontSize: 20,
+    fontWeight: 700
+  },
+  mainPageContainerWaterBodyAsideRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'flex-end'
+  },
+  mainPageContainerWaterBodyAsideRowCount: {
+    fontWeight: 700,
+    fontSize: 28
+  },
+  mainPageContainerWaterBodyAsideRowMeasure: {
+    marginHorizontal: 5 
+  },
+  mainPageContainerWaterBodyRow: {
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  mainPageContainerWaterBodyRowRemoveBtnWrap: {
+    marginHorizontal: 10,
+    width: 35,
+    height: 35,
+    borderRadius: '100%'
+  },
+  mainPageContainerWaterBodyRowRemoveBtn: {
+    
+  },
+  mainPageContainerWaterBodyRowAddBtnWrap: {
+    marginHorizontal: 10,
+    width: 35,
+    height: 35,
+    borderRadius: '100%'
+  },
+  mainPageContainerWaterBodyRowAddBtn: {
+
+  },
+  waterActivityScroll: {
+    
+  },
+  waterActivityGlassCalculator: {
+    width: 100,
+    height: 100,
+    marginHorizontal: 'auto'
+  },
+  waterActivityRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  waterActivityRowRemoveBtnWrap: {
+    width: 125
+  },
+  waterActivityRowRemoveBtn: {
+
+  },
+  waterActivityRowLabel: {
+    fontWeight: 700,
+    fontSize: 48
+  },
+  waterActivityRowAddBtnWrap: {
+    width: 125
+  },
+  waterActivityRowAddBtn: {
+
+  }
 })
