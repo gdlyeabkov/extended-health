@@ -220,7 +220,7 @@ export function MainPageActivity({ navigation }) {
           </View>        
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.mainPageContainerSleepBlock} onPress={() => goToActivityNavigation(navigation, 'SleepActivity')}>
+      <TouchableOpacity style={styles.mainPageContainerSleepBlock} onPress={() => goToActivity(navigation, 'SleepActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -1572,10 +1572,37 @@ export function ActiveActivity() {
 export function WalkActivity() {
   
   return (
-    <ScrollView style={styles.waterActivityScroll}>
-      <Text>
-        WalkActivity
-      </Text>
+    <ScrollView style={styles.walkActivityScroll}>
+      <View style={styles.walkActivityBody}>
+        <Text style={styles.walkActivityBodyHeader}>
+          Сегодня
+        </Text>
+        <View style={styles.walkActivityBodyData}>
+          <Text style={styles.walkActivityBodyDataLabel}>
+            60
+          </Text>
+          <Text style={styles.walkActivityBodyDataMeasure}>
+            шагов
+          </Text>
+        </View>
+        <View style={styles.walkActivityBodyDistanseAndCallories}>
+          <Text style={styles.walkActivityBodyDistanseLabel}>
+            0,04
+          </Text>
+          <Text style={styles.walkActivityBodyDistanseMeasure}>
+            км
+          </Text>
+          <Text style={styles.walkActivityBodyCalloriesLabel}>
+            2
+          </Text>
+          <Text style={styles.walkActivityBodyCalloriesMeasure}>
+            ккал
+          </Text>
+        </View>
+        <View>
+
+        </View>
+      </View>
     </ScrollView>
   )
 
@@ -1583,11 +1610,70 @@ export function WalkActivity() {
 
 export function ExerciseActivity() {
   
+  const [exerciseRecords, setExerciseRecords] = useState([
+    {
+
+    },
+    {
+
+    },
+    {
+
+    }
+  ])
+
   return (
-    <ScrollView style={styles.waterActivityScroll}>
-      <Text>
-        ExerciseActivity
-      </Text>
+    <ScrollView style={styles.exerciseActivityScroll}>
+      <View style={styles.exerciseActivityBody}>
+        <Text style={styles.exerciseActivityBodyPeriod}>
+          7-13 февр.
+        </Text>
+        <Text style={styles.exerciseActivityBodyTime}>
+          00:00:00
+        </Text>
+        <View style={styles.exerciseActivityBodyCalloriesAndSessions}>
+          <Text style={styles.exerciseActivityBodyCalloriesLabel}>
+            3563
+          </Text>
+          <Text style={styles.exerciseActivityBodyCalloriesMeasure}>
+            ккал
+          </Text>
+          <Text style={styles.exerciseActivityBodySessionsLabel}>
+            9
+          </Text>
+          <Text style={styles.exerciseActivityBodySessionsMeasure}>
+            сеансы
+          </Text>
+        </View>
+        {
+          exerciseRecords.map((exerciseRecord, exerciseRecordIndex) => {
+            return (
+              <View style={styles.exerciseActivityBodyRecord}>
+                <View style={styles.exerciseActivityBodyRecordHeader}>
+                  <Text style={styles.exerciseActivityBodyRecordHeaderDate}>
+                    вс, 13 февр.
+                  </Text>
+                  <Text style={styles.exerciseActivityBodyRecordHeaderTime}>
+                    00:00:00
+                  </Text>
+                </View>
+                <View style={styles.exerciseActivityBodyRecordContent}>
+                  <FontAwesome5 name="walking" size={20} color="green" />
+                  <Text style={styles.exerciseActivityBodyRecordContentName}>
+                    Велоспорт
+                  </Text>
+                </View>
+                <Text>
+                  00:00:00 | 301 ккал
+                </Text>
+                <Text>
+                  10:00
+                </Text>
+              </View>
+            )
+          })
+        }
+      </View>
     </ScrollView>
   )
 
@@ -1595,11 +1681,34 @@ export function ExerciseActivity() {
 
 export function FoodActivity() {
   
+  const foodLogoImg = require('./assets/food_logo.png')
+
   return (
-    <ScrollView style={styles.waterActivityScroll}>
-      <Text>
-        FoodActivity
-      </Text>
+    <ScrollView style={styles.foodActivityScroll}>
+      <View style={styles.foodActivityData}>
+        <Text style={styles.foodActivityDataHeader}>
+          Сегодня
+        </Text>
+        <View style={styles.foodActivityDataCallories}>
+          <Text style={styles.foodActivityDataCalloriesContent}>
+            0
+          </Text>
+          <Text style={styles.foodActivityDataCalloriesMeasure}>
+            Ккал
+          </Text>
+        </View>
+        <Image source={foodLogoImg} style={styles.foodActivityDataImg} />
+        <Text style={styles.foodActivityDataDetectLabel}>
+          {
+            'Отслеживание питания поможет придерживаться\nздоровой, сбалансированной диеты'
+          }
+        </Text>
+      </View>
+      <View style={styles.foodActivityRecordBtnWrap}>
+        <Button title="Запись" style={styles.foodActivityRecordBtnWrap} onPress={() => {
+
+        }} />
+      </View>
     </ScrollView>
   )
 
@@ -1608,10 +1717,41 @@ export function FoodActivity() {
 export function SleepActivity() {
   
   return (
-    <ScrollView style={styles.waterActivityScroll}>
-      <Text>
-        SleepActivity
-      </Text>
+    <ScrollView style={styles.sleepActivityScroll}>
+      <View style={styles.sleepActivityData}>
+        <Text style={styles.sleepActivityDataHeader}>
+          Сегодня
+        </Text>
+        <View style={styles.sleepActivityDataTime}>
+          <Text style={styles.sleepActivityDataTimeHoursLabel}>
+            Часов:
+          </Text>
+          <Text style={styles.sleepActivityDataTimeHoursContent}>
+            11
+          </Text>
+          <Text style={styles.sleepActivityDataTimeMinutesLabel}>
+            , минут:
+          </Text>
+          <Text style={styles.sleepActivityDataTimeMinutesContent}>
+            30
+          </Text>
+          <Text style={styles.sleepActivityDataTimeEnd}>
+            .
+          </Text>
+        </View>
+        <View>
+
+        </View>
+        <Text>
+          21:10(чт) - 08:40(пт)
+        </Text>
+        <Text>
+          Записать время
+        </Text>
+      </View>
+      <View>
+        <Button title="Записать вручную" />
+      </View>
     </ScrollView>
   )
 
@@ -1619,11 +1759,118 @@ export function SleepActivity() {
 
 export function BodyActivity() {
   
+  const [bodyRecords, setBodyRecords] = useState([
+    {
+
+    },
+    {
+
+    },
+    {
+
+    }
+  ])
+
   return (
-    <ScrollView style={styles.waterActivityScroll}>
-      <Text>
-        BodyActivity
-      </Text>
+    <ScrollView style={styles.bodyActivityScroll}>
+      <View style={styles.bodyActivityLastData}>
+        <Text style={styles.bodyActivityLastDataHeader}>
+          11 февр., 09:08
+        </Text>
+        <View style={styles.bodyActivityLastDataItems}>
+          <View style={styles.bodyActivityLastDataItem}>
+            <Text style={[
+              styles.bodyActivityLastDataItemMeasure,
+              styles.bodyActivityLastDataItemWeightMeasure
+            ]}>
+              Вес
+            </Text>
+            <View style={styles.bodyActivityLastDataRow}>
+              <Text style={styles.bodyActivityLastDataRowContent}>
+                74.2
+              </Text>
+              <Text style={styles.bodyActivityLastDataRowMeasure}>
+                кг
+              </Text>
+            </View>
+          </View>
+          <View style={styles.bodyActivityLastDataItem}>
+            <Text style={styles.bodyActivityLastDataItemMeasure}>
+              Телесный жир
+            </Text>
+            <View style={styles.bodyActivityLastDataRow}>
+              <Text style={styles.bodyActivityLastDataRowContent}>
+                36.0
+              </Text>
+              <Text style={styles.bodyActivityLastDataRowMeasure}>
+                %
+              </Text>
+            </View>
+          </View>
+          <View style={styles.bodyActivityLastDataItem}>
+            <Text style={styles.bodyActivityLastDataItemMeasure}>
+              {
+                'Скелетн.\nмускулат.'
+              }
+            </Text>
+            <View style={styles.bodyActivityLastDataRow}>
+              <Text style={styles.bodyActivityLastDataRowContent}>
+                47.5
+              </Text>
+              <Text style={styles.bodyActivityLastDataRowMeasure}>
+                кг
+              </Text>
+            </View>
+          </View>
+        </View>
+        <View style={styles.bodyActivityImt}>
+          <Text style={styles.bodyActivityImtLabel}>
+            Чтобы рассчитать ИМТ, укажите в профиле свой рост.
+          </Text>
+          <Text style={styles.bodyActivityImtEdit}>
+            Редактировать профиль
+          </Text>
+        </View>
+      </View>
+      <View style={styles.bodyActivityRecords}>
+        {
+          bodyRecords.map((bodyRecord, bodyRecordIndex) => {
+            return (
+              <View style={styles.bodyActivityRecord}>
+                <View style={styles.bodyActivityHeader}>
+                  <View style={styles.bodyActivityHeaderItem}>
+                    <Text style={styles.bodyActivityHeaderItemLabel}>
+                      0
+                    </Text>
+                    <Text style={styles.bodyActivityHeaderItemMeasure}>
+                      кг
+                    </Text>
+                  </View>
+                  <View style={styles.bodyActivityHeaderItem}>
+                    <Text style={styles.bodyActivityHeaderItemLabel}>
+                      0
+                    </Text>
+                    <Text style={styles.bodyActivityHeaderItemMeasure}>
+                      %
+                    </Text>
+                  </View>
+                  <View style={styles.bodyActivityHeaderItem}>
+                    <Text style={styles.bodyActivityHeaderItemLabel}>
+                      0
+                    </Text>
+                    <Text style={styles.bodyActivityHeaderItemMeasure}>
+                      кг
+                    </Text>
+                  </View>
+                </View>
+                <Text style={styles.bodyActivityRecordTime}>
+                  00:00
+                </Text>
+              </View>
+            )
+          })
+        }
+      </View>
     </ScrollView>
   )
 
@@ -2389,5 +2636,283 @@ const styles = StyleSheet.create({
   },
   activeActivityBodyDistanseLabel: {
     fontWeight: 700  
+  },
+  walkActivityScroll: {
+
+  },
+  walkActivityBody: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    marginHorizontal: 'auto',
+    width: '95%',
+    marginVertical: 15
+  },
+  walkActivityBodyHeader: {
+
+  },
+  walkActivityBodyData: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  walkActivityBodyDataLabel: {
+    fontWeight: 700,
+    fontSize: 24,
+    marginRight: 5
+  },
+  walkActivityBodyDataMeasure: {
+    fontWeight: 700,
+    fontSize: 20
+  },
+  walkActivityBodyDistanseAndCallories: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  walkActivityBodyDistanseLabel: {
+    fontWeight: 700,
+    fontSize: 22,
+    marginHorizontal: 5
+  },
+  walkActivityBodyDistanseMeasure: {
+    fontWeight: 700,
+    fontSize: 18,
+    marginHorizontal: 5
+  },
+  walkActivityBodyCalloriesLabel: {
+    fontWeight: 700,
+    fontSize: 22,
+    marginHorizontal: 5
+  },
+  walkActivityBodyCalloriesMeasure: {
+    fontWeight: 700,
+    fontSize: 18,
+    marginHorizontal: 5
+  },
+  exerciseActivityBody: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    marginHorizontal: 'auto',
+    width: '95%',
+    marginVertical: 15
+  },
+  exerciseActivityBodyPeriod: {
+    fontWeight: 700
+  },
+  exerciseActivityBodyTime: {
+    fontWeight: 700,
+    fontSize: 36,
+    textAlign: 'center'
+  },
+  exerciseActivityBodyCalloriesAndSessions: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  exerciseActivityBodyCalloriesLabel: {
+    fontWeight: 700,
+    fontSize: 22,
+    marginHorizontal: 5
+  },
+  exerciseActivityBodyCalloriesMeasure: {
+    fontWeight: 700,
+    fontSize: 18,
+    marginHorizontal: 5
+  },
+  exerciseActivityBodySessionsLabel: {
+    fontWeight: 700,
+    fontSize: 22,
+    marginHorizontal: 5
+  },
+  exerciseActivityBodySessionsMeasure: {
+    fontWeight: 700,
+    fontSize: 18,
+    marginHorizontal: 5
+  },
+  exerciseActivityBodyRecord: {
+    marginVertical: 25
+  },
+  exerciseActivityBodyRecordHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgb(0, 0, 0)',
+    marginVertical: 5
+  },
+  exerciseActivityBodyRecordHeaderDate: {
+    fontWeight: 700
+  },
+  exerciseActivityBodyRecordHeaderTime: {
+    
+  },
+  exerciseActivityBodyRecordContent: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginVertical: 5
+  },
+  exerciseActivityBodyRecordContentName: {
+    marginLeft: 15
+  },
+  foodActivityData: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    marginVertical: 15,
+    marginHorizontal: 'auto',
+    width: '95%'
+  },
+  foodActivityDataHeader: {
+    fontWeight: 700
+  },
+  foodActivityDataCallories: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  foodActivityDataCalloriesContent: {
+    fontWeight: 700,
+    fontSize: 48,
+    marginHorizontal: 5
+  },
+  foodActivityDataCalloriesMeasure: {
+    fontWeight: 700,
+    marginHorizontal: 5,
+    fontSize: 20
+  },
+  foodActivityDataImg: {
+    width: 250,
+    height: 250,
+    marginHorizontal: 'auto'
+  },
+  foodActivityDataDetectLabel: {
+    textAlign: 'center'  
+  },
+  foodActivityRecordBtnWrap: {
+    width: 125,
+    marginHorizontal: 'auto'
+  },
+  foodActivityRecordBtn: {
+
+  },
+  bodyActivityLastData: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '95%',
+    marginHorizontal: 'auto',
+    marginVertical: 15,
+    padding: 15,
+    backgroundColor: 'rgb(255, 255, 255)'
+  },
+  bodyActivityLastDataHeader: {
+
+  },
+  bodyActivityLastDataItems: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  bodyActivityLastDataItem: {
+    width: '20%'
+  },
+  bodyActivityLastDataItemMeasure: {
+    textAlign: 'center'
+  },
+  bodyActivityLastDataItemWeightMeasure: {
+    color: 'rgb(0, 150, 0)'
+  },
+  bodyActivityLastDataRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  bodyActivityLastDataRowContent: {
+    marginHorizontal: 5,
+    fontWeight: 700,
+    fontSize: 36
+  },
+  bodyActivityLastDataRowMeasure: {
+    marginHorizontal: 5,
+    fontWeight: 700,
+    fontSize: 20
+  },
+  bodyActivityImt: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    borderTopColor: 'rgb(150, 150, 150)',
+    borderTopWidth: 1,
+    borderBottomColor: 'rgb(150, 150, 150)',
+    borderBottomWidth: 1,
+    paddingVertical: 15
+  },
+  bodyActivityImtLabel: {
+
+  },
+  bodyActivityImtEdit: {
+    fontWeight: 700
+  },
+  bodyActivityRecords: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    marginHorizontal: 'auto'
+  },
+  bodyActivityRecord: {
+    marginVertical: 15,
+    borderBottomColor: 'rgb(150, 150, 150)',
+    borderBottomWidth: 1
+  },
+  bodyActivityHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  bodyActivityHeaderItem: {
+    width: '20%',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  bodyActivityHeaderItemLabel: {
+    fontSize: 24,
+    marginHorizontal: 5
+  },
+  bodyActivityHeaderItemMeasure: {
+    fontSize: 20,
+    marginHorizontal: 5
+  },
+  bodyActivityRecordTime: {
+    color: 'rgb(175, 175, 175)',
+    marginVertical: 10
+  },
+  sleepActivityData: {
+
+  },
+  sleepActivityDataHeader: {
+
+  },
+  sleepActivityDataTime: {
+
+  },
+  sleepActivityDataTimeHoursLabel: {
+
+  },
+  sleepActivityDataTimeHoursContent: {
+
+  },
+  sleepActivityDataTimeMinutesLabel: {
+
+  },
+  sleepActivityDataTimeMinutesContent: {
+
+  },
+  sleepActivityDataTimeEnd: {
+
   }
 })
