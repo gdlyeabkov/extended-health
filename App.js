@@ -1511,6 +1511,9 @@ export function WaterActivity() {
 
   return (
     <ScrollView style={styles.waterActivityScroll}>
+      <Text style={styles.waterActivityBodyLabel}>
+        Сегодня
+      </Text>
       <Image source={glassCalculatorImg} style={styles.waterActivityGlassCalculator} />
       <View style={styles.waterActivityRow}>
         <View style={styles.waterActivityRowRemoveBtnWrap}>
@@ -1525,6 +1528,15 @@ export function WaterActivity() {
           <Button title="+" style={styles.waterActivityRowAddBtn} onPress={() => addGlass()} />
         </View>
       </View>
+      <Text style={styles.waterActivityMeasure}>
+        стак.
+      </Text>
+      <Text style={styles.waterActivityMls}>
+        (0 мл)
+      </Text>
+      <Text style={styles.waterActivityDetectLabel}>
+        Отслеживайте объем потребляемой воды
+      </Text>
     </ScrollView>
   )
 }
@@ -2078,6 +2090,10 @@ const styles = StyleSheet.create({
   waterActivityScroll: {
     
   },
+  waterActivityBodyLabel: {
+    fontSize: 20,
+    fontWeight: 700
+  },
   waterActivityGlassCalculator: {
     width: 100,
     height: 100,
@@ -2103,5 +2119,14 @@ const styles = StyleSheet.create({
   },
   waterActivityRowAddBtn: {
 
+  },
+  waterActivityMeasure: {
+    textAlign: 'center'
+  },
+  waterActivityMls: {
+    textAlign: 'center'
+  },
+  waterActivityDetectLabel: {
+    textAlign: 'center'
   }
 })
