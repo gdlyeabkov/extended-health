@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar'
 import { React, useState } from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView, Touchable } from 'react-native'
+import { StyleSheet, Text, View, Image, Button, ScrollView } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -107,7 +107,7 @@ export function MainPageActivity({ navigation }) {
 
   return (
     <ScrollView style={styles.mainPageContainer}>
-      <View style={styles.mainPageContainerActiveBlock}>
+      <TouchableOpacity style={styles.mainPageContainerActiveBlock} onPress={() => goToActivity(navigation, 'ActiveActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -139,8 +139,8 @@ export function MainPageActivity({ navigation }) {
           </View>
           <Image source={activityLogo} style={styles.mainPageContainerActiveBlockBodyImg} />
         </View>
-      </View>
-      <View style={styles.mainPageContainerWalkBlock}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.mainPageContainerWalkBlock} onPress={() => goToActivity(navigation, 'WalkActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -167,8 +167,8 @@ export function MainPageActivity({ navigation }) {
             </View>
           </View>
         </View>
-      </View>
-      <View style={styles.mainPageContainerExerciseBlock}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.mainPageContainerExerciseBlock} onPress={() => goToActivity(navigation, 'ExerciseActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -196,8 +196,8 @@ export function MainPageActivity({ navigation }) {
             </View>
           </View>
         </View>
-      </View>
-      <View style={styles.mainPageContainerFoodBlock}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.mainPageContainerFoodBlock} onPress={() => goToActivity(navigation, 'FoodActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -219,8 +219,8 @@ export function MainPageActivity({ navigation }) {
             </View>
           </View>        
         </View>
-      </View>
-      <View style={styles.mainPageContainerSleepBlock}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.mainPageContainerSleepBlock} onPress={() => goToActivityNavigation(navigation, 'SleepActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -237,8 +237,8 @@ export function MainPageActivity({ navigation }) {
             </View>
           </View>
         </View>
-      </View>
-      <View style={styles.mainPageContainerBodyBlock}>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.mainPageContainerBodyBlock} onPress={() => goToActivity(navigation, 'BodyActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -282,7 +282,7 @@ export function MainPageActivity({ navigation }) {
             </View>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
       <TouchableOpacity style={styles.mainPageContainerWaterBlock} onPress={() => goToActivity(navigation, 'WaterActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
@@ -1486,6 +1486,149 @@ export function MyPageActivity() {
   )
 }
 
+export function ActiveActivity() {
+  
+  const activityLogo = require('./assets/activity_logo.png')
+
+  return (
+    <ScrollView style={styles.activeActivityScroll}>
+      <View style={styles.activeActivityBody}>
+        <Text style={styles.activeActivityBodyHeader}>
+          Сегодня
+        </Text>
+        <Image source={activityLogo} style={styles.activeActivityBodyImg} />
+        <View style={styles.activeActivityBodyItems}>
+          <View style={styles.activeActivityBodyItem}>
+            <Text style={styles.activeActivityBodyItemHeader}>
+              Шаги
+            </Text>
+            <View style={styles.activeActivityBodyItemRow}>
+              <FontAwesome5 name="walking" size={18} color="green" style={styles.activeActivityBodyItemRowIcon} />
+              <Text style={styles.activeActivityBodyItemRowLabel}>
+                34
+              </Text>
+            </View>
+            <Text style={styles.activeActivityBodyItemFooter}>
+              /6000
+            </Text>  
+          </View>
+          <View style={styles.activeActivityBodyItem}>
+            <Text style={styles.activeActivityBodyItemHeader}>
+              Время активности
+            </Text>
+            <View style={styles.activeActivityBodyItemRow}>
+              <Ionicons name="time" size={18} color="blue" />
+              <Text style={styles.activeActivityBodyItemRowLabel}>
+                0
+              </Text>
+            </View>
+            <Text style={styles.activeActivityBodyItemFooter}>
+              /90 мин
+            </Text>  
+          </View>
+          <View style={styles.activeActivityBodyItem}>
+            <Text style={styles.activeActivityBodyItemHeader}>
+              Активные калории
+            </Text>
+            <View style={styles.activeActivityBodyItemRow}>
+              <Octicons name="flame" size={18} color="red" />
+              <Text style={styles.activeActivityBodyItemRowLabel}>
+                1
+              </Text>
+            </View>
+            <Text style={styles.activeActivityBodyItemFooter}>
+              /500 ккал
+            </Text>  
+          </View>
+        </View>
+        <View style={styles.activeActivityBodyCallories}>
+          <Text style={styles.activeActivityBodyCalloriesAll}>
+            Всего сожжено калорий
+          </Text>
+          <Text style={styles.activeActivityBodyCalloriesSeparator}>
+            .....................................................................................................................................................................................................................................................................................................................................................
+          </Text>
+          <Text style={styles.activeActivityBodyCalloriesLabel}>
+            1383 ккал
+          </Text>
+        </View>
+        <View style={styles.activeActivityBodyDistanse}>
+          <Text style={styles.activeActivityBodyDistanseAll}>
+            Расстояние пройденное в ходе активностей
+          </Text>
+          <Text style={styles.activeActivityBodyDistanseSeparator}>
+          ................................................................................................................................................................................................................................................................................................
+          </Text>
+          <Text style={styles.activeActivityBodyDistanseLabel}>
+            0,02 км
+          </Text>
+        </View>
+      </View>
+    </ScrollView>
+  )
+
+}
+
+export function WalkActivity() {
+  
+  return (
+    <ScrollView style={styles.waterActivityScroll}>
+      <Text>
+        WalkActivity
+      </Text>
+    </ScrollView>
+  )
+
+}
+
+export function ExerciseActivity() {
+  
+  return (
+    <ScrollView style={styles.waterActivityScroll}>
+      <Text>
+        ExerciseActivity
+      </Text>
+    </ScrollView>
+  )
+
+}
+
+export function FoodActivity() {
+  
+  return (
+    <ScrollView style={styles.waterActivityScroll}>
+      <Text>
+        FoodActivity
+      </Text>
+    </ScrollView>
+  )
+
+}
+
+export function SleepActivity() {
+  
+  return (
+    <ScrollView style={styles.waterActivityScroll}>
+      <Text>
+        SleepActivity
+      </Text>
+    </ScrollView>
+  )
+
+}
+
+export function BodyActivity() {
+  
+  return (
+    <ScrollView style={styles.waterActivityScroll}>
+      <Text>
+        BodyActivity
+      </Text>
+    </ScrollView>
+  )
+
+}
+
 export function WaterActivity() {
   
   const glassCalculatorImg = require('./assets/glass_calculator.png')
@@ -1549,6 +1692,48 @@ export default function App() {
       <Stack.Navigator initialRouteName='MainTabsActivity'>
         <Stack.Screen name="MainTabsActivity" component={MainTabsActivity}
           options={{ title: 'Softtrack Здоровье' }} />
+        <Stack.Screen
+          name="ActiveActivity"
+          component={ActiveActivity}
+          options={{
+            title: 'Активность'
+          }}
+        />
+        <Stack.Screen
+          name="WalkActivity"
+          component={WalkActivity}
+          options={{
+            title: 'Шаги'
+          }}
+        />
+        <Stack.Screen
+          name="ExerciseActivity"
+          component={ExerciseActivity}
+          options={{
+            title: 'Упражнение'
+          }}
+        />
+        <Stack.Screen
+          name="FoodActivity"
+          component={FoodActivity}
+          options={{
+            title: 'Еда'
+          }}
+        />
+        <Stack.Screen
+          name="SleepActivity"
+          component={SleepActivity}
+          options={{
+            title: 'Сон'
+          }}
+        />
+        <Stack.Screen
+          name="BodyActivity"
+          component={BodyActivity}
+          options={{
+            title: 'Состав тела'
+          }}
+        />
         <Stack.Screen
           name="WaterActivity"
           component={WaterActivity}
@@ -2128,5 +2313,81 @@ const styles = StyleSheet.create({
   },
   waterActivityDetectLabel: {
     textAlign: 'center'
+  },
+  activeActivityScroll: {
+    backgroundColor: 'rgb(225, 225, 225)'
+  },
+  activeActivityBody: {
+    width: '95%',
+    padding: 15,
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    marginHorizontal: 'auto'
+  },
+  activeActivityBodyHeader: {
+    fontWeight: 700,
+    fontSize: 24
+  },
+  activeActivityBodyImg: {
+    width: 100,
+    height: 100,
+    marginHorizontal: 'auto'
+  },
+  activeActivityBodyItems: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  activeActivityBodyItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '20%'
+  },
+  activeActivityBodyItemHeader: {
+    textAlign: 'center'
+  },
+  activeActivityBodyItemRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  activeActivityBodyItemRowIcon: {
+
+  },
+  activeActivityBodyItemRowLabel: {
+    fontWeight: 700,
+    fontSize: 36
+  },
+  activeActivityBodyItemFooter: {
+    textAlign: 'center'  
+  },
+  activeActivityBodyCallories: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  activeActivityBodyCalloriesAll: {
+    color: 'rgb(185, 185, 185)'  
+  },
+  activeActivityBodyCalloriesSeparator: {
+    
+  },
+  activeActivityBodyCalloriesLabel: {
+    fontWeight: 700
+  },
+  activeActivityBodyDistanse: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  activeActivityBodyDistanseAll: {
+    color: 'rgb(185, 185, 185)'  
+  },
+  activeActivityBodyDistanseSeparator: {
+    
+  },
+  activeActivityBodyDistanseLabel: {
+    fontWeight: 700  
   }
 })
