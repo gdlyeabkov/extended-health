@@ -5,7 +5,7 @@ import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundation, Ionicons, AntDesign, Entypo, Fontisto, Feather, FontAwesome } from '@expo/vector-icons'
-import { TouchableOpacity } from 'react-native-gesture-handler'
+import { TouchableOpacity, TextInput } from 'react-native-gesture-handler'
 import * as SQLite from 'expo-sqlite'
 
 const Tab = createBottomTabNavigator();
@@ -1812,8 +1812,12 @@ export function SleepActivity() {
 
 }
 
-export function BodyActivity() {
+export function BodyActivity({ navigation }) {
   
+  const goToActivity = (navigation, activityName) => {
+    navigation.navigate(activityName)
+  }
+
   const [bodyRecords, setBodyRecords] = useState([
     {
 
@@ -1925,6 +1929,9 @@ export function BodyActivity() {
             )
           })
         }
+      </View>
+      <View style={styles.bodyActivityAddRecordBtnWrap}>
+        <Button title="Запись" style={styles.bodyActivityAddRecordBtn} onPress={() => goToActivity(navigation, 'RecordBodyActivity')} />
       </View>
     </ScrollView>
   )
@@ -2039,7 +2046,34 @@ export default function App() {
   db.transaction(transaction => {
     let sqlStatement = "CREATE TABLE IF NOT EXISTS indicators (_id INTEGER PRIMARY KEY AUTOINCREMENT, time TEXT, water INTEGER, walk INTEGER, food INTEGER, is_exercise_enabled BOOLEAN, exercise_start_time TEXT, exercise_type TEXT, exercise_duration TEXT, photo TEXT, name TEXT, gender TEXT, growth REAL, weight REAL, birthday TEXT, level TEXT);"
     transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
-      const sqlStatement = "SELECT * FROM indicators;"
+      let sqlStatement = "CREATE TABLE IF NOT EXISTS exercises (_id INTEGER PRIMARY KEY AUTOINCREMENT, is_activated BOOLEAN, name TEXT, is_favorite BOOLEAN);"
+      transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+        let sqlStatement = "CREATE TABLE IF NOT EXISTS controllers (_id INTEGER PRIMARY KEY AUTOINCREMENT, is_activated BOOLEAN, name TEXT);"
+        transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+          let sqlStatement = "CREATE TABLE IF NOT EXISTS measures (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, value TEXT);"
+          transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+            let sqlStatement = "CREATE TABLE IF NOT EXISTS body_records (_id INTEGER PRIMARY KEY AUTOINCREMENT, marks TEXT, musculature INTEGER, fat INTEGER, weight REAL, date TEXT);"
+            transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+              let sqlStatement = "CREATE TABLE IF NOT EXISTS sleep_records (_id INTEGER PRIMARY KEY AUTOINCREMENT, hours TEXT, minutes TEXT, date TEXT);"
+              transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+                let sqlStatement = "CREATE TABLE IF NOT EXISTS food_records (_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT);"
+                transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+                  let sqlStatement = "CREATE TABLE IF NOT EXISTS exercise_records (_id INTEGER PRIMARY KEY AUTOINCREMENT, type TEXT, datetime TEXT, duration TEXT);"
+                  transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+                    let sqlStatement = "CREATE TABLE IF NOT EXISTS food_items (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, callories INTEGER, total_carbs INTEGER, total_fats INTEGER, protein INTEGER, saturated_fats INTEGER, trans_fats INTEGER, cholesterol INTEGER, sodium INTEGER, potassium INTEGER, cellulose INTEGER, sugar INTEGER, a INTEGER, c INTEGER, calcium INTEGER, iron INTEGER, portions REAL, type TEXT);"
+                    transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+                      let sqlStatement = "CREATE TABLE IF NOT EXISTS awards (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, type TEXT);"
+                      transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+        })
+      })
+      sqlStatement = "SELECT * FROM indicators;"
       transaction.executeSql(sqlStatement, [], (tx, receivedAlarms) => {
         const indicators = Array.from(receivedAlarms.rows)
         const countIndicators = indicators.length
@@ -2112,10 +2146,104 @@ export default function App() {
             title: 'Вода'
           }}
         />
+        <Stack.Screen
+          name="RecordBodyActivity"
+          component={RecordBodyActivity}
+          options={{
+            title: 'Запись данных о весе'
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
 }
+
+export function RecordBodyActivity({ navigation }) {
+
+  const goToActivity = (navigation, activityName) => {
+    navigation.navigate(activityName)
+  }
+
+  const [fat, setFat] = useState(0)
+
+  const [musculature, setMusculature] = useState(0)
+
+  const addBodyRecord = () => {
+    let sqlStatement = `INSERT INTO \"body_records\"(marks, musculature, fat, weight, date) VALUES (\"\", 0, 0, 0.0, \"\");`
+    db.transaction(transaction => {
+      transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+        goToActivity(navigation, 'BodyActivity')  
+      }, (tx) => {
+        console.log('ошибка получения индикаторов')
+      })
+    })
+  }
+
+  return (
+    <View style={styles.recordBodyActivityContainer}>
+      <Text style={styles.recordBodyActivityHeader}>
+        Запись данных о весе
+      </Text>
+      <View style={styles.recordBodyActivityDateBtnWrap}>
+        <Button title="пт, 3 февраля, 12:06" />
+      </View>
+      <View style={styles.recordBodyActivityWeightSelector}>
+
+      </View>
+      <Text style={styles.recordBodyActivityWeightLabel}>
+        Указанный вес будет также выводиться в профиле пользователя
+      </Text>
+      <View style={styles.recordBodyActivityFatAndMusculature}>
+        <View style={styles.recordBodyActivityFat}>
+          <Text style={styles.recordBodyActivityFatLabel}>
+            Телесн. жир
+          </Text>
+          <TextInput
+            style={styles.recordBodyActivityFatField}
+            value={fat}
+            onChangeText={text => setFat(text)}
+          />
+          <Text style={styles.recordBodyActivityFatMeasure}>
+            %
+          </Text>
+        </View>
+        <View style={styles.recordBodyActivityMusculature}>
+          <Text style={styles.recordBodyActivityMusculatureLabel}>
+            Скелетн. мускулат.
+          </Text>
+          <TextInput
+            style={styles.recordBodyActivityMusculatureField}
+            value={musculature}
+            onChangeText={text => setMusculature(text)}
+          />
+          <Text style={styles.recordBodyActivityMusculatureMeasure}>
+            кг.
+          </Text>
+        </View>
+      </View>
+      <View style={styles.recordBodyActivityFooter}>
+        <View style={styles.recordBodyActivityFooterCancelBtnWrap}>
+          <Button
+            color="transparent"
+            style={styles.recordBodyActivityFooterCancelBtn}
+            title="Отменить"
+            onPress={() => goToActivity(navigation, 'BodyActivity')}
+          />
+        </View>
+        <View style={styles.recordBodyActivityFooterSaveBtnWrap}>
+          <Button
+            color="transparent"
+            style={styles.recordBodyActivityFooterSaveBtn}
+            title="Сохранить"
+            onPress={() => addBodyRecord()}
+          />
+        </View>
+      </View>
+    </View>
+  )
+
+}
+
 const styles = StyleSheet.create({
   myPageContainer: {
     backgroundColor: 'rgb(225, 225, 225)'
@@ -3022,6 +3150,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%'
   },
+  bodyActivityAddRecordBtnWrap: {
+    width: 125,
+    marginHorizontal: 'auto'
+  },
+  bodyActivityAddRecordBtn: {
+
+  },
   sleepActivityDataHeader: {
 
   },
@@ -3068,6 +3203,75 @@ const styles = StyleSheet.create({
   },
   sleepActivityRecordBtn: {
 
+  },
+  recordBodyActivityContainer: {
+
+  },
+  recordBodyActivityHeader: {
+
+  },
+  recordBodyActivityDateBtnWrap: {
+
+  },
+  recordBodyActivityDateBtn: {
+    
+  },
+  recordBodyActivityWeightSelector: {
+    height: 250
+  },
+  recordBodyActivityWeightLabel: {
+    textAlign: 'center'
+  },
+  recordBodyActivityFatAndMusculature: {
+
+  },
+  recordBodyActivityFat: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVerical: 15
+  },
+  recordBodyActivityFatLabel: {
+
+  },
+  recordBodyActivityFatField: {
+
+  },
+  recordBodyActivityFatMeasure: {
+
+  },
+  recordBodyActivityMusculature: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVerical: 15
+  },
+  recordBodyActivityMusculatureLabel: {
+
+  },
+  recordBodyActivityMusculatureField: {
+
+  },
+  recordBodyActivityMusculatureMeasure: {
+
+  },
+  recordBodyActivityFooter: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  recordBodyActivityFooterCancelBtnWrap: {
+    color: 'rgb(0, 0, 0)',
+    width: '50%'
+  },
+  recordBodyActivityFooterCancelBtn: {
+    color: 'rgb(0, 0, 0)'
+  },
+  recordBodyActivityFooterSaveBtnWrap: {
+    color: 'rgb(0, 0, 0)',
+    width: '50%'
+  },
+  recordBodyActivityFooterSaveBtn: {
+    color: 'rgb(0, 0, 0)'
   }
 })
 
