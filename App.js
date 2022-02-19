@@ -1,11 +1,12 @@
 import { StatusBar } from 'expo-status-bar'
-import { React, useState } from 'react'
+import { React, useState, useEffect } from 'react'
 import { StyleSheet, Text, View, Image, Button, ScrollView } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundation, Ionicons, AntDesign, Entypo, Fontisto, Feather, FontAwesome } from '@expo/vector-icons'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import * as SQLite from 'expo-sqlite'
 
 const Tab = createBottomTabNavigator();
 
@@ -86,14 +87,51 @@ export function MainPageActivity({ navigation }) {
   
   const [isRemoveGlassBtnDisabled, setIsRemoveGlassBtnDisabled] = useState(false)
 
+  const [indicators, setIndicators] = useState([])
+  
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM indicators;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+      let tempReceivedIndicators = []
+      Array.from(receivedIndicators.rows).forEach((indicatorsItemRow, indicatorsItemRowIdx) => {
+        const indicatorsItem = Object.values(receivedIndicators.rows.item(indicatorsItemRowIdx))
+        tempReceivedIndicators = [
+          ...tempReceivedIndicators,
+          {
+            id: indicatorsItem[0],
+            water: indicatorsItem[2]
+          }
+        ]
+      })
+      setIndicators(tempReceivedIndicators)
+    })
+  })
+
+  useEffect(() => {
+    const countIndicators = indicators.length
+    const isIndicatorsExists = countIndicators >= 1
+    if (isIndicatorsExists) {
+      const receiverdIndicators = indicators[0]
+      const localCountGlasses = receiverdIndicators.water
+      setCountGlasses(localCountGlasses)
+    }
+  }, [indicators])
+
   const goToActivity = (navigation, activityName) => {
     navigation.navigate(activityName)
   }
-  
+
   const addGlass = () => {
     const updatedCountGlasses = countGlasses + 1
     setCountGlasses(updatedCountGlasses)
     setIsRemoveGlassBtnDisabled(false)
+
+    db.transaction(transaction => {
+      let sqlStatement = `UPDATE indicators SET water=${updatedCountGlasses} WHERE _id=0;`
+      transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+      })
+    })
+
   }
 
   const removeGlass = () => {
@@ -102,6 +140,12 @@ export function MainPageActivity({ navigation }) {
     const isCountGlassesEmpty = countGlasses <= 1
     if (isCountGlassesEmpty) {
       setIsRemoveGlassBtnDisabled(true)
+    } else {
+      db.transaction(transaction => {
+        let sqlStatement = `UPDATE indicators SET water=${updatedCountGlasses} WHERE _id=1;`
+        transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+        })
+      })
     }
   }
 
@@ -1739,18 +1783,29 @@ export function SleepActivity() {
             .
           </Text>
         </View>
-        <View>
+        <View style={styles.sleepActivityWidget}>
 
         </View>
-        <Text>
-          21:10(чт) - 08:40(пт)
-        </Text>
-        <Text>
-          Записать время
-        </Text>
+        {
+          false ?
+          <>
+            <Text style={styles.sleepActivityTimeStartAndEnd}>
+              21:10(чт) - 08:40(пт)
+            </Text>
+            <Text style={styles.sleepActivityRecordLabel}>
+              Записать время
+            </Text>
+          </>
+          :
+            <Text style={styles.sleepActivityRecordLabel}>
+              {
+                'Создавайте записи о сне, чтобы установить закономерность\nи высыпаться лучше'
+              }
+            </Text>
+        }
       </View>
-      <View>
-        <Button title="Записать вручную" />
+      <View style={styles.sleepActivityRecordBtnWrap}>
+        <Button title="Записать вручную" style={styles.sleepActivityRecordBtn} />
       </View>
     </ScrollView>
   )
@@ -1884,10 +1939,47 @@ export function WaterActivity() {
 
   const [isRemoveGlassBtnDisabled, setIsRemoveGlassBtnDisabled] = useState(false)
 
+  const [indicators, setIndicators] = useState([])
+  
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM indicators;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+      let tempReceivedIndicators = []
+      Array.from(receivedIndicators.rows).forEach((indicatorsItemRow, indicatorsItemRowIdx) => {
+        const indicatorsItem = Object.values(receivedIndicators.rows.item(indicatorsItemRowIdx))
+        tempReceivedIndicators = [
+          ...tempReceivedIndicators,
+          {
+            id: indicatorsItem[0],
+            water: indicatorsItem[2]
+          }
+        ]
+      })
+      setIndicators(tempReceivedIndicators)
+    })
+  })
+
+  useEffect(() => {
+    const countIndicators = indicators.length
+    const isIndicatorsExists = countIndicators >= 1
+    if (isIndicatorsExists) {
+      const receiverdIndicators = indicators[0]
+      const localCountGlasses = receiverdIndicators.water
+      setCountGlasses(localCountGlasses)
+    }
+  }, [indicators])
+
   const addGlass = () => {
     const updatedCountGlasses = countGlasses + 1
     setCountGlasses(updatedCountGlasses)
     setIsRemoveGlassBtnDisabled(false)
+  
+    db.transaction(transaction => {
+      let sqlStatement = `UPDATE indicators SET water=${updatedCountGlasses} WHERE _id=1;`
+      transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+      })
+    })
+
   }
 
   const removeGlass = () => {
@@ -1896,6 +1988,12 @@ export function WaterActivity() {
     const isCountGlassesEmpty = countGlasses <= 1
     if (isCountGlassesEmpty) {
       setIsRemoveGlassBtnDisabled(true)
+    } else {
+      db.transaction(transaction => {
+        let sqlStatement = `UPDATE indicators SET water=${updatedCountGlasses} WHERE _id=1;`
+        transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+        })
+      })
     }
   }
 
@@ -1933,7 +2031,33 @@ export function WaterActivity() {
 
 const Stack = createStackNavigator()
 
+var db = null
+
 export default function App() {
+
+  db = SQLite.openDatabase('healthdatabase.db')
+  db.transaction(transaction => {
+    let sqlStatement = "CREATE TABLE IF NOT EXISTS indicators (_id INTEGER PRIMARY KEY AUTOINCREMENT, time TEXT, water INTEGER, walk INTEGER, food INTEGER, is_exercise_enabled BOOLEAN, exercise_start_time TEXT, exercise_type TEXT, exercise_duration TEXT, photo TEXT, name TEXT, gender TEXT, growth REAL, weight REAL, birthday TEXT, level TEXT);"
+    transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+      const sqlStatement = "SELECT * FROM indicators;"
+      transaction.executeSql(sqlStatement, [], (tx, receivedAlarms) => {
+        const indicators = Array.from(receivedAlarms.rows)
+        const countIndicators = indicators.length
+        const isIndicatorsNotFound = countIndicators <= 0
+        if (isIndicatorsNotFound) {
+          let sqlStatement = `INSERT INTO \"indicators\"(time, water, walk, food, is_exercise_enabled, exercise_start_time, exercise_type, exercise_duration, photo, name, gender, growth, weight, birthday, level) VALUES (\"\", 0, 0, 0, 0, \"\", \"\", \"\", \"\", \"\", \"\", 0.0, 0.0, \"\", \"\");`
+          db.transaction(transaction => {
+            transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+              
+            }, (tx) => {
+              console.log('ошибка получения индикаторов')
+            })
+          })
+        }
+      })  
+    })
+  })
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='MainTabsActivity'>
@@ -2892,27 +3016,87 @@ const styles = StyleSheet.create({
     marginVertical: 10
   },
   sleepActivityData: {
-
+    padding: 15,
+    marginHorizontal: 'auto',
+    marginVertical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    width: '95%'
   },
   sleepActivityDataHeader: {
 
   },
   sleepActivityDataTime: {
-
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   sleepActivityDataTimeHoursLabel: {
-
+    marginHorizontal: 5
   },
   sleepActivityDataTimeHoursContent: {
-
+    fontWeight: 700,
+    fontSize: 20,
+    marginHorizontal: 5
   },
   sleepActivityDataTimeMinutesLabel: {
-
+    marginHorizontal: 5
   },
   sleepActivityDataTimeMinutesContent: {
-
+    fontWeight: 700,
+    fontSize: 20,
+    marginHorizontal: 5
   },
   sleepActivityDataTimeEnd: {
 
+  },
+  sleepActivityWidget: {
+    width: 150,
+    height: 150,
+    borderRadius: '100%'
+  },
+  sleepActivityTimeStartAndEnd: {
+
+  },
+  sleepActivityRecordLabel: {
+    textAlign: 'center',
+    marginVertical: 10
+  },
+  sleepActivityRecordBtnWrap: {
+    width: 275,
+    marginHorizontal: 'auto'
+  },
+  sleepActivityRecordBtn: {
+
   }
 })
+
+export function RecordFoodActivity() {
+  return (
+    <View>
+      <Text>
+        RecordFoodActivity
+      </Text>
+    </View>
+  )
+}
+
+export function RecordSleepActivity() {
+  return (
+    <View>
+      <Text>
+        RecordSleepActivity
+      </Text>
+    </View>
+  )
+}
+
+export function RecordExerciseActivity() {
+  return (
+    <View>
+      <Text>
+        RecordExerciseActivity
+      </Text>
+    </View>
+  )
+}
