@@ -7,6 +7,13 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundation, Ionicons, AntDesign, Entypo, Fontisto, Feather, FontAwesome } from '@expo/vector-icons'
 import { TouchableOpacity, TextInput } from 'react-native-gesture-handler'
 import * as SQLite from 'expo-sqlite'
+import {
+  Paragraph,
+  Dialog,
+  Portal,
+  Provider,
+  RadioButton
+} from 'react-native-paper'
 
 const Tab = createBottomTabNavigator();
 
@@ -1723,9 +1730,19 @@ export function ExerciseActivity() {
 
 }
 
-export function FoodActivity() {
+export function FoodActivity({ navigation }) {
   
   const foodLogoImg = require('./assets/food_logo.png')
+
+  const [isDialogVisible, setIsDialogVisible] = useState(false)
+
+  const [foodType, setFoodType] = useState({
+    checked: ''
+  })
+
+  const goToActivity = (navigation, activityName) => {
+    navigation.navigate(activityName)
+  }
 
   return (
     <ScrollView style={styles.foodActivityScroll}>
@@ -1749,17 +1766,83 @@ export function FoodActivity() {
         </Text>
       </View>
       <View style={styles.foodActivityRecordBtnWrap}>
-        <Button title="Запись" style={styles.foodActivityRecordBtnWrap} onPress={() => {
-
-        }} />
+        <Button title="Запись" style={styles.foodActivityRecordBtnWrap} onPress={() => setIsDialogVisible(true)} />
       </View>
+      <Dialog
+        visible={isDialogVisible}
+        onDismiss={() => setIsDialogVisible(false)}>
+        <Dialog.Title>Прием пищи</Dialog.Title>
+        <Dialog.Content>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="breakfast"
+              label="breakfast"
+              status={foodType.checked === 'breakfast' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'breakfast' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Завтрак</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="lanch"
+              label="lanch"
+              status={foodType.checked === 'lanch' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'lanch' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Обед</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="dinner"
+              label="dinner"
+              status={foodType.checked === 'dinner' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'dinner' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Ужин</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="morning meal"
+              label="morning meal"
+              status={foodType.checked === 'morning meal' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'morning meal' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Утренний перекус</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="day meal"
+              label="day meal"
+              status={foodType.checked === 'day meal' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'day meal' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Дневной перекус</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="dinner meal"
+              label="dinner meal"
+              status={foodType.checked === 'dinner meal' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'dinner meal' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Вечерний перекус</Text>  
+          </View>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button title="Готово" onPress={() => goToActivity(navigation, 'RecordFoodActivity')} />
+        </Dialog.Actions>
+      </Dialog>
     </ScrollView>
   )
 
 }
 
-export function SleepActivity() {
+export function SleepActivity({ navigation }) {
   
+  const goToActivity = (navigation, activityName) => {
+    navigation.navigate(activityName)
+  }
+
   return (
     <ScrollView style={styles.sleepActivityScroll}>
       <View style={styles.sleepActivityData}>
@@ -1805,7 +1888,7 @@ export function SleepActivity() {
         }
       </View>
       <View style={styles.sleepActivityRecordBtnWrap}>
-        <Button title="Записать вручную" style={styles.sleepActivityRecordBtn} />
+        <Button title="Записать вручную" style={styles.sleepActivityRecordBtn} onPress={() => goToActivity(navigation, 'RecordSleepActivity')} />
       </View>
     </ScrollView>
   )
@@ -1818,17 +1901,28 @@ export function BodyActivity({ navigation }) {
     navigation.navigate(activityName)
   }
 
-  const [bodyRecords, setBodyRecords] = useState([
-    {
+  const [bodyRecords, setBodyRecords] = useState([])
 
-    },
-    {
-
-    },
-    {
-
-    }
-  ])
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM body_records;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedBodyRecords) => {
+      let tempReceivedBodyRecords = []
+      Array.from(receivedBodyRecords.rows).forEach((bodyRecordRow, bodyRecordRowIdx) => {
+        const bodyRecord = Object.values(receivedBodyRecords.rows.item(bodyRecordRowIdx))
+        tempReceivedBodyRecords = [
+          ...tempReceivedBodyRecords,
+          {
+            id: bodyRecord[0],
+            marks: bodyRecord[1],
+            musculature: bodyRecord[2],
+            fat: bodyRecord[3],
+            weight: bodyRecord[4]
+          }
+        ]
+      })
+      setBodyRecords(tempReceivedBodyRecords)
+    })
+  })
 
   return (
     <ScrollView style={styles.bodyActivityScroll}>
@@ -1899,7 +1993,9 @@ export function BodyActivity({ navigation }) {
                 <View style={styles.bodyActivityHeader}>
                   <View style={styles.bodyActivityHeaderItem}>
                     <Text style={styles.bodyActivityHeaderItemLabel}>
-                      0
+                      {
+                        bodyRecord.weight
+                      }
                     </Text>
                     <Text style={styles.bodyActivityHeaderItemMeasure}>
                       кг
@@ -1907,7 +2003,9 @@ export function BodyActivity({ navigation }) {
                   </View>
                   <View style={styles.bodyActivityHeaderItem}>
                     <Text style={styles.bodyActivityHeaderItemLabel}>
-                      0
+                      {
+                        bodyRecord.fat
+                      }
                     </Text>
                     <Text style={styles.bodyActivityHeaderItemMeasure}>
                       %
@@ -1915,7 +2013,9 @@ export function BodyActivity({ navigation }) {
                   </View>
                   <View style={styles.bodyActivityHeaderItem}>
                     <Text style={styles.bodyActivityHeaderItemLabel}>
-                      0
+                      {
+                        bodyRecord.musculature
+                      }
                     </Text>
                     <Text style={styles.bodyActivityHeaderItemMeasure}>
                       кг
@@ -2153,9 +2253,79 @@ export default function App() {
             title: 'Запись данных о весе'
           }}
         />
+        <Stack.Screen
+          name="RecordSleepActivity"
+          component={RecordSleepActivity}
+          options={{
+            title: 'Записать вручную'
+          }}
+        />
+        <Stack.Screen
+          name="RecordFoodActivity"
+          component={RecordFoodActivity}
+          options={{
+            title: ''
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
+}
+
+export function RecordSleepActivity({ navigation }) {
+
+  const goToActivity = (navigation, activityName) => {
+    navigation.navigate(activityName)
+  }
+
+  const addSleepRecord = () => {
+    let sqlStatement = `INSERT INTO \"sleep_records\"(hours, minutes, date) VALUES (\"00\", \"00\", \"22.11.2000\");`
+    db.transaction(transaction => {
+      transaction.executeSql(sqlStatement, [], (tx, receivedRecords) => {
+        goToActivity(navigation, 'SleepActivity')
+      }, (tx) => {
+        console.log('ошибка добавления записей')
+      })
+    })
+  }
+
+  return (
+    <View style={styles.sleepActivityContainer}>
+      <View style={styles.sleepActivityBody}>
+        <View style={styles.sleepActivityBodyDateBtnWrap}>
+          <Button title="сб, 19 февр." onPress={() => {
+
+          }} style={styles.sleepActivityBodyDateBtn} />
+        </View>
+        <View style={styles.sleepActivityPicker}>
+
+        </View>
+        <Text style={styles.sleepActivityBodyTimeLabel}>
+          8 ч
+        </Text>
+        <Text style={styles.sleepActivityBodyTimeDesc}>
+          Время сна
+        </Text>
+      </View>
+      <View style={styles.sleepActivityFooter}>
+        <View style={styles.sleepActivityFooterCancelBtnWrap}>
+          <Button
+            title="Отмена"
+            onPress={() => goToActivity(navigation, 'SleepActivity')}
+            style={styles.sleepActivityFooterCancelBtn}
+          />
+        </View>
+        <View style={styles.sleepActivityFooterSaveBtnWrap}>
+          <Button
+            title="Сохранить"
+            onPress={() => addSleepRecord()}
+            style={styles.sleepActivityFooterSaveBtn}
+          />
+        </View>
+      </View>
+    </View>
+  )
+
 }
 
 export function RecordBodyActivity({ navigation }) {
@@ -3050,6 +3220,16 @@ const styles = StyleSheet.create({
   foodActivityRecordBtn: {
 
   },
+  foodActivityRecordFoodType: {
+    display: 'flex',
+    flexDirection: 'row',
+    // justifyContent: 'space-between'
+  },
+  foodActivityRecordFoodTypeLabel: {
+    marginLeft: 25,
+    fontWeight: 700,
+    fontSize: 24
+  },
   bodyActivityLastData: {
     display: 'flex',
     flexDirection: 'column',
@@ -3185,11 +3365,6 @@ const styles = StyleSheet.create({
   sleepActivityDataTimeEnd: {
 
   },
-  sleepActivityWidget: {
-    width: 150,
-    height: 150,
-    borderRadius: '100%'
-  },
   sleepActivityTimeStartAndEnd: {
 
   },
@@ -3272,25 +3447,146 @@ const styles = StyleSheet.create({
   },
   recordBodyActivityFooterSaveBtn: {
     color: 'rgb(0, 0, 0)'
+  },
+  sleepActivityContainer: {
+
+  },
+  sleepActivityBody: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    width: '95%',
+    marginVertical: 15,
+    marginHorizontal: 'auto',
+    padding: 15
+  },
+  sleepActivityBodyDateBtnWrap: {
+    width: 125
+  },
+  sleepActivityBodyDateBtn: {
+
+  },
+  sleepActivityPicker: {
+    height: 100,
+    width: 100
+  },
+  sleepActivityBodyTimeLabel: {
+
+  },
+  sleepActivityBodyTimeDesc: {
+
+  },
+  sleepActivityFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  sleepActivityFooterCancelBtnWrap: {
+    width: '50%'
+  },
+  sleepActivityFooterCancelBtn: {
+
+  },
+  sleepActivityFooterSaveBtnWrap: {
+    width: '50%'
+  },
+  sleepActivityFooterSaveBtn: {
+
+  },
+  sleepActivityWidget: {
+    width: 150,
+    height: 150,
+    borderRadius: '100%'
+  },
+  recordFoodActivityContainer: {
+
+  },
+  recordFoodActivityHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordFoodActivityHeaderAside: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordFoodActivityHeaderAsideLabel: {
+
+  },
+  recordFoodActivityHeaderBtn: {
+
+  },
+  recordFoodActivityHeaderBtnWrap: {
+    width: 125
+  },
+  recordFoodActivityTabs: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordFoodActivityTab: {
+    width: '25%'
+  },
+  recordFoodActivityProducts: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordFoodActivityProductsLabel: {
+    color: 'rgb(150, 150, 150)'
+  },
+  recordFoodActivityProductsSeparator: {
+    color: 'rgb(150, 150, 150)'
+  },
+  recordFoodActivityProductsList: {
+    width: '95%',
+    marginHorizontal: 'auto',
+    marginVerical: 15,
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 25
   }
+
 })
 
 export function RecordFoodActivity() {
   return (
-    <View>
-      <Text>
-        RecordFoodActivity
-      </Text>
-    </View>
-  )
-}
+    <View style={styles.recordFoodActivityContainer}>
+      <View style={styles.recordFoodActivityHeader}>
+        <View style={styles.recordFoodActivityHeaderAside}>
+          <Text>
+            {
+              '<'
+            }
+          </Text>
+          <Text style={styles.recordFoodActivityHeaderAsideLabel}>
+            Обед
+          </Text>
+        </View>
+        <View style={styles.recordFoodActivityHeaderBtnWrap}>
+          <Button title="Проп. еду" style={styles.recordFoodActivityHeaderBtn} />
+        </View>
+      </View>
+      <View style={styles.recordFoodActivityTabs}>
+        <Text style={styles.recordFoodActivityTab}>
+          Поиск
+        </Text>
+        <Text style={styles.recordFoodActivityTab}>
+          Любимые
+        </Text>
+        <Text style={styles.recordFoodActivityTab}>
+          Мое питание
+        </Text>
+      </View>
+      <View style={styles.recordFoodActivityProducts}>
+        <Text style={styles.recordFoodActivityProductsLabel}>
+          Продукты
+        </Text>
+        <Text style={styles.recordFoodActivityProductsSeparator}>
+          ********************************
+        </Text>
+      </View>
+      <View style={styles.recordFoodActivityProductsList}>
 
-export function RecordSleepActivity() {
-  return (
-    <View>
-      <Text>
-        RecordSleepActivity
-      </Text>
+      </View>
     </View>
   )
 }
