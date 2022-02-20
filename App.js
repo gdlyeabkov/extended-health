@@ -124,8 +124,8 @@ export function MainPageActivity({ navigation }) {
     }
   }, [indicators])
 
-  const goToActivity = (navigation, activityName) => {
-    navigation.navigate(activityName)
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
   }
 
   const addGlass = () => {
@@ -219,7 +219,10 @@ export function MainPageActivity({ navigation }) {
           </View>
         </View>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.mainPageContainerExerciseBlock} onPress={() => goToActivity(navigation, 'ExerciseActivity')}>
+      <View
+        style={styles.mainPageContainerExerciseBlock}
+        onPress={() => goToActivity(navigation, 'ExerciseActivity')}
+      >
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
         </View>
@@ -233,21 +236,39 @@ export function MainPageActivity({ navigation }) {
             </Text>
           </View>
           <View style={styles.mainPageContainerExerciseBlockBodyExercises}>
-            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+            <TouchableOpacity
+              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+              onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                exerciseType: 'Ходьба'
+              })}
+            >
               <FontAwesome5 name="walking" size={36} color="black" />
-            </View>
-            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+              onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                exerciseType: 'Бег'
+              })}
+            >
               <FontAwesome5 name="running" size={36} color="black" />
-            </View>
-            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+              onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                exerciseType: 'Велоспорт'
+              })}
+            >
               <Ionicons name="bicycle-sharp" size={36} color="black" />
-            </View>
-            <View style={styles.mainPageContainerExerciseBlockBodyExercisesItem}>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+              onPress={() => goToActivity(navigation, 'ExercisesListActivity')}
+            >
               <Feather name="list" size={36} color="black" />
-            </View>
+            </TouchableOpacity>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
       <TouchableOpacity style={styles.mainPageContainerFoodBlock} onPress={() => goToActivity(navigation, 'FoodActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
@@ -1740,8 +1761,8 @@ export function FoodActivity({ navigation }) {
     checked: ''
   })
 
-  const goToActivity = (navigation, activityName) => {
-    navigation.navigate(activityName)
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
   }
 
   return (
@@ -1775,61 +1796,63 @@ export function FoodActivity({ navigation }) {
         <Dialog.Content>
           <View style={styles.foodActivityRecordFoodType}>
             <RadioButton
-              value="breakfast"
-              label="breakfast"
-              status={foodType.checked === 'breakfast' ? 'checked' : 'unchecked'}
-              onPress={() => { setFoodType({ checked: 'breakfast' }) }}
+              value="Завтрак"
+              label="Завтрак"
+              status={foodType.checked === 'Завтрак' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'Завтрак' }) }}
             />
             <Text style={styles.foodActivityRecordFoodTypeLabel}>Завтрак</Text>  
           </View>
           <View style={styles.foodActivityRecordFoodType}>
             <RadioButton
-              value="lanch"
-              label="lanch"
-              status={foodType.checked === 'lanch' ? 'checked' : 'unchecked'}
-              onPress={() => { setFoodType({ checked: 'lanch' }) }}
+              value="Обед"
+              label="Обед"
+              status={foodType.checked === 'Обед' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'Обед' }) }}
             />
             <Text style={styles.foodActivityRecordFoodTypeLabel}>Обед</Text>  
           </View>
           <View style={styles.foodActivityRecordFoodType}>
             <RadioButton
-              value="dinner"
-              label="dinner"
-              status={foodType.checked === 'dinner' ? 'checked' : 'unchecked'}
-              onPress={() => { setFoodType({ checked: 'dinner' }) }}
+              value="Ужин"
+              label="Ужин"
+              status={foodType.checked === 'Ужин' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'Ужин' }) }}
             />
             <Text style={styles.foodActivityRecordFoodTypeLabel}>Ужин</Text>  
           </View>
           <View style={styles.foodActivityRecordFoodType}>
             <RadioButton
-              value="morning meal"
-              label="morning meal"
-              status={foodType.checked === 'morning meal' ? 'checked' : 'unchecked'}
-              onPress={() => { setFoodType({ checked: 'morning meal' }) }}
+              value="Утренний перекус"
+              label="Утренний перекус"
+              status={foodType.checked === 'Утренний перекус' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'Утренний перекус' }) }}
             />
             <Text style={styles.foodActivityRecordFoodTypeLabel}>Утренний перекус</Text>  
           </View>
           <View style={styles.foodActivityRecordFoodType}>
             <RadioButton
-              value="day meal"
-              label="day meal"
-              status={foodType.checked === 'day meal' ? 'checked' : 'unchecked'}
-              onPress={() => { setFoodType({ checked: 'day meal' }) }}
+              value="Дневной перекус"
+              label="Дневной перекус"
+              status={foodType.checked === 'Дневной перекус' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'Дневной перекус' }) }}
             />
             <Text style={styles.foodActivityRecordFoodTypeLabel}>Дневной перекус</Text>  
           </View>
           <View style={styles.foodActivityRecordFoodType}>
             <RadioButton
-              value="dinner meal"
-              label="dinner meal"
-              status={foodType.checked === 'dinner meal' ? 'checked' : 'unchecked'}
-              onPress={() => { setFoodType({ checked: 'dinner meal' }) }}
+              value="Вечерний перекус"
+              label="Вечерний перекус"
+              status={foodType.checked === 'Вечерний перекус' ? 'checked' : 'unchecked'}
+              onPress={() => { setFoodType({ checked: 'Вечерний перекус' }) }}
             />
             <Text style={styles.foodActivityRecordFoodTypeLabel}>Вечерний перекус</Text>  
           </View>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button title="Готово" onPress={() => goToActivity(navigation, 'RecordFoodActivity')} />
+          <Button title="Готово" onPress={() => goToActivity(navigation, 'RecordFoodActivity', {
+            foodType: foodType.checked
+          })} />
         </Dialog.Actions>
       </Dialog>
     </ScrollView>
@@ -2143,6 +2166,18 @@ var db = null
 export default function App() {
 
   db = SQLite.openDatabase('healthdatabase.db')
+
+  // let sqlStatement = `DROP TABLE \"indicators\";`
+  // db.transaction(transaction => {
+  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+  //   })
+  // })
+
+  // let sqlStatement = `DELETE DATABASE \"healthdatabase.db\";`
+  // db.transaction(transaction => {
+  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+  //   })
+  // })
   db.transaction(transaction => {
     let sqlStatement = "CREATE TABLE IF NOT EXISTS indicators (_id INTEGER PRIMARY KEY AUTOINCREMENT, time TEXT, water INTEGER, walk INTEGER, food INTEGER, is_exercise_enabled BOOLEAN, exercise_start_time TEXT, exercise_type TEXT, exercise_duration TEXT, photo TEXT, name TEXT, gender TEXT, growth REAL, weight REAL, birthday TEXT, level TEXT);"
     transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
@@ -2173,16 +2208,53 @@ export default function App() {
           })
         })
       })
+      
+
+      // sqlStatement = `DELETE DATABASE \"healthdatabase.db\";`
+      // db.transaction(transaction => {
+      //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+      //   })
+      // })
+
       sqlStatement = "SELECT * FROM indicators;"
       transaction.executeSql(sqlStatement, [], (tx, receivedAlarms) => {
         const indicators = Array.from(receivedAlarms.rows)
         const countIndicators = indicators.length
-        const isIndicatorsNotFound = countIndicators <= 0
-        if (isIndicatorsNotFound) {
+        const isPreInstall = countIndicators <= 0
+        if (isPreInstall) {
           let sqlStatement = `INSERT INTO \"indicators\"(time, water, walk, food, is_exercise_enabled, exercise_start_time, exercise_type, exercise_duration, photo, name, gender, growth, weight, birthday, level) VALUES (\"\", 0, 0, 0, 0, \"\", \"\", \"\", \"\", \"\", \"\", 0.0, 0.0, \"\", \"\");`
           db.transaction(transaction => {
             transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-              
+              let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (true, \"Ходьба\", true);`
+              db.transaction(transaction => {
+                transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+                  let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (true, \"Бег\", true);`
+                  db.transaction(transaction => {
+                    transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+                      let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (true, \"Велоспорт\", true);`
+                      db.transaction(transaction => {
+                        transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+                          let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (false, \"Поход\", false);`
+                          db.transaction(transaction => {
+                            transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+                              let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (false, \"Плавание\", false);`
+                              db.transaction(transaction => {
+                                transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+                                  let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (false, \"Йога\", false);`
+                                  db.transaction(transaction => {
+                                    transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+                                    })
+                                  })        
+                                })
+                              })    
+                            })
+                          })
+                        })
+                      })    
+                    })
+                  })    
+                })
+              })
             }, (tx) => {
               console.log('ошибка получения индикаторов')
             })
@@ -2265,6 +2337,34 @@ export default function App() {
           component={RecordFoodActivity}
           options={{
             title: ''
+          }}
+        />
+        <Stack.Screen
+          name="RecordExerciseActivity"
+          component={RecordExerciseActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="RecordStartedExerciseActivity"
+          component={RecordStartedExerciseActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="ExercisesListActivity"
+          component={ExercisesListActivity}
+          options={{
+            title: 'Упражнения'
+          }}
+        />
+        <Stack.Screen
+          name="AddExerciseActivity"
+          component={AddExerciseActivity}
+          options={{
+            title: 'Добавить тренировки'
           }}
         />
       </Stack.Navigator>
@@ -2412,6 +2512,299 @@ export function RecordBodyActivity({ navigation }) {
     </View>
   )
 
+}
+
+export function RecordFoodActivity({
+  navigation,
+  route
+}) {
+  
+  const { foodType } = route.params
+
+  const goToActivity = (navigation, activityName) => {
+    navigation.navigate(activityName)
+  }
+
+  const addFoodRecord = () => {
+    let sqlStatement = `INSERT INTO \"food_records\"(type) VALUES (\"${foodType}\");`
+    db.transaction(transaction => {
+      transaction.executeSql(sqlStatement, [], (tx, receivedRecords) => {
+        goToActivity(navigation, 'FoodActivity')  
+      }, (tx) => {
+        console.log('ошибка добавления записей')
+      })
+    })
+  }
+  
+  return (
+    <View style={styles.recordFoodActivityContainer}>
+      <View style={styles.recordFoodActivityHeader}>
+        <View style={styles.recordFoodActivityHeaderAside}>
+          <Entypo
+            name="chevron-left"
+            size={24}
+            color="black"
+            onPress={() => goToActivity(navigation, 'FoodActivity')}
+          />
+          <Text style={styles.recordFoodActivityHeaderAsideLabel}>
+            {
+              foodType
+            }
+          </Text>
+        </View>
+        <View style={styles.recordFoodActivityHeaderBtnWrap}>
+          <Button
+            title="Проп. еду"
+            style={styles.recordFoodActivityHeaderBtn}
+            onPress={() => addFoodRecord()}
+          />
+        </View>
+      </View>
+      <View style={styles.recordFoodActivityTabs}>
+        <Text style={styles.recordFoodActivityTab}>
+          Поиск
+        </Text>
+        <Text style={styles.recordFoodActivityTab}>
+          Любимые
+        </Text>
+        <Text style={styles.recordFoodActivityTab}>
+          Мое питание
+        </Text>
+      </View>
+      <View style={styles.recordFoodActivityProducts}>
+        <Text style={styles.recordFoodActivityProductsLabel}>
+          Продукты
+        </Text>
+        <Text style={styles.recordFoodActivityProductsSeparator}>
+          ********************************
+        </Text>
+      </View>
+      <View style={styles.recordFoodActivityProductsList}>
+
+      </View>
+    </View>
+  )
+}
+
+export function RecordExerciseActivity({ navigation, route }) {
+  
+  const { exerciseType } = route.params
+
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  return (
+    <View style={styles.recordExerciseActivityContainer}>
+      <View style={styles.recordExerciseActivityHeader}>
+        <View style={styles.recordExerciseActivityHeaderAside}>
+          <Text style={styles.recordExerciseActivityHeaderExerciseType}>
+            {
+              exerciseType
+            }
+          </Text>
+        </View>
+        <View style={styles.recordExerciseActivityHeaderBtns}>
+          <Entypo name="note" size={24} color="black" />
+          <Feather name="more-vertical" size={24} color="black" />
+        </View>
+      </View>
+      <View style={styles.recordExerciseActivityMap}>
+
+      </View>
+      <View style={styles.recordExerciseActivityStartBtnWrap}>
+        <Button
+          title="Начать"
+          onPress={() => goToActivity(navigation, 'RecordStartedExerciseActivity')}
+          style={styles.recordExerciseActivityStartBtn}
+        />
+      </View>
+    </View>
+  )
+}
+
+export function RecordStartedExerciseActivity() {
+  return (
+    <View>
+      <Text>
+        RecordStartedExerciseActivity
+      </Text>
+    </View>
+  )
+}
+
+export function ExercisesListActivity({ navigation }) {
+  
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  const [exercises, setExercises] = useState([])
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM exercises;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+      let tempReceivedExercises = []
+      Array.from(receivedExercises.rows).forEach((exercisesItemRow, exercisesItemRowIdx) => {
+        const exercise = Object.values(receivedExercises.rows.item(exercisesItemRowIdx))
+        tempReceivedExercises = [
+          ...tempReceivedExercises,
+          {
+            id: exercise[0],
+            isActivated: exercise[1],
+            name: exercise[2],
+            isFavorite: exercise[3]
+          }
+        ]
+      })
+      setExercises(tempReceivedExercises)
+    })
+  })
+  
+  return (
+    <View style={styles.exercisesListActivityContainer}>
+      <View style={styles.exercisesListActivityHeader}>
+        <View style={styles.exercisesListActivityHeaderAside}>
+          <Entypo
+            name="chevron-left"
+            size={24}
+            color="black"
+            onPress={() => goToActivity(navigation, 'MainActivity')}
+          />
+          <Text style={styles.exercisesListActivityHeaderAsideLabel}>
+            Упражнения
+          </Text>
+        </View>
+        <Feather name="more-vertical" size={24} color="black" />
+      </View>
+      <ScrollView style={styles.exercisesListActivityList}>
+        {
+          exercises.map(exercise => {
+            return (
+              exercise.isActivated ?
+                <View style={styles.exercisesListActivityListItem}>
+                  <View style={styles.exercisesListActivityListItemAside}>
+                    <FontAwesome5 name="walking" size={36} color="green" />
+                    <Text style={styles.exercisesListActivityListItemAsideLabel}>
+                      {
+                        exercise.name
+                      }
+                    </Text>
+                  </View>
+                  <AntDesign
+                    name="star"
+                    size={24}
+                    color={
+                      exercise.isFavorite ? 'yellow' : 'black'
+                    }
+                  />
+                </View>
+              :
+                null
+            )
+          })
+        }
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.exercisesListActivityFooter}
+        onPress={() => goToActivity(navigation, 'AddExerciseActivity')}
+      >
+        <Text style={styles.exercisesListActivityFooterLabel}>
+          Добавить тренировки
+        </Text>
+        <Ionicons name="chevron-forward" size={24} color="black" />
+      </TouchableOpacity>
+    </View>
+  )
+}
+
+export function AddExerciseActivity({ navigation }) {
+  
+    
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  const [exercises, setExercises] = useState([])
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM exercises;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+      let tempReceivedExercises = []
+      Array.from(receivedExercises.rows).forEach((exercisesItemRow, exercisesItemRowIdx) => {
+        const exercise = Object.values(receivedExercises.rows.item(exercisesItemRowIdx))
+        tempReceivedExercises = [
+          ...tempReceivedExercises,
+          {
+            id: exercise[0],
+            isActivated: exercise[1],
+            name: exercise[2],
+            isFavorite: exercise[3]
+          }
+        ]
+      })
+      setExercises(tempReceivedExercises)
+    })
+  })
+  
+  return (
+    <View style={styles.exercisesListActivityContainer}>
+      <View style={styles.exercisesListActivityHeader}>
+        <View style={styles.exercisesListActivityHeaderAside}>
+          <Entypo
+            name="chevron-left"
+            size={24}
+            color="black"
+            onPress={() => goToActivity(navigation, 'MainActivity')}
+          />
+          <Text style={styles.exercisesListActivityHeaderAsideLabel}>
+            Добавить тренировки
+          </Text>
+        </View>
+        <Feather name="more-vertical" size={24} color="black" />
+      </View>
+      <ScrollView style={styles.exercisesListActivityList}>
+        {
+          exercises.map(exercise => {
+            return (
+              !exercise.isActivated ?
+                <View style={styles.exercisesListActivityListItem}>
+                  <RadioButton
+                    value="Вечерний перекус"
+                    label="Вечерний перекус"
+                    status={
+                      'unchecked'
+                    }
+                    onPress={() => { 
+                      
+                    }}
+                  />
+                  <View style={styles.exercisesListActivityListItemAside}>
+                    <FontAwesome5 name="walking" size={36} color="green" />
+                    <Text style={styles.exercisesListActivityListItemAsideLabel}>
+                      {
+                        exercise.name
+                      }
+                    </Text>
+                  </View>
+                </View>
+              :
+                null
+            )
+          })
+        }
+      </ScrollView>
+      <TouchableOpacity
+        style={styles.addExerciseActivityFooter}
+        onPress={() => goToActivity(navigation, 'ExercisesListActivity')}
+      >
+        <Text style={styles.exercisesListActivityFooterLabel}>
+          Добавить
+        </Text>
+        <AntDesign name="plus" size={72} color="black" />
+      </TouchableOpacity>
+    </View>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -3543,60 +3936,93 @@ const styles = StyleSheet.create({
     marginVerical: 15,
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 25
+  },
+  recordExerciseActivityContainer: {
+
+  },
+  recordExerciseActivityHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordExerciseActivityHeaderAside: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordExerciseActivityHeaderExerciseType: {
+
+  },
+  recordExerciseActivityHeaderBtns: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordExerciseActivityMap: {
+    height: 500
+  },
+  recordExerciseActivityStartBtnWrap: {
+    width: 125,
+    marginHorizontal: 'auto'
+  },
+  recordExerciseActivityStartBtn: {
+
+  },
+  exercisesListActivityHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  exercisesListActivityHeaderAside: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  exercisesListActivityHeaderAsideLabel: {
+    fontSize: 24,
+    fontWeight: 700
+  },
+  exercisesListActivityList: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    width: '95%',
+    marginHorizontal: 'auto',
+    padding: 15,
+    marginVertical: 15
+  },
+  exercisesListActivityListItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomColor: 'rgb(150, 150, 150)',
+    borderBottomWidth: 1
+  },
+  exercisesListActivityListItemAside: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center'
+  },
+  exercisesListActivityListItemAsideLabel: {
+    fontWeight: 700,
+    fontSize: 20,
+    marginLeft: 25
+  },
+  exercisesListActivityFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'center'
+  },
+  exercisesListActivityFooterLabel: {
+    fontSize: 20,
+    fontWeight: 700
+  },
+  addExerciseActivityFooter: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    height: 100
   }
 
 })
-
-export function RecordFoodActivity() {
-  return (
-    <View style={styles.recordFoodActivityContainer}>
-      <View style={styles.recordFoodActivityHeader}>
-        <View style={styles.recordFoodActivityHeaderAside}>
-          <Text>
-            {
-              '<'
-            }
-          </Text>
-          <Text style={styles.recordFoodActivityHeaderAsideLabel}>
-            Обед
-          </Text>
-        </View>
-        <View style={styles.recordFoodActivityHeaderBtnWrap}>
-          <Button title="Проп. еду" style={styles.recordFoodActivityHeaderBtn} />
-        </View>
-      </View>
-      <View style={styles.recordFoodActivityTabs}>
-        <Text style={styles.recordFoodActivityTab}>
-          Поиск
-        </Text>
-        <Text style={styles.recordFoodActivityTab}>
-          Любимые
-        </Text>
-        <Text style={styles.recordFoodActivityTab}>
-          Мое питание
-        </Text>
-      </View>
-      <View style={styles.recordFoodActivityProducts}>
-        <Text style={styles.recordFoodActivityProductsLabel}>
-          Продукты
-        </Text>
-        <Text style={styles.recordFoodActivityProductsSeparator}>
-          ********************************
-        </Text>
-      </View>
-      <View style={styles.recordFoodActivityProductsList}>
-
-      </View>
-    </View>
-  )
-}
-
-export function RecordExerciseActivity() {
-  return (
-    <View>
-      <Text>
-        RecordExerciseActivity
-      </Text>
-    </View>
-  )
-}
