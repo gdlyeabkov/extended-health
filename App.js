@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar'
 import { React, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView } from 'react-native'
+import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -2166,7 +2166,7 @@ var db = null
 export default function App() {
 
   db = SQLite.openDatabase('healthdatabase.db')
-
+  
   // let sqlStatement = `DROP TABLE \"indicators\";`
   // db.transaction(transaction => {
   //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
@@ -2367,6 +2367,27 @@ export default function App() {
             title: 'Добавить тренировки'
           }}
         />
+        <Stack.Screen
+          name="AddFoodItemActivity"
+          component={AddFoodItemActivity}
+          options={{
+            title: 'Добав. нов. прием пищи'
+          }}
+        />
+        <Stack.Screen
+          name="FoodHistoryActivity"
+          component={FoodHistoryActivity}
+          options={{
+            title: 'Журнал питания'
+          }}
+        />
+        <Stack.Screen
+          name="RecordExerciseResultsActivity"
+          component={RecordExerciseResultsActivity}
+          options={{
+            title: ''
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   )
@@ -2521,6 +2542,28 @@ export function RecordFoodActivity({
   
   const { foodType } = route.params
 
+  const [foodItems, setFoodItems] = useState([])
+
+  const [foodItemsCheckboxes, setFoodItemsCheckboxes] = useState([])
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM food_items;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
+      let tempReceivedItems = []
+      Array.from(receivedItems.rows).forEach((itemsItemRow, itemsItemRowIdx) => {
+        const foodItem = Object.values(receivedItems.rows.item(itemsItemRowIdx))
+        tempReceivedItems = [
+          ...tempReceivedItems,
+          {
+            id: foodItem[0],
+            name: foodItem[1]            
+          }
+        ]
+      })
+      setFoodItems(tempReceivedItems)
+    })
+  })
+
   const goToActivity = (navigation, activityName) => {
     navigation.navigate(activityName)
   }
@@ -2534,6 +2577,17 @@ export function RecordFoodActivity({
         console.log('ошибка добавления записей')
       })
     })
+  }
+
+  const goToFoodHistoryOrAddFoodRecord = () => {
+    const activeFoodItemsCheckboxes = foodItemsCheckboxes.filter(foodItemsCheckbox => foodItemsCheckbox) 
+    const countActiveFoodItemsCheckboxes = activeFoodItemsCheckboxes.length 
+    const isCountActiveFoodItemsCheckboxesGT = countActiveFoodItemsCheckboxes >= 1
+    if (isCountActiveFoodItemsCheckboxesGT) {
+      goToActivity(navigation, 'FoodHistoryActivity')
+    } else {
+      addFoodRecord()
+    }
   }
   
   return (
@@ -2554,9 +2608,14 @@ export function RecordFoodActivity({
         </View>
         <View style={styles.recordFoodActivityHeaderBtnWrap}>
           <Button
-            title="Проп. еду"
+            title={
+              foodItemsCheckboxes.filter(foodItemsCheckbox => foodItemsCheckbox).length >= 1 ?
+                'Журнал'
+              :
+                'Проп. еду'
+            }
             style={styles.recordFoodActivityHeaderBtn}
-            onPress={() => addFoodRecord()}
+            onPress={() => goToFoodHistoryOrAddFoodRecord()}
           />
         </View>
       </View>
@@ -2580,7 +2639,36 @@ export function RecordFoodActivity({
         </Text>
       </View>
       <View style={styles.recordFoodActivityProductsList}>
-
+        <TouchableOpacity
+          style={styles.recordFoodActivityProductsListAdd}
+          onPress={() => goToActivity(navigation, 'AddFoodItemActivity')}
+        >
+          <Text style={styles.recordFoodActivityProductsListAddLabel}>
+            Добав. нов. прием пищи
+          </Text>
+        </TouchableOpacity>
+        {
+          foodItems.map((foodItem, foodItemIndex) => {
+            return (
+              <View
+                key={foodItemIndex}
+                style={styles.recordFoodActivityProductsListItem}
+              >
+                <Text>
+                  {
+                    foodItem.name 
+                  }
+                </Text>
+                <CheckBox
+                  value={foodItemsCheckboxes[foodItemIndex]}
+                  onValueChange={(value) => {
+                    foodItemsCheckboxes[foodItemIndex] = !foodItemsCheckboxes[foodItemIndex]
+                  }}
+                />
+              </View>
+            )
+          })
+        }
       </View>
     </View>
   )
@@ -2623,12 +2711,59 @@ export function RecordExerciseActivity({ navigation, route }) {
   )
 }
 
-export function RecordStartedExerciseActivity() {
+export function RecordStartedExerciseActivity({ navigation }) {
+  
+  const [isStarted, setIsStarted] = useState(true)
+  
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  const completeExercise = () => {
+    goToActivity(navigation, 'RecordExerciseResultsActivity')
+  }
+
   return (
-    <View>
-      <Text>
-        RecordStartedExerciseActivity
-      </Text>
+    <View style={styles.recordStartedExerciseActivityContainer}>
+      <View style={styles.recordStartedExerciseActivityHeader}>
+      </View>
+      <View style={styles.recordStartedExerciseActivityBody}>
+
+      </View>
+      <View style={styles.recordStartedExerciseActivityFooter}>
+        {
+          isStarted ?
+            (
+              <View style={styles.recordStartedExerciseActivityFooterPauseBtnWrap}>
+                <Button
+                  style={styles.recordStartedExerciseActivityFooterPauseBtn}
+                  title="Пауза"
+                  onPress={() => setIsStarted(false)}
+                />
+              </View>
+            )
+          :
+          (
+            <>
+              <View style={styles.recordStartedExerciseActivityFooterResumeBtnWrap}>
+                <Button
+                  style={styles.recordStartedExerciseActivityFooterResumeBtn}
+                  title="Продолжить"
+                  onPress={() => setIsStarted(true)}
+                />  
+              </View>
+              <View style={styles.recordStartedExerciseActivityFooterCompleteBtnWrap}>
+                <Button
+                  style={styles.recordStartedExerciseActivityFooterCompleteBtn}
+                  title="Завершить"
+                  onPress={() => completeExercise()}
+                />  
+              </View>
+            </>
+          )
+        }
+        <Ionicons name="md-location-sharp" size={24} color="black" />
+      </View>
     </View>
   )
 }
@@ -2679,10 +2814,10 @@ export function ExercisesListActivity({ navigation }) {
       </View>
       <ScrollView style={styles.exercisesListActivityList}>
         {
-          exercises.map(exercise => {
+          exercises.map((exercise, exerciseIndex) => {
             return (
               exercise.isActivated ?
-                <View style={styles.exercisesListActivityListItem}>
+                <View key={exerciseIndex} style={styles.exercisesListActivityListItem}>
                   <View style={styles.exercisesListActivityListItemAside}>
                     <FontAwesome5 name="walking" size={36} color="green" />
                     <Text style={styles.exercisesListActivityListItemAsideLabel}>
@@ -2727,6 +2862,23 @@ export function AddExerciseActivity({ navigation }) {
 
   const [exercises, setExercises] = useState([])
 
+  const [exerciseType, setExerciseType] = useState({
+    checked: ''
+  })
+
+  const [exercisesCheckboxes, setExercisesCheckboxes] = useState([])
+
+  const activateExercises = () => {
+    exercisesCheckboxes.map((exercisesCheckbox, exercisesCheckboxIndex) => {
+      const exercisesCheckboxId = exercisesCheckboxIndex + 1
+      let sqlStatement = `UPDATE exercises SET is_activated=${exercisesCheckbox} WHERE _id=${exercisesCheckboxId};`
+      transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+      
+      })
+    })
+    goToActivity(navigation, 'ExercisesListActivity')
+  }
+
   db.transaction(transaction => {
     const sqlStatement = "SELECT * FROM exercises;"
     transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
@@ -2765,18 +2917,26 @@ export function AddExerciseActivity({ navigation }) {
       </View>
       <ScrollView style={styles.exercisesListActivityList}>
         {
-          exercises.map(exercise => {
+          exercises.map((exercise, exerciseIndex) => {
             return (
               !exercise.isActivated ?
-                <View style={styles.exercisesListActivityListItem}>
-                  <RadioButton
-                    value="Вечерний перекус"
-                    label="Вечерний перекус"
+                <View key={exerciseIndex} style={styles.exercisesListActivityListItem}>
+                  {/* <RadioButton
+                    value={exercise.name}
+                    label={exercise.name}
                     status={
-                      'unchecked'
+                      exerciseType == exercise.name ? 'checked' : 'unchecked'
                     }
                     onPress={() => { 
-                      
+                      setExerciseType({
+                        checked: exercise.name
+                      })
+                    }}
+                  /> */}
+                  <CheckBox
+                    value={exercisesCheckboxes[exerciseIndex]}
+                    onValueChange={() => {
+                      exercisesCheckboxes[exerciseIndex] = !exercisesCheckboxes[exerciseIndex]
                     }}
                   />
                   <View style={styles.exercisesListActivityListItemAside}>
@@ -2796,13 +2956,171 @@ export function AddExerciseActivity({ navigation }) {
       </ScrollView>
       <TouchableOpacity
         style={styles.addExerciseActivityFooter}
-        onPress={() => goToActivity(navigation, 'ExercisesListActivity')}
+        onPress={() => activateExercises()}
       >
         <Text style={styles.exercisesListActivityFooterLabel}>
           Добавить
         </Text>
         <AntDesign name="plus" size={72} color="black" />
       </TouchableOpacity>
+    </View>
+  )
+}
+
+export function AddFoodItemActivity({ navigation }) {
+  
+  const [kKal, setKKal] = useState('')
+  
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  const addFoodItem = () => {
+    let sqlStatement = `INSERT INTO \"food_items\"(name, callories, total_carbs, total_fats, protein, saturated_fats, trans_fats, cholesterol, sodium, potassium, cellulose, sugar, a, c, calcium, iron, portions, type) VALUES (\"\", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, \"\");`
+    db.transaction(transaction => {
+      transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
+        goToActivity(navigation, 'RecordFoodActivity')  
+      }, (tx) => {
+        console.log('ошибка добавления элементов')
+      })
+    })
+  }
+
+  return (
+    <View style={styles.addFoodActivityContainer}>
+      <View style={styles.addFoodActivityCaloriesRow}>
+        <Text style={styles.addFoodActivityLabel}>
+          Калорий на порцию
+        </Text>
+        <View style={styles.addFoodActivityCaloriesRowAside}>
+          <TextInput
+            style={styles.addFoodActivityCaloriesRowAsideInput}
+            value={kKal}
+            onChangeText={text => setKKal(text)}
+          />
+          <Text style={styles.addFoodActivityCaloriesRowAsideLabel}>
+            ккал
+          </Text>
+        </View>
+      </View>
+      <View style={styles.addFoodActivityAddNutrientsBtnWrap}>
+        <Button
+          style={styles.addFoodActivityAddNutrientsBtn}
+          title="Добав. питат. вещества"
+        />
+      </View>
+      <View style={styles.addFoodActivityFooter}>
+        <View style={styles.addFoodActivityFooterCancelBtnWrap}>
+          <Button
+            style={styles.addFoodActivityFooterCancelBtn}
+            title="Отмена"
+            onPress={() => goToActivity(navigation, 'RecordFoodActivity')}
+          />
+        </View>
+        <View style={styles.addFoodActivityFooterSaveBtnWrap}>
+          <Button
+            style={styles.addFoodActivityFooterSaveBtn}
+            title="Сохранить"
+            onPress={() => addFoodItem()}
+          />
+        </View>
+      </View>
+    </View>
+  )
+}
+
+export function FoodHistoryActivity() {
+  return (
+    <View>
+      <Text>
+        FoodHistoryActivity
+      </Text>
+    </View>
+  )
+}
+
+export function RecordExerciseResultsActivity({ navigation, route }) {
+  return (
+    <View style={styles.recordExerciseResultsActivityContainer}>
+      <View style={styles.recordExerciseResultsActivityHeader}>
+        <View style={styles.recordExerciseResultsActivityHeaderAside}>
+          <Entypo
+            name="chevron-left"
+            size={24}
+            color="black"
+            onPress={() => goToActivity(navigation, 'MainActivity')}
+          />
+          <Text>
+            Бег
+          </Text>
+        </View>
+        <View style={styles.recordExerciseResultsActivityHeaderBtns}>
+          <FontAwesome5 name="share-alt" size={24} color="black" />
+          <Feather name="more-vertical" size={24} color="black" />
+        </View>
+      </View>
+      <Text style={styles.recordExerciseResultsActivityDateLabel}>
+        вс, 20 февр.
+      </Text>
+      <Text style={styles.recordExerciseResultsActivityTimeLabel}>
+        19:21 - 19:31
+      </Text>
+      <View style={styles.recordExerciseResultsActivityDistanseAndTime}>
+
+      </View>
+      <View style={styles.recordExerciseResultsActivityDetails}>
+        <Text style={styles.recordExerciseResultsActivityDetailsHeader}>
+          Сведения о тренировке
+        </Text>
+        <View style={styles.recordExerciseResultsActivityDetailsRow}>
+          <View style={styles.recordExerciseResultsActivityDetailsRowItem}>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemHeader}>
+              Время тренировки
+            </Text>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
+              00:01:06
+            </Text>
+          </View>
+          <View style={styles.recordExerciseResultsActivityDetailsRowItem}>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemHeader}>
+              Время тренировки
+            </Text>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
+              00:01:06
+            </Text>
+          </View>
+        </View>
+        <View style={styles.recordExerciseResultsActivityDetailsRow}>
+          <View style={styles.recordExerciseResultsActivityDetailsRowItem}>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemHeader}>
+              Время тренировки
+            </Text>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
+              00:01:06
+            </Text>
+          </View>
+          <View style={styles.recordExerciseResultsActivityDetailsRowItem}>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemHeader}>
+              Время тренировки
+            </Text>
+            <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
+              00:01:06
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.recordExerciseResultsActivityImages}>
+        <Ionicons name="camera" size={24} color="black" />
+        <Text style={styles.recordExerciseResultsActivityImagesLabel}>
+          Изображения
+        </Text>      
+      </View>
+      <View style={styles.recordExerciseResultsActivityNotes}>
+        <Foundation name="clipboard-notes" size={24} color="black" />
+        <Text style={styles.recordExerciseResultsActivityNotesLabel}>
+          Заметки
+        </Text>
+      </View>
     </View>
   )
 }
@@ -3852,7 +4170,8 @@ const styles = StyleSheet.create({
     padding: 15
   },
   sleepActivityBodyDateBtnWrap: {
-    width: 125
+    width: 125,
+    marginHorizontal: 'auto'
   },
   sleepActivityBodyDateBtn: {
 
@@ -3862,10 +4181,10 @@ const styles = StyleSheet.create({
     width: 100
   },
   sleepActivityBodyTimeLabel: {
-
+    textAlign: 'center'
   },
   sleepActivityBodyTimeDesc: {
-
+    textAlign: 'center'
   },
   sleepActivityFooter: {
     display: 'flex',
@@ -3936,6 +4255,16 @@ const styles = StyleSheet.create({
     marginVerical: 15,
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 25
+  },
+  recordFoodActivityProductsListAdd: {
+    marginVertical: 15
+  },
+  recordFoodActivityProductsListItem: {
+    marginVertical: 15
+  },
+  recordFoodActivityProductsListAddLabel: {
+    textAlign: 'center',
+    fontWeight: 700
   },
   recordExerciseActivityContainer: {
 
@@ -4023,6 +4352,140 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     height: 100
-  }
+  },
+  addFoodActivityContainer: {
 
+  },
+  addFoodActivityCaloriesRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  addFoodActivityCaloriesRowAside: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  addFoodActivityCaloriesRowAsideInput: {
+
+  },
+  addFoodActivityCaloriesRowAsideLabel: {
+
+  },
+  addFoodActivityAddNutrientsBtnWrap: {
+    width: 250,
+    marginVertical: 15,
+    marginHorizontal: 'auto'
+  },
+  addFoodActivityAddNutrientsBtn: {
+
+  },
+  addFoodActivityFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  addFoodActivityFooterCancelBtnWrap: {
+    width: '50%'
+  },
+  addFoodActivityFooterCancelBtn: {
+    
+  },
+  addFoodActivityFooterSaveBtnWrap: {
+    width: '50%'
+  },
+  addFoodActivityFooterSaveBtn: {
+    
+  },
+  recordStartedExerciseActivityFooter: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  recordStartedExerciseActivityFooterPauseBtnWrap: {
+    width: 500
+  },
+  recordStartedExerciseActivityFooterPauseBtn: {
+
+  },
+  recordStartedExerciseActivityFooterResumeBtnWrap: {
+    width: 250
+  },
+  recordStartedExerciseActivityFooterResumeBtn: {
+
+  },
+  recordStartedExerciseActivityFooterCompleteBtnWrap: {
+    width: 250
+  },
+  recordStartedExerciseActivityFooterCompleteBtn: {
+
+  },
+  recordExerciseResultsActivityContainer: {
+    width: '100%'
+  },
+  recordExerciseResultsActivityHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordExerciseResultsActivityHeaderAside: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  recordExerciseResultsActivityHeaderBtns: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  recordExerciseResultsActivityDetails: {
+    width: '100%',
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    margniVertical: 15,
+    marginHorizontal: 'auto'
+  },
+  recordExerciseResultsActivityDetailsHeader: {
+    fontWeight: 700,
+    fontSize: 24
+  },
+  recordExerciseResultsActivityDetailsRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 10
+  },
+  recordExerciseResultsActivityDetailsRowItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'center'
+  },
+  recordExerciseResultsActivityDetailsRowItemHeader: {
+    color: 'rgb(175, 175, 175)'
+  },
+  recordExerciseResultsActivityDetailsRowItemContent: {
+    fontWeight: 700,
+    fontSize: 24
+  },
+  recordExerciseResultsActivityImages: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    marginVertical: 15,
+    marginHorizontal: 'auto'
+  },
+  recordExerciseResultsActivityImagesLabel: {
+    marginLeft: 25
+  },
+  recordExerciseResultsActivityNotes: {
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    marginVertical: 15,
+    marginHorizontal: 'auto'
+  },
+  recordExerciseResultsActivityNotesLabel: {
+    marginLeft: 25
+  }
 })
