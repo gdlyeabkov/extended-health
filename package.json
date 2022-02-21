@@ -13,6 +13,7 @@
     "@react-navigation/native": "^6.0.8",
     "@react-navigation/stack": "^6.1.1",
     "expo": "~44.0.2",
+    "expo-sensors": "^11.1.1",
     "expo-splash-screen": "~0.14.1",
     "expo-sqlite": "^10.1.1",
     "expo-status-bar": "~1.2.0",

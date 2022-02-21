@@ -14,6 +14,7 @@ import {
   Provider,
   RadioButton
 } from 'react-native-paper'
+import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors'
 
 const Tab = createBottomTabNavigator();
 
@@ -156,8 +157,67 @@ export function MainPageActivity({ navigation }) {
     }
   }
 
+  const [data, setData] = useState({
+    x: 0,
+    y: 0,
+    z: 0
+  })
+  const [subscription, setSubscription] = useState(null)
+
+  const _slow = () => {
+    Accelerometer.setUpdateInterval(1000)
+  }
+
+  const _fast = () => {
+    Accelerometer.setUpdateInterval(16)
+  }
+
+  const _subscribe = () => {
+    setSubscription(
+      Accelerometer.addListener(accelerometerData => {
+        setData(accelerometerData)
+      })
+    )
+  }
+
+  const _unsubscribe = () => {
+    subscription && subscription.remove()
+    setSubscription(null)
+  }
+
+  useEffect(() => {
+    _subscribe()
+    return () => _unsubscribe()
+  }, [])
+
+  const { x, y, z } = data
+  const [lastCoord, setLastCoord] = useState(0)
+  const [stepsCount, setStepsCount] = useState(0)
+  const isDetectStep = x != lastCoord
+  if (isDetectStep) {
+    setLastCoord(x)
+    const lastStepsCount = stepsCount
+    const updatedStepsCount = lastStepsCount + 1
+    setStepsCount(updatedStepsCount)
+  }
+
   return (
     <ScrollView style={styles.mainPageContainer}>
+      <Text>
+        {
+          `${x}`
+        }
+      </Text>
+      <Text>
+        {
+          `${y}`
+        }
+      </Text>
+      <Text>
+        {
+          `${z}`
+        }
+      </Text>
       <TouchableOpacity style={styles.mainPageContainerActiveBlock} onPress={() => goToActivity(navigation, 'ActiveActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
@@ -202,7 +262,9 @@ export function MainPageActivity({ navigation }) {
           <View style={styles.mainPageContainerWalkBlockBodyRow}>
             <View style={styles.mainPageContainerWalkBlockBodyRowAside}>
               <Text style={styles.mainPageContainerWalkBlockBodyRowCountLabel}>
-                0
+                {
+                  stepsCount
+                }
               </Text>
               <Text style={styles.mainPageContainerWalkBlockBodyRowMaxCountLabel}>
                 /6000
@@ -2715,12 +2777,116 @@ export function RecordStartedExerciseActivity({ navigation }) {
   
   const [isStarted, setIsStarted] = useState(true)
   
+  const [startTimerTitle, setStartTimerTitle] = useState('00:00:00')
+
+  const [startedTimer, setStartedTimer] = useState(null)
+  
+  const millisecondsInSecond = 1000
+
+  const timePartsSeparator = ':'
+  
+  const initialSeconds = 0
+  
+  const initialMinutes = 0
+  
+  const countSecondsInMinute = 60
+  
+  const countMinutesInHour = 60
+  
+  const oneCharPrefix = 0
+
+  const [startedTimerHoursTime, setStartedTimerHoursTime] = useState('00')
+
+  const [startedTimerMinutesTime, setStartedTimerMinutesTime] = useState('00')
+
+  const [startedTimerSecondsTime, setStartedTimerSecondsTime] = useState('00')
+
   const goToActivity = (navigation, activityName, params = {}) => {
     navigation.navigate(activityName, params)
   }
 
   const completeExercise = () => {
-    goToActivity(navigation, 'RecordExerciseResultsActivity')
+    resetStartedTimer()
+    let sqlStatement = `INSERT INTO \"exercise_records\"(type, datetime, duration) VALUES (\"Ходьба\", \"22.11.2000 00:00\", \"00:00\");`
+    db.transaction(transaction => {
+      transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
+        goToActivity(navigation, 'RecordExerciseResultsActivity')
+      }, (tx) => {
+        console.log('ошибка добавления записи')
+      })
+    })
+  }
+
+  const runStartedTimer = () => {
+    setIsStarted(true)
+    const initialStartedTitle = `${startedTimerHoursTime}:${startedTimerMinutesTime}:${startedTimerSecondsTime}`
+    setStartTimerTitle(initialStartedTitle)
+    let lastStartedTimerTitle = `${startedTimerHoursTime}:${startedTimerMinutesTime}:${startedTimerSecondsTime}`
+    setStartedTimer(
+      setInterval(() => {
+        const timeParts = lastStartedTimerTitle.split(timePartsSeparator)
+        const rawHours = timeParts[0]
+        const rawMinutes = timeParts[1]
+        const rawSeconds = timeParts[2]
+        let hours = Number(rawHours)
+        let minutes = Number(rawMinutes)
+        let seconds = Number(rawSeconds)
+        if (minutes >= 0) {
+          seconds = seconds + 1
+        }
+        const isToggleSecond = seconds == countSecondsInMinute
+        if (isToggleSecond) {
+          seconds = initialSeconds
+          minutes = minutes + 1
+          const isToggleHour = minutes == countMinutesInHour
+          if (isToggleHour) {
+            minutes = initialMinutes
+            hours = hours + 1
+          }
+        }
+        let updatedHoursText = hours.toString()
+        const countHoursChars = updatedHoursText.length
+        const isAddHoursPrefix = countHoursChars == 1
+        if (isAddHoursPrefix) {
+          updatedHoursText = oneCharPrefix + updatedHoursText
+        }
+        let updatedMinutesText = minutes.toString()
+        const countMinutesChars = updatedMinutesText.length
+        const isAddMinutesPrefix = countMinutesChars == 1
+        if (isAddMinutesPrefix) {
+          updatedMinutesText = oneCharPrefix + updatedMinutesText
+        }
+        let updatedSecondsText = seconds.toString()
+        const countSecondsChars = updatedSecondsText.length
+        const isAddSecondsPrefix = countSecondsChars === 1
+        if (isAddSecondsPrefix) {
+          updatedSecondsText = oneCharPrefix + updatedSecondsText
+        }
+        const currentTime = `${updatedHoursText}:${updatedMinutesText}:${updatedSecondsText}`
+        setStartedTimerHoursTime(updatedHoursText)
+        setStartedTimerMinutesTime(updatedMinutesText)
+        setStartedTimerSecondsTime(updatedSecondsText)
+        setStartTimerTitle(currentTime)
+        lastStartedTimerTitle = currentTime
+      
+        const isTimerOver = false
+        if (isTimerOver) {
+          resetStartedTimer()
+          return;
+        }
+
+      }, millisecondsInSecond)
+    )
+  }
+
+  useEffect(() => {
+    runStartedTimer()
+  }, [])
+
+  const resetStartedTimer = () => {
+    clearInterval(startedTimer)
+    setStartedTimer(null)
+    setIsStarted(false)
   }
 
   return (
@@ -2728,38 +2894,112 @@ export function RecordStartedExerciseActivity({ navigation }) {
       <View style={styles.recordStartedExerciseActivityHeader}>
       </View>
       <View style={styles.recordStartedExerciseActivityBody}>
-
+        <View style={styles.recordStartedExerciseActivityBodyDestination}>
+          <Text style={styles.recordStartedExerciseActivityBodyDestinationHeader}>
+            Оставшееся расстояние
+          </Text>
+          <View style={styles.recordStartedExerciseActivityBodyDestinationRow}>
+            <Text style={styles.recordStartedExerciseActivityBodyDestinationRowContent}>
+              10,0
+            </Text>
+            <Text style={styles.recordStartedExerciseActivityBodyDestinationRowMeasure}>
+              км
+            </Text>
+          </View>
+        </View>
+        <View style={styles.recordStartedExerciseActivityBodyRow}>
+          <View style={styles.recordStartedExerciseActivityBodyRowItem}>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
+              Длительность
+            </Text>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+              {
+                startTimerTitle
+              }
+            </Text>
+          </View>
+          <View style={styles.recordStartedExerciseActivityBodyRowItem}>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
+              Скорость
+            </Text>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+              -- км/ч
+            </Text>
+          </View>
+        </View>
+        <View style={styles.recordStartedExerciseActivityBodyRow}>
+          <View style={styles.recordStartedExerciseActivityBodyRowItem}>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
+              Темп
+            </Text>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+              -- /км
+            </Text>
+          </View>
+          <View style={styles.recordStartedExerciseActivityBodyRowItem}>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
+              Подъем
+            </Text>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+              -- м
+            </Text>
+          </View>
+        </View>
+        <View style={styles.recordStartedExerciseActivityBodyRow}>
+          <View style={styles.recordStartedExerciseActivityBodyRowItem}>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
+              Калории
+            </Text>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+              0 ккал
+            </Text>
+          </View>
+          <View style={styles.recordStartedExerciseActivityBodyRowItem}>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
+              Расстояние
+            </Text>
+            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+              0,0 км
+            </Text>
+          </View>
+        </View>
       </View>
       <View style={styles.recordStartedExerciseActivityFooter}>
         {
           isStarted ?
             (
-              <View style={styles.recordStartedExerciseActivityFooterPauseBtnWrap}>
-                <Button
-                  style={styles.recordStartedExerciseActivityFooterPauseBtn}
-                  title="Пауза"
-                  onPress={() => setIsStarted(false)}
-                />
+              <View style={styles.recordStartedExerciseActivityFooterBtnsContainer}>
+                <FontAwesome name="lock" size={24} color="black" />
+                <View style={styles.recordStartedExerciseActivityFooterPauseBtnWrap}>
+                  <Button
+                    style={styles.recordStartedExerciseActivityFooterPauseBtn}
+                    title="Пауза"
+                    color="rgb(175, 175, 175)"
+                    onPress={() => resetStartedTimer()}
+                  />
+                </View>
               </View>
             )
           :
           (
-            <>
+            <View style={styles.recordStartedExerciseActivityFooterBtnsContainer}>
               <View style={styles.recordStartedExerciseActivityFooterResumeBtnWrap}>
                 <Button
                   style={styles.recordStartedExerciseActivityFooterResumeBtn}
                   title="Продолжить"
-                  onPress={() => setIsStarted(true)}
+                  color="rgb(175, 175, 175)"
+                  onPress={() => runStartedTimer()}
                 />  
               </View>
               <View style={styles.recordStartedExerciseActivityFooterCompleteBtnWrap}>
                 <Button
                   style={styles.recordStartedExerciseActivityFooterCompleteBtn}
                   title="Завершить"
+                  color="rgb(0, 150, 0)"
                   onPress={() => completeExercise()}
                 />  
               </View>
-            </>
+            </View>
           )
         }
         <Ionicons name="md-location-sharp" size={24} color="black" />
@@ -3130,7 +3370,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(225, 225, 225)'
   },
   myPageContainerUserHeader: {
-    marginVertical: 25,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto',
     width: '95%',
     borderRadius: 8,
@@ -3140,7 +3380,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginVertical: 75
+    // marginVertical: 'alignItems'
   },
   myPageContainerUserHeaderPhoto: {
     width: 100,
@@ -3155,19 +3395,19 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserHeaderName: {
     textAlign: 'center',
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 24
   },
   myPageContainerUserReportPerWeek: {
     borderRadius: 8,
-    marginVertical: 25,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
     marginHorizontal: 'auto',
     padding: 25
   },
   myPageContainerUserReportPerWeekHeader: {
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 24
   },
   myPageContainerUserReportPerWeekPeriodLabel: {
@@ -3180,16 +3420,16 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   myPageContainerUserReportPerWeekRowValue: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 28
   },
   myPageContainerUserReportPerWeekRowMeasure: {
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 18
   },
   myPageContainerUserRecords: {
     padding: 25,
-    marginVertical: 25,
+    // marginVertical: 'alignItems',
     borderRadius: 8,
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
@@ -3197,13 +3437,13 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserRecordsHeader: {
     fontSize: 24,
-    fontWeight: 700
+    fontWeight: '700'
   },
   myPageContainerUserRecordsRow: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginVertical: 25
+    // marginVertical: 'alignItems'
   },
   myPageContainerUserRecord: {
     width: '33%',
@@ -3214,10 +3454,10 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserRecordValue: {
     fontSize: 24,
-    fontWeight: 700
+    fontWeight: '700'
   },
   myPageContainerUserRecordMeasure: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   myPageContainerUserRecordLabel: {
     color: 'rgb(150, 150, 150)'
@@ -3227,7 +3467,7 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserAwards: {
     padding: 25,
-    marginVertical: 25,
+    // marginVertical: 'alignItems',
     borderRadius: 8,
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
@@ -3240,10 +3480,10 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserAwardsHeaderLabel: {
     fontSize: 24,
-    fontWeight: 700
+    fontWeight: '700'
   },
   myPageContainerUserAwardsShortcuts: {
-    marginVertical: 25
+    // marginVertical: 'alignItems'
   },
   myPageContainerUserAwardsShortcut: {
     display: 'flex',
@@ -3259,7 +3499,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto',
     padding: 15,
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   fitnessContainerInnovation: {
     width: 250
@@ -3268,10 +3508,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   fitnessContainerInnovationsHeaderLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20
   },
   fitnessContainerInnovationsList: {
@@ -3280,10 +3520,10 @@ const styles = StyleSheet.create({
   fitnessContainerInnovationImg: {
     width: 100,
     height: 100,
-    marginVertical: 5
+    // marginVertical: 'alignItems'
   },
   fitnessContainerInnovationName: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   fitnessContainerInnovationDuration: {
     color: 'rgb(150, 150, 150)'
@@ -3297,7 +3537,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: 'auto',
     width: '95%',
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   togetherContainerHeaderImg: {
     width: 50,
@@ -3307,7 +3547,7 @@ const styles = StyleSheet.create({
 
   },
   togetherContainerHeaderColumnLabel: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   togetherContainerHeaderColumnLevel: {
     fontSize: 24
@@ -3326,7 +3566,7 @@ const styles = StyleSheet.create({
     padding: 15,
     width: '95%',
     marginHorizontal: 'auto',
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   togetherContainerFriendsAside: {
     display: 'flex',
@@ -3334,11 +3574,11 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   togetherContainerFriendsAsideLabel: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   togetherContainerFriendsAsideCount: {
     color: 'rgb(0, 100, 0)',
-    fontWeight: 700,
+    fontWeight: '700',
     marginHorizontal: 5
   },
   togetherContainerFriendsAddBtnWrap: {
@@ -3352,10 +3592,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
     marginHorizontal: 'auto',
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   togetherContainerStrongerTogetherHeader: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   togetherContainerStrongerTogetherLabel: {
     color: 'rgb(150, 150, 150)'
@@ -3371,10 +3611,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   togetherContainerStrongerTogetherBodyAsideParticipantsLabel: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   togetherContainerStrongerTogetherBodyAsideParticipantsCount: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20
   },
   togetherContainerStrongerTogetherBodyAsideParticipantsJoinBtnWrap: {
@@ -3393,7 +3633,7 @@ const styles = StyleSheet.create({
   mainPageContainerActiveBlock: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -3412,7 +3652,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   mainPageContainerActiveBlockBodyAsideHeader: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20
   },
   mainPageContainerActiveBlockBodyAsideBody: {
@@ -3432,7 +3672,7 @@ const styles = StyleSheet.create({
   mainPageContainerWalkBlock: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -3440,7 +3680,7 @@ const styles = StyleSheet.create({
     
   },
   mainPageContainerWalkBlockBodyLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24
   },
   mainPageContainerWalkBlockBodyRow: {
@@ -3454,7 +3694,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   mainPageContainerWalkBlockBodyRowCountLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24,
     marginHorizontal: 10
   },
@@ -3464,7 +3704,7 @@ const styles = StyleSheet.create({
   mainPageContainerExerciseBlock: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -3477,22 +3717,23 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   mainPageContainerExerciseBlockBodyHeaderLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20
   },
   mainPageContainerExerciseBlockBodyHeaderLog: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20,
     color: 'rgb(150, 150, 150)'
   },
   mainPageContainerExerciseBlockBodyExercises: {
-    marginVertical: 25,
+    // marginVertical: 'alignItems',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around'
   },
   mainPageContainerExerciseBlockBodyExercisesItem: {
-    borderRadius: '100%',
+    // borderRadius: '100%',
+    borderRadius: 1000,
     borderColor: 'rgb(0, 0, 0)',
     borderWidth: 1,
     width: 75,
@@ -3504,13 +3745,13 @@ const styles = StyleSheet.create({
   mainPageContainerFoodBlock: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
   mainPageContainerFoodBlockLabel: {
     fontSize: 24,
-    fontWeight: 700
+    fontWeight: '700'
   },
   mainPageContainerFoodBlockRow: {
     display: 'flex',
@@ -3523,7 +3764,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   mainPageContainerFoodBlockRowAsideLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24, 
     marginRight: 15
   },
@@ -3539,13 +3780,13 @@ const styles = StyleSheet.create({
   mainPageContainerSleepBlock: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
   mainPageContainerSleepBlockLabel: {
     fontSize: 24,
-    fontWeight: 700
+    fontWeight: '700'
   },
   mainPageContainerSleepBlockRow: {
     display: 'flex',
@@ -3564,12 +3805,12 @@ const styles = StyleSheet.create({
   mainPageContainerBodyBlock: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
   mainPageContainerBodyBlockBodyHeader: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20
   },
   mainPageContainerBodyBlockBodyRow: {
@@ -3591,7 +3832,7 @@ const styles = StyleSheet.create({
   },
   mainPageContainerBodyBlockBodyRowItemFooterLabel: {
     marginRight: 10,
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24
   },
   mainPageContainerBodyBlockBodyRowItemFooterMeasure: {
@@ -3600,7 +3841,7 @@ const styles = StyleSheet.create({
   mainPageContainerWaterBlock: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -3616,7 +3857,7 @@ const styles = StyleSheet.create({
   },
   mainPageContainerWaterBodyAsideLabel: {
     fontSize: 20,
-    fontWeight: 700
+    fontWeight: '700'
   },
   mainPageContainerWaterBodyAsideRow: {
     display: 'flex',
@@ -3624,7 +3865,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end'
   },
   mainPageContainerWaterBodyAsideRowCount: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 28
   },
   mainPageContainerWaterBodyAsideRowMeasure: {
@@ -3638,7 +3879,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     width: 35,
     height: 35,
-    borderRadius: '100%'
+    borderRadius: 1000
+    // borderRadius: '100%'
   },
   mainPageContainerWaterBodyRowRemoveBtn: {
     
@@ -3647,7 +3889,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     width: 35,
     height: 35,
-    borderRadius: '100%'
+    borderRadius: 1000
+    // borderRadius: '100%'
   },
   mainPageContainerWaterBodyRowAddBtn: {
 
@@ -3657,7 +3900,7 @@ const styles = StyleSheet.create({
   },
   waterActivityBodyLabel: {
     fontSize: 20,
-    fontWeight: 700
+    fontWeight: '700'
   },
   waterActivityGlassCalculator: {
     width: 100,
@@ -3676,7 +3919,7 @@ const styles = StyleSheet.create({
 
   },
   waterActivityRowLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 48
   },
   waterActivityRowAddBtnWrap: {
@@ -3700,12 +3943,12 @@ const styles = StyleSheet.create({
   activeActivityBody: {
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
   activeActivityBodyHeader: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24
   },
   activeActivityBodyImg: {
@@ -3736,7 +3979,7 @@ const styles = StyleSheet.create({
 
   },
   activeActivityBodyItemRowLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 36
   },
   activeActivityBodyItemFooter: {
@@ -3754,7 +3997,7 @@ const styles = StyleSheet.create({
     
   },
   activeActivityBodyCalloriesLabel: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   activeActivityBodyDistanse: {
     display: 'flex',
@@ -3768,7 +4011,7 @@ const styles = StyleSheet.create({
     
   },
   activeActivityBodyDistanseLabel: {
-    fontWeight: 700  
+    fontWeight: '700'  
   },
   walkActivityScroll: {
 
@@ -3778,7 +4021,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: 'auto',
     width: '95%',
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   walkActivityBodyHeader: {
 
@@ -3790,12 +4033,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   walkActivityBodyDataLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24,
     marginRight: 5
   },
   walkActivityBodyDataMeasure: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20
   },
   walkActivityBodyDistanseAndCallories: {
@@ -3805,22 +4048,22 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   walkActivityBodyDistanseLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 22,
     marginHorizontal: 5
   },
   walkActivityBodyDistanseMeasure: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 18,
     marginHorizontal: 5
   },
   walkActivityBodyCalloriesLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 22,
     marginHorizontal: 5
   },
   walkActivityBodyCalloriesMeasure: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 18,
     marginHorizontal: 5
   },
@@ -3829,13 +4072,13 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: 'auto',
     width: '95%',
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyPeriod: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   exerciseActivityBodyTime: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 36,
     textAlign: 'center'
   },
@@ -3846,27 +4089,27 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   exerciseActivityBodyCalloriesLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 22,
     marginHorizontal: 5
   },
   exerciseActivityBodyCalloriesMeasure: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 18,
     marginHorizontal: 5
   },
   exerciseActivityBodySessionsLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 22,
     marginHorizontal: 5
   },
   exerciseActivityBodySessionsMeasure: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 18,
     marginHorizontal: 5
   },
   exerciseActivityBodyRecord: {
-    marginVertical: 25
+    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyRecordHeader: {
     display: 'flex',
@@ -3874,10 +4117,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: 'rgb(0, 0, 0)',
-    marginVertical: 5
+    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyRecordHeaderDate: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   exerciseActivityBodyRecordHeaderTime: {
     
@@ -3885,7 +4128,7 @@ const styles = StyleSheet.create({
   exerciseActivityBodyRecordContent: {
     display: 'flex',
     flexDirection: 'row',
-    marginVertical: 5
+    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyRecordContentName: {
     marginLeft: 15
@@ -3893,12 +4136,12 @@ const styles = StyleSheet.create({
   foodActivityData: {
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto',
     width: '95%'
   },
   foodActivityDataHeader: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   foodActivityDataCallories: {
     display: 'flex',
@@ -3907,12 +4150,12 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   foodActivityDataCalloriesContent: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 48,
     marginHorizontal: 5
   },
   foodActivityDataCalloriesMeasure: {
-    fontWeight: 700,
+    fontWeight: '700',
     marginHorizontal: 5,
     fontSize: 20
   },
@@ -3938,7 +4181,7 @@ const styles = StyleSheet.create({
   },
   foodActivityRecordFoodTypeLabel: {
     marginLeft: 25,
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24
   },
   bodyActivityLastData: {
@@ -3946,7 +4189,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     width: '95%',
     marginHorizontal: 'auto',
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     padding: 15,
     backgroundColor: 'rgb(255, 255, 255)'
   },
@@ -3975,12 +4218,12 @@ const styles = StyleSheet.create({
   },
   bodyActivityLastDataRowContent: {
     marginHorizontal: 5,
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 36
   },
   bodyActivityLastDataRowMeasure: {
     marginHorizontal: 5,
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20
   },
   bodyActivityImt: {
@@ -3997,17 +4240,17 @@ const styles = StyleSheet.create({
 
   },
   bodyActivityImtEdit: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   bodyActivityRecords: {
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   bodyActivityRecord: {
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     borderBottomColor: 'rgb(150, 150, 150)',
     borderBottomWidth: 1
   },
@@ -4032,12 +4275,12 @@ const styles = StyleSheet.create({
   },
   bodyActivityRecordTime: {
     color: 'rgb(175, 175, 175)',
-    marginVertical: 10
+    // marginVertical: 'alignItems'
   },
   sleepActivityData: {
     padding: 15,
     marginHorizontal: 'auto',
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%'
   },
@@ -4061,7 +4304,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5
   },
   sleepActivityDataTimeHoursContent: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20,
     marginHorizontal: 5
   },
@@ -4069,7 +4312,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5
   },
   sleepActivityDataTimeMinutesContent: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20,
     marginHorizontal: 5
   },
@@ -4081,7 +4324,7 @@ const styles = StyleSheet.create({
   },
   sleepActivityRecordLabel: {
     textAlign: 'center',
-    marginVertical: 10
+    // marginVertical: 'alignItems'
   },
   sleepActivityRecordBtnWrap: {
     width: 275,
@@ -4115,7 +4358,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVerical: 15
+    // marginVertical: 'alignItems'
   },
   recordBodyActivityFatLabel: {
 
@@ -4130,7 +4373,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginVerical: 15
+    // marginVertical: 'alignItems'
   },
   recordBodyActivityMusculatureLabel: {
 
@@ -4165,7 +4408,7 @@ const styles = StyleSheet.create({
   sleepActivityBody: {
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto',
     padding: 15
   },
@@ -4206,7 +4449,8 @@ const styles = StyleSheet.create({
   sleepActivityWidget: {
     width: 150,
     height: 150,
-    borderRadius: '100%'
+    borderRadius: 1000
+    // borderRadius: '100%'
   },
   recordFoodActivityContainer: {
 
@@ -4252,19 +4496,19 @@ const styles = StyleSheet.create({
   recordFoodActivityProductsList: {
     width: '95%',
     marginHorizontal: 'auto',
-    marginVerical: 15,
+    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 25
   },
   recordFoodActivityProductsListAdd: {
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   recordFoodActivityProductsListItem: {
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   recordFoodActivityProductsListAddLabel: {
     textAlign: 'center',
-    fontWeight: 700
+    fontWeight: '700'
   },
   recordExerciseActivityContainer: {
 
@@ -4309,14 +4553,14 @@ const styles = StyleSheet.create({
   },
   exercisesListActivityHeaderAsideLabel: {
     fontSize: 24,
-    fontWeight: 700
+    fontWeight: '700'
   },
   exercisesListActivityList: {
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
     marginHorizontal: 'auto',
     padding: 15,
-    marginVertical: 15
+    // marginVertical: 'alignItems'
   },
   exercisesListActivityListItem: {
     display: 'flex',
@@ -4332,7 +4576,7 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   exercisesListActivityListItemAsideLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 20,
     marginLeft: 25
   },
@@ -4344,7 +4588,7 @@ const styles = StyleSheet.create({
   },
   exercisesListActivityFooterLabel: {
     fontSize: 20,
-    fontWeight: 700
+    fontWeight: '700'
   },
   addExerciseActivityFooter: {
     display: 'flex',
@@ -4373,7 +4617,7 @@ const styles = StyleSheet.create({
   },
   addFoodActivityAddNutrientsBtnWrap: {
     width: 250,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   addFoodActivityAddNutrientsBtn: {
@@ -4398,22 +4642,30 @@ const styles = StyleSheet.create({
   },
   recordStartedExerciseActivityFooter: {
     display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  recordStartedExerciseActivityFooterBtnsContainer: {
+    display: 'flex',
     flexDirection: 'row'
   },
   recordStartedExerciseActivityFooterPauseBtnWrap: {
-    width: 500
+    width: 500,
+    marginHorizontal: 10
   },
   recordStartedExerciseActivityFooterPauseBtn: {
 
   },
   recordStartedExerciseActivityFooterResumeBtnWrap: {
-    width: 250
+    width: 250,
+    marginHorizontal: 10
   },
   recordStartedExerciseActivityFooterResumeBtn: {
 
   },
   recordStartedExerciseActivityFooterCompleteBtnWrap: {
-    width: 250
+    width: 250,
+    marginHorizontal: 10
   },
   recordStartedExerciseActivityFooterCompleteBtn: {
 
@@ -4438,18 +4690,18 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    margniVertical: 15,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   recordExerciseResultsActivityDetailsHeader: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24
   },
   recordExerciseResultsActivityDetailsRow: {
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around',
-    marginVertical: 10
+    // marginVertical: 'alignItems'
   },
   recordExerciseResultsActivityDetailsRowItem: {
     display: 'flex',
@@ -4461,7 +4713,7 @@ const styles = StyleSheet.create({
     color: 'rgb(175, 175, 175)'
   },
   recordExerciseResultsActivityDetailsRowItemContent: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 24
   },
   recordExerciseResultsActivityImages: {
@@ -4470,7 +4722,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   recordExerciseResultsActivityImagesLabel: {
@@ -4482,10 +4734,64 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    marginVertical: 15,
+    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   recordExerciseResultsActivityNotesLabel: {
     marginLeft: 25
+  },
+  recordStartedExerciseActivityContainer: {
+
+  },
+  recordStartedExerciseActivityHeader: {
+
+  },
+  recordStartedExerciseActivityBody: {
+    
+  },
+  recordStartedExerciseActivityBodyDestination: {
+    width: '95%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  recordStartedExerciseActivityBodyDestinationHeader: {
+    fontWeight: '700',
+    fontSize: 24
+  },
+  recordStartedExerciseActivityBodyDestinationRow: {
+    width: '95%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  recordStartedExerciseActivityBodyDestinationRowContent: {
+    marginHorizontal: 10,
+    fontSize: 24,
+    fontWeight: '700'
+  },
+  recordStartedExerciseActivityBodyDestinationRowMeasure: {
+    marginHorizontal: 10
+  },
+  recordStartedExerciseActivityBodyRow: {
+    display: 'flex',
+    width: '95%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // marginVertical: 'alignItems'
+  },
+  recordStartedExerciseActivityBodyRowItem: {
+    width: '50%',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  recordStartedExerciseActivityBodyRowItemHeader: {
+    color: 'rgb(175, 175, 175)'
+  },
+  recordStartedExerciseActivityBodyRowItemContent: {
+    fontSize: 20,
+    fontWeight: '700'
   }
 })
