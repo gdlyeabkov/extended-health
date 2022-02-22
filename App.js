@@ -1424,17 +1424,24 @@ export function FitnesActivity() {
   )
 }
 
-export function MyPageActivity() {
+export function MyPageActivity({ navigation }) {
   
   const userLogoImg = require('./assets/user_logo.png')
   
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
   return (
     <ScrollView style={styles.myPageContainer}>
       <View style={styles.myPageContainerUserHeader}>
         <View style={styles.myPageContainerUserHeaderPhotoAndEditBtn}>
           <Image source={userLogoImg} style={styles.myPageContainerUserHeaderPhoto} />
           <View style={styles.myPageContainerUserHeaderEditBtnWrap}>
-            <Button title="Изменить" />
+            <Button
+              title="Изменить"
+              onPress={() => goToActivity(navigation, 'EditMyPageActivity')}
+            />
           </View>
         </View>
         <Text style={styles.myPageContainerUserHeaderName}>
@@ -2229,7 +2236,7 @@ export default function App() {
 
   db = SQLite.openDatabase('healthdatabase.db')
   
-  // let sqlStatement = `DROP TABLE \"indicators\";`
+  // let sqlStatement = `DROP TABLE \"controllers\";`
   // db.transaction(transaction => {
   //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
   //   })
@@ -2305,6 +2312,47 @@ export default function App() {
                                   let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (false, \"Йога\", false);`
                                   db.transaction(transaction => {
                                     transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
+                                      let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"active\");`
+                                      db.transaction(transaction => {
+                                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                          let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"walk\");`
+                                          db.transaction(transaction => {
+                                            transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                              let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"exercise\");`
+                                              db.transaction(transaction => {
+                                                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                                  let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"food\");`
+                                                  db.transaction(transaction => {
+                                                    transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                                      let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"sleep\");`
+                                                      db.transaction(transaction => {
+                                                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                                          let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"body\");`
+                                                          db.transaction(transaction => {
+                                                            transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                                              let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"water\");`
+                                                              db.transaction(transaction => {
+                                                                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                                                  // let sqlStatement = `DROP TABLE \"indicators\";`
+                                                                  // db.transaction(transaction => {
+                                                                  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+                                                                  
+                                                                  //   })
+                                                                  // })
+                                                                })
+                                                              })
+                                                            })
+                                                          })
+                                                        })
+                                                      })
+                                                    })
+                                                  })
+                                                })
+                                              })
+                                            })
+                                          })
+                                        })
+                                      })
                                     })
                                   })        
                                 })
@@ -2446,6 +2494,13 @@ export default function App() {
         <Stack.Screen
           name="RecordExerciseResultsActivity"
           component={RecordExerciseResultsActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="EditMyPageActivity"
+          component={EditMyPageActivity}
           options={{
             title: ''
           }}
@@ -3360,6 +3415,146 @@ export function RecordExerciseResultsActivity({ navigation, route }) {
         <Text style={styles.recordExerciseResultsActivityNotesLabel}>
           Заметки
         </Text>
+      </View>
+    </View>
+  )
+}
+
+export function EditMyPageActivity({ navigation }) {
+  
+  const userLogoImg = require('./assets/user_logo.png')
+
+  const [nickName, setNickName] = useState('')
+
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  const openCamera = () => {
+    
+  }
+
+  const openGallery = () => {
+    
+  }
+
+  const saveData = () => {
+    goToActivity(navigation, 'MainTabsActivity')
+  }
+
+  return (
+    <View style={styles.editMyPageActivityContainer}>
+      <Image
+        source={userLogoImg}
+        style={styles.editMyPageActivityAvatar}
+      />
+      <View style={styles.editMyPageActivityAvatarShortcuts}>
+        <Image
+          source={userLogoImg}
+          style={styles.editMyPageActivityAvatarShortcut}
+        />
+        <Image
+          source={userLogoImg}
+          style={styles.editMyPageActivityAvatarShortcut}
+        />
+        <Image
+          source={userLogoImg}
+          style={styles.editMyPageActivityAvatarShortcut}
+        />
+        <Image
+          source={userLogoImg}
+          style={styles.editMyPageActivityAvatarShortcut}
+        />
+        <Image
+          source={userLogoImg}
+          style={styles.editMyPageActivityAvatarShortcut}
+        />
+      </View>
+      <View style={styles.editMyPageActivityAvatarBtns}>
+        <View style={styles.editMyPageActivityAvatarGalleryBtnWrap}>
+          <Button
+            title="Камера"
+            onPress={() => openCamera()}
+            style={styles.editMyPageActivityAvatarGalleryBtn}
+          />
+        </View>
+        <View style={styles.editMyPageActivityAvatarCameraBtnWrap}>
+          <Button
+            title="Галлерея"
+            onPress={() => openGallery()}
+            style={styles.editMyPageActivityAvatarCameraBtn}
+          />
+        </View>
+      </View>
+      <View style={styles.editMyPageActivityNickName}>
+        <Text style={styles.editMyPageActivityNickNameLabel}>
+          Псевдоним
+        </Text>
+        <TextInput
+          value={nickName}
+          onChangeText={text => setNickName(text)}
+          style={styles.editMyPageActivityNickNameInput}
+        />
+      </View>
+      <View style={styles.editMyPageActivityData}>
+        <View style={styles.editMyPageActivityDataItem}>
+          <FontAwesome name="user" size={24} color="black" />
+          <Text style={styles.editMyPageActivityDataItemLabel}>
+            Пол
+          </Text>
+        </View>
+        <View style={styles.editMyPageActivityDataItem}>
+          <Ionicons name="body" size={24} color="black" />
+          <Text style={styles.editMyPageActivityDataItemLabel}>
+            Рост
+          </Text>
+        </View>
+        <View style={styles.editMyPageActivityDataItem}>
+          <Entypo name="home" size={24} color="green" />
+          <Text style={styles.editMyPageActivityDataItemLabel}>
+            74,2 кг
+          </Text>
+        </View>
+        <View style={styles.editMyPageActivityDataItem}>
+          <FontAwesome name="birthday-cake" size={24} color="black" />
+          <Text style={styles.editMyPageActivityDataItemLabel}>
+            22 нояб. 2000 г.
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.editMyPageActivityHelp}>
+        {
+          'Данные про пол, рост, вес и дату рождения\nиспользуются для расчета количества сожженных\n каллорий, оптимального потребления каллорий и\nдиапазона частоты пульса во время тренировки.\nВы можете не предоставлять эту информацию, но в этом случае рекомендации по здоровью будут менее\nточными.'
+        }
+      </Text>
+      <View style={styles.editMyPageActivityActive}>
+        <Text style={styles.editMyPageActivityActiveHeader}>
+          Уровень активности
+        </Text>
+        <View style={styles.editMyPageActivityActivities}>
+        </View>
+        <Text style={styles.editMyPageActivityActiveName}>
+          Сидячий образ жизни
+        </Text>
+        <Text style={styles.editMyPageActivityActiveDesc}>
+          Обычные ежедневные нагрузки
+        </Text>
+      </View>
+      <View style={styles.editMyPageActivityFooter}>
+        <View style={styles.editMyPageActivityFooterCancelBtnWrap}>
+          <Button
+            title="Отмена"
+            onPress={() => goToActivity(navigation, 'MainTabsActivity')}
+            style={styles.editMyPageActivityFooterCancelBtn}
+          />
+        </View>
+        <View style={styles.editMyPageActivityFooterSaveBtnWrap}>
+          <Button
+            title="Сохранить"
+            onPress={() => saveData()}
+            style={styles.editMyPageActivityFooterSaveBtn}
+          />
+        </View>
       </View>
     </View>
   )
@@ -4793,5 +4988,108 @@ const styles = StyleSheet.create({
   recordStartedExerciseActivityBodyRowItemContent: {
     fontSize: 20,
     fontWeight: '700'
+  },
+  editMyPageActivityContainer: {
+
+  },
+  editMyPageActivityAvatar: {
+    width: 250, 
+    height: 250,
+    marginHorizontal: 'auto'
+  },
+  editMyPageActivityAvatarShortcuts: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  editMyPageActivityAvatarShortcut: {
+    width: 75,
+    height: 75
+  },
+  editMyPageActivityAvatarBtns: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  editMyPageActivityAvatarGalleryBtnWrap: {
+    width: '50%'
+  },
+  editMyPageActivityAvatarGalleryBtn: {
+
+  },
+  editMyPageActivityAvatarCameraBtnWrap: {
+    width: '50%'
+  },
+  editMyPageActivityAvatarCameraBtn: {
+
+  },
+  editMyPageActivityNickName: {
+    width: '95%',
+    marginHorizontal: 'auto',
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15
+  },
+  editMyPageActivityNickNameLabel: {
+    fontWeight: 700,
+    fontSize: 18
+  },
+  editMyPageActivityNickNameInput: {
+
+  },
+  editMyPageActivityData: {
+    width: '95%',
+    marginHorizontal: 'auto',
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15
+  },
+  editMyPageActivityDataItem: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  editMyPageActivityDataItemLabel: {
+    marginLeft: 25
+  },
+  editMyPageActivityActive: {
+    width: '95%',
+    marginHorizontal: 'auto',
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15
+  },
+  editMyPageActivityActiveHeader: {
+    fontWeight: '700',
+    fontSize: 20
+  },
+  editMyPageActivityActiveActivities: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  editMyPageActivityActiveActivitiesItem: {
+    width: '20%'
+  },
+  editMyPageActivityActiveName: {
+    fontWeight: '700',
+    fontSize: 16,
+    textAlign: 'center'
+  },
+  editMyPageActivityActiveDesc: {
+    color: 'rgb(150, 150, 150)',
+    textAlign: 'center'
+  },
+  editMyPageActivityFooter: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  editMyPageActivityFooterCancelBtnWrap: {
+    width: '50%'
+  },
+  editMyPageActivityFooterCancelBtn: {
+
+  },
+  editMyPageActivityFooterSaveBtnWrap: {
+    width: '50%'
+  },
+  editMyPageActivityFooterSaveBtn: {
+
   }
 })
