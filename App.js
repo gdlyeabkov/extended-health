@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar'
 import { React, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox } from 'react-native'
+import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -15,8 +15,10 @@ import {
   RadioButton
 } from 'react-native-paper'
 import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors'
+import DateTimePicker from '@react-native-community/datetimepicker'
+import MapView from 'react-native-maps'
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator()
 
 function MainTabsActivity() {
   return (
@@ -191,14 +193,19 @@ export function MainPageActivity({ navigation }) {
   }, [])
 
   const { x, y, z } = data
-  const [lastCoord, setLastCoord] = useState(0)
+  const [isDetectStep, setIsDetectStep] = useState(false)
   const [stepsCount, setStepsCount] = useState(0)
-  const isDetectStep = x != lastCoord
-  if (isDetectStep) {
-    setLastCoord(x)
+  const isXGt = x > 0
+  const isXLess = x < 0
+  const isFirstPhase = isXGt && isDetectStep
+  const isSecondPhase = isXLess && !isDetectStep
+  if (isFirstPhase) {
     const lastStepsCount = stepsCount
     const updatedStepsCount = lastStepsCount + 1
     setStepsCount(updatedStepsCount)
+    setIsDetectStep(false)
+  } else if (isSecondPhase) {
+    setIsDetectStep(true)
   }
 
   return (
@@ -2512,6 +2519,45 @@ export default function App() {
 
 export function RecordSleepActivity({ navigation }) {
 
+  const [date, setDate] = useState(new Date())
+  const [mode, setMode] = useState('date')
+  const [isShowDatePicker, setIsShowDatePicker] = useState(false)
+  const monthsLabels = [
+    'янв.',
+    'февр.',
+    'мар.',
+    'апр.',
+    'мая',
+    'июн.',
+    'июл.',
+    'авг.',
+    'сен.',
+    'окт.',
+    'ноя.',
+    'дек.'
+  ]
+
+  const weeksLabels = [
+    'пн',
+    'вт',
+    'ср',
+    'чт',
+    'пт',
+    'сб',
+    'вс'
+  ]
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date
+    setIsShowDatePicker(Platform.OS === 'ios')
+    setDate(currentDate)
+  }
+
+  const showMode = (currentMode) => {
+    setIsShowDatePicker(true)
+    setMode(currentMode)
+  }
+
   const goToActivity = (navigation, activityName) => {
     navigation.navigate(activityName)
   }
@@ -2531,9 +2577,11 @@ export function RecordSleepActivity({ navigation }) {
     <View style={styles.sleepActivityContainer}>
       <View style={styles.sleepActivityBody}>
         <View style={styles.sleepActivityBodyDateBtnWrap}>
-          <Button title="сб, 19 февр." onPress={() => {
-
-          }} style={styles.sleepActivityBodyDateBtn} />
+          <Button
+            title={`${weeksLabels[date.getDay()]}, ${date.getDate()} ${monthsLabels[date.getMonth()]}`}
+            onPress={() => setIsShowDatePicker(true)}
+            style={styles.sleepActivityBodyDateBtn}
+          />
         </View>
         <View style={styles.sleepActivityPicker}>
 
@@ -2561,6 +2609,16 @@ export function RecordSleepActivity({ navigation }) {
           />
         </View>
       </View>
+      {isShowDatePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={mode}
+          is24Hour={true}
+          display="default"
+          onChange={onChange}
+        />
+      )}
     </View>
   )
 
@@ -2814,8 +2872,8 @@ export function RecordExerciseActivity({ navigation, route }) {
           <Feather name="more-vertical" size={24} color="black" />
         </View>
       </View>
-      <View style={styles.recordExerciseActivityMap}>
-
+      <View style={styles.recordExerciseActivityMapContainer}>
+        <MapView style={styles.recordExerciseActivityMap} />
       </View>
       <View style={styles.recordExerciseActivityStartBtnWrap}>
         <Button
@@ -2944,6 +3002,13 @@ export function RecordStartedExerciseActivity({ navigation }) {
     setIsStarted(false)
   }
 
+  const getStartedTimerColorLabel = () => {
+    return isStarted ?
+      'rgb(0, 0, 0)'
+    :
+      'rgb(175, 175, 175)'
+  }
+
   return (
     <View style={styles.recordStartedExerciseActivityContainer}>
       <View style={styles.recordStartedExerciseActivityHeader}>
@@ -2964,10 +3029,21 @@ export function RecordStartedExerciseActivity({ navigation }) {
         </View>
         <View style={styles.recordStartedExerciseActivityBodyRow}>
           <View style={styles.recordStartedExerciseActivityBodyRowItem}>
-            <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
+            <Text
+              style={styles.recordStartedExerciseActivityBodyRowItemHeader}
+            >
               Длительность
             </Text>
-            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+            <Text
+              style={
+                [
+                  styles.recordStartedExerciseActivityBodyRowItemContent,
+                  {
+                    color: getStartedTimerColorLabel()
+                  }
+                ]
+              }
+            >
               {
                 startTimerTitle
               }
@@ -2977,7 +3053,16 @@ export function RecordStartedExerciseActivity({ navigation }) {
             <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
               Скорость
             </Text>
-            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+            <Text
+              style={
+                [
+                  styles.recordStartedExerciseActivityBodyRowItemContent,
+                  {
+                    color: getStartedTimerColorLabel()
+                  }
+                ]
+              }
+            >
               -- км/ч
             </Text>
           </View>
@@ -2987,7 +3072,16 @@ export function RecordStartedExerciseActivity({ navigation }) {
             <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
               Темп
             </Text>
-            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+            <Text
+              style={
+                [
+                  styles.recordStartedExerciseActivityBodyRowItemContent,
+                  {
+                    color: getStartedTimerColorLabel()
+                  }
+                ]
+              }
+            >
               -- /км
             </Text>
           </View>
@@ -2995,7 +3089,16 @@ export function RecordStartedExerciseActivity({ navigation }) {
             <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
               Подъем
             </Text>
-            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+            <Text
+              style={
+                [
+                  styles.recordStartedExerciseActivityBodyRowItemContent,
+                  {
+                    color: getStartedTimerColorLabel()
+                  }
+                ]
+              }
+            >
               -- м
             </Text>
           </View>
@@ -3005,7 +3108,16 @@ export function RecordStartedExerciseActivity({ navigation }) {
             <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
               Калории
             </Text>
-            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+            <Text
+              style={
+                [
+                  styles.recordStartedExerciseActivityBodyRowItemContent,
+                  {
+                    color: getStartedTimerColorLabel()
+                  }
+                ]
+              }
+            >
               0 ккал
             </Text>
           </View>
@@ -3013,7 +3125,16 @@ export function RecordStartedExerciseActivity({ navigation }) {
             <Text style={styles.recordStartedExerciseActivityBodyRowItemHeader}>
               Расстояние
             </Text>
-            <Text style={styles.recordStartedExerciseActivityBodyRowItemContent}>
+            <Text
+              style={
+                [
+                  styles.recordStartedExerciseActivityBodyRowItemContent,
+                  {
+                    color: getStartedTimerColorLabel()
+                  }
+                ]
+              }
+            >
               0,0 км
             </Text>
           </View>
@@ -4726,8 +4847,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-  recordExerciseActivityMap: {
+  recordExerciseActivityMapContainer: {
     height: 500
+  },
+  recordExerciseActivityMap: {
+    width: Dimensions.get('window').width,
+    // height: Dimeansions.get('window').height
+    height: '100%'
   },
   recordExerciseActivityStartBtnWrap: {
     width: 125,
@@ -5030,7 +5156,7 @@ const styles = StyleSheet.create({
     padding: 15
   },
   editMyPageActivityNickNameLabel: {
-    fontWeight: 700,
+    fontWeight: '700',
     fontSize: 18
   },
   editMyPageActivityNickNameInput: {
