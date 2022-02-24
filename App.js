@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar'
 import { React, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions } from 'react-native'
+import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -2243,6 +2243,8 @@ export default function App() {
 
   db = SQLite.openDatabase('healthdatabase.db')
   
+  const testActivity = 'SettingsActivity'
+
   // let sqlStatement = `DROP TABLE \"controllers\";`
   // db.transaction(transaction => {
   //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
@@ -2383,7 +2385,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='MainTabsActivity'>
+      <Stack.Navigator initialRouteName={testActivity}>
         <Stack.Screen name="MainTabsActivity" component={MainTabsActivity}
           options={{ title: 'Softtrack Здоровье' }} />
         <Stack.Screen
@@ -2508,6 +2510,48 @@ export default function App() {
         <Stack.Screen
           name="EditMyPageActivity"
           component={EditMyPageActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="SettingsActivity"
+          component={SettingsActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="SettingsGeneralMeasureActivity"
+          component={SettingsGeneralMeasureActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="SettingsPrivacyPhoneActivity"
+          component={SettingsPrivacyPhoneActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="AwardsActivity"
+          component={AwardsActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="AwardsCategoryActivity"
+          component={AwardsCategoryActivity}
+          options={{
+            title: ''
+          }}
+        />
+        <Stack.Screen
+          name="AwardActivity"
+          component={AwardActivity}
           options={{
             title: ''
           }}
@@ -3677,6 +3721,230 @@ export function EditMyPageActivity({ navigation }) {
           />
         </View>
       </View>
+    </View>
+  )
+}
+
+export function AwardsActivity() {
+  return (
+    <View>
+      <Text>
+        AwardsActivity
+      </Text>
+    </View>
+  )
+}
+
+export function AwardsCategoryActivity() {
+  return (
+    <View>
+      <Text>
+        AwardsCategoryActivity
+      </Text>
+    </View>
+  )
+}
+
+export function AwardActivity() {
+  return (
+    <View>
+      <Text>
+        AwardActivity
+      </Text>
+    </View>
+  )
+}
+
+export function SettingsActivity() {
+  return (
+    <ScrollView style={styles.settingsActivityContainer}>
+      <View style={styles.settingsActivityItem}>
+        <View style={styles.settingsActivityElementColumn}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Softtrack аккаунт
+          </Text>
+          <Text style={styles.settingsActivityElementFooterLabel}>
+            ************
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElementRow}>
+          <View style={styles.seetingsActivityElementColumn}>
+            <Text style={styles.settingsActivityElementHeader}>
+              Синхронизация с Softtrack Здоровье
+            </Text>
+            <Text style={styles.seetingsActivityElementLabel}>
+              Включите, чтобы завершить\nвосстановление данных.
+            </Text>
+          </View>
+          <Switch
+          
+          />
+        </View>
+      </View>
+      <Text style={styles.settingsActivityItemLabel}>
+        Обшие
+      </Text>
+      <View style={styles.settingsActivityItem}>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Единицы измерения
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Уведомления
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElementRow}>
+          <View style={styles.seetingsActivityElementColumn}>
+            <Text style={styles.settingsActivityElementHeader}>
+              Синхронизация с Softtrack Здоровье
+            </Text>
+            <Text style={styles.seetingsActivityElementLabel}>
+              Включите, чтобы завершить\nвосстановление данных.
+            </Text>
+          </View>
+          <Switch
+          
+          />
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Аксессуары
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElementRow}>
+          <View style={styles.seetingsActivityElementColumn}>
+            <Text style={styles.settingsActivityElementHeader}>
+              Подключенные службы
+            </Text>
+            <Text style={styles.seetingsActivityElementLabel}>
+              Синхронизация данных Softtrack Здоровье с учетными\nзаписямисторонних веб-сервисов
+            </Text>
+          </View>
+          <View>
+
+          </View>
+        </View>
+        <View style={styles.settingsActivityElementRow}>
+          <View style={styles.seetingsActivityElementColumn}>
+            <Text style={styles.settingsActivityElementHeader}>
+              Служба персонализации
+            </Text>
+            <Text style={styles.seetingsActivityElementLabel}>
+              Получайте персонализированное содержимое с\nучетом характера использования телефона'
+            </Text>
+            <Text style={styles.seetingsActivityElementLabel}>
+              Включено
+            </Text>
+          </View>
+          <View>
+            
+          </View>
+        </View>
+      </View>
+      <Text style={styles.settingsActivityItemLabel}>
+        Together
+      </Text>
+      <View style={styles.settingsActivityItem}>
+      <View style={styles.settingsActivityElementRow}>
+          <View style={styles.seetingsActivityElementColumn}>
+            <Text style={styles.settingsActivityElementHeader}>
+              Получать приглашения от
+            </Text>
+            <Text style={styles.seetingsActivityElementLabel}>
+              Друзья
+            </Text>
+          </View>
+          <View>
+            
+          </View>
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Поиск друзей и управление
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.settingsActivityItemLabel}>
+        Дополнительно
+      </Text>
+      <View style={styles.settingsActivityItem}>
+        <View style={styles.settingsActivityElementRow}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Автопродление тренировок
+          </Text>
+          <Switch
+          
+          />
+        </View>
+      </View>
+      <Text style={styles.settingsActivityItemLabel}>
+        Конфиденциальность
+      </Text>
+      <View style={styles.settingsActivityItem}>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Уведомление о конфиденциальности
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Разрешения на доступ к данным
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Номер телефона
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Загрузка личных данных
+          </Text>
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <Text style={styles.settingsActivityElementHeader}>
+            Удаление личных данных
+          </Text>
+        </View>
+      </View>
+      <Text style={styles.settingsActivityItemLabel}>
+        Информация
+      </Text>
+      <View style={styles.settingsActivityItem}>
+        <View style={styles.settingsActivityElementRow}>
+          <Text style={styles.settingsActivityElementHeader}>
+            О Softtrack Здоровье
+          </Text>
+          
+        </View>
+        <View style={styles.settingsActivityElement}>
+          <View style={styles.settingsActivityElementHeader}>
+            Свяжитесь с нами
+          </View>
+        </View>
+      </View>
+    </ScrollView>
+  )
+}
+
+export function SettingsGeneralMeasureActivity() {
+  return (
+    <View>
+      <Text>
+      SettingsGeneralMeasureActivity
+      </Text>
+    </View>
+  )
+}
+
+export function SettingsPrivacyPhoneActivity() {
+  return (
+    <View>
+      <Text>
+        SettingsPrivacyPhoneActivity
+      </Text>
     </View>
   )
 }
@@ -5217,5 +5485,35 @@ const styles = StyleSheet.create({
   },
   editMyPageActivityFooterSaveBtn: {
 
+  },
+  settingsActivityContainer: {
+
+  },
+  settingsActivityItem: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    marginHorizontal: 'auto',
+    width: '95%'
+  },
+  settingsActivityElement: {
+    
+  },
+  settingsActivityElementRow: {
+    display: 'flex',
+    flexDirection: 'row'
+  },
+  settingsActivityElementColumn: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  settingsActivityElementHeader: {
+    fontSize: 20
+  },
+  settingsActivityElementFooterLabel: {
+    color: 'rgb(0, 200, 0)'
+  },
+  settingsActivityItemLabel: {
+    fontWeight: '700',
+    color: 'rgb(175, 175, 175)'
   }
 })
