@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar'
 import { React, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch } from 'react-native'
+import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch, Menu, MenuItem } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -17,6 +17,8 @@ import {
 import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import MapView from 'react-native-maps'
+// Menu, MenuItem, MenuDivider
+import * as MaterialMenu from 'react-native-material-menu'
 
 const Tab = createBottomTabNavigator()
 
@@ -3755,7 +3757,12 @@ export function AwardActivity() {
   )
 }
 
-export function SettingsActivity() {
+export function SettingsActivity({ navigation }) {
+  
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+  
   return (
     <ScrollView style={styles.settingsActivityContainer}>
       <View style={styles.settingsActivityItem}>
@@ -3785,11 +3792,14 @@ export function SettingsActivity() {
         Обшие
       </Text>
       <View style={styles.settingsActivityItem}>
-        <View style={styles.settingsActivityElement}>
+        <TouchableOpacity
+          style={styles.settingsActivityElement}
+          onPress={() => goToActivity(navigation, 'SettingsGeneralMeasureActivity')}
+        >
           <Text style={styles.settingsActivityElementHeader}>
             Единицы измерения
           </Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.settingsActivityElement}>
           <Text style={styles.settingsActivityElementHeader}>
             Уведомления
@@ -3893,11 +3903,14 @@ export function SettingsActivity() {
             Разрешения на доступ к данным
           </Text>
         </View>
-        <View style={styles.settingsActivityElement}>
+        <TouchableOpacity
+          style={styles.settingsActivityElement}
+          onPress={() => goToActivity(navigation, 'SettingsPrivacyPhoneActivity')}
+        >
           <Text style={styles.settingsActivityElementHeader}>
             Номер телефона
           </Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.settingsActivityElement}>
           <Text style={styles.settingsActivityElementHeader}>
             Загрузка личных данных
@@ -3930,11 +3943,106 @@ export function SettingsActivity() {
 }
 
 export function SettingsGeneralMeasureActivity() {
+  
+  const [growthMeasure, setGrowthMeasure] = useState('см')
+  const [weightMeasure, setWeightMeasure] = useState('кг')
+  const [tempMeasure, setTempMeasure] = useState('°C')
+  const [distanseMeasure, setDistanseMeasure] = useState('км')
+  const [sugarMeasure, setSugarMeasure] = useState('ммоль/л')
+  const [pressureMeasure, setPressureMeasure] = useState('мм рт. ст.')
+  const [hba1cMeasure, setHba1cWaterMeasure] = useState('%')
+  const [waterMeasure, setWaterMeasure] = useState('мл')
+  
   return (
-    <View>
-      <Text>
-      SettingsGeneralMeasureActivity
-      </Text>
+    <View style={styles.settingsGeneralMeasureActivityContainer}>
+      <MaterialMenu.Menu visible={false}>
+        <MaterialMenu.MenuItem>
+          см
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem>
+          дюйм
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          Рост
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            growthMeasure
+          }
+        </Text>
+      </View>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          Вес
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            weightMeasure
+          }
+        </Text>
+      </View>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          Температура
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            tempMeasure
+          }
+        </Text>
+      </View>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          Расстояние
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            distanseMeasure
+          }
+        </Text>
+      </View>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          Сахар крови
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            sugarMeasure
+          }
+        </Text>
+      </View>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          Кровянное давление
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            pressureMeasure
+          }
+        </Text>
+      </View>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          HbA1c
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            hba1cMeasure
+          }
+        </Text>
+      </View>
+      <View style={styles.settingsGeneralMeasureActivityItem}>
+        <Text style={styles.settingsGeneralMeasureActivityItemName}>
+          Объем выпиваемой воды
+        </Text>
+        <Text style={styles.settingsGeneralMeasureActivityItemValue}>
+          {
+            waterMeasure
+          }
+        </Text>
+      </View>
     </View>
   )
 }
@@ -5515,5 +5623,22 @@ const styles = StyleSheet.create({
   settingsActivityItemLabel: {
     fontWeight: '700',
     color: 'rgb(175, 175, 175)'
+  },
+  settingsGeneralMeasureActivityContainer: {
+
+  },
+  settingsGeneralMeasureActivityItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'rgb(255, 255, 255)',
+    width: '95%',
+    marginHorizontal: 'auto',
+    padding: 15
+  },
+  settingsGeneralMeasureActivityItemName: {
+    fontWeight: 700
+  },
+  settingsGeneralMeasureActivityItemValue: {
+
   }
 })
