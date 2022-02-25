@@ -2245,7 +2245,7 @@ export default function App() {
 
   db = SQLite.openDatabase('healthdatabase.db')
   
-  const testActivity = 'SettingsActivity'
+  const testActivity = 'MainTabsActivity'
 
   // let sqlStatement = `DROP TABLE \"controllers\";`
   // db.transaction(transaction => {
@@ -3593,6 +3593,20 @@ export function EditMyPageActivity({ navigation }) {
 
   const [nickName, setNickName] = useState('')
 
+  const [isGenderDialogVisible, setIsGenderDialogVisible] = useState(false)
+
+  const [isGrowthDialogVisible, setIsGrowthDialogVisible] = useState(false)
+
+  const [isWeightDialogVisible, setIsWeightDialogVisible] = useState(false)
+
+  const [gender, setGender] = useState('')
+
+  const [growth, setGrowth] = useState('')
+
+  const [weight, setWeight] = useState('')
+
+  const [activityLevel, setActivityLevel] = useState('')
+
   const goToActivity = (navigation, activityName, params = {}) => {
     navigation.navigate(activityName, params)
   }
@@ -3606,7 +3620,22 @@ export function EditMyPageActivity({ navigation }) {
   }
 
   const saveData = () => {
-    goToActivity(navigation, 'MainTabsActivity')
+    db.transaction(transaction => {
+      // let sqlStatement = `UPDATE indicators SET gender=${gender}, growth=${growth}, weight=${weight}, level=${activityLevel} WHERE _id=1;`
+      let sqlStatement = `UPDATE indicators SET level=${activityLevel} WHERE _id=1;`
+      transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+        goToActivity(navigation, 'MainTabsActivity')
+      })
+    })
+  }
+
+  const getSelectedActivityStyle = (level) => {
+    if (level === activityLevel) {
+      return {
+        backgroundColor: 'rgb(0, 150, 0)'
+      }
+    }
+    return {}
   }
 
   return (
@@ -3664,24 +3693,39 @@ export function EditMyPageActivity({ navigation }) {
         />
       </View>
       <View style={styles.editMyPageActivityData}>
-        <View style={styles.editMyPageActivityDataItem}>
+        <TouchableOpacity
+          style={styles.editMyPageActivityDataItem}
+          onPress={() => setIsGenderDialogVisible(true)}
+        >
           <FontAwesome name="user" size={24} color="black" />
           <Text style={styles.editMyPageActivityDataItemLabel}>
             Пол
           </Text>
-        </View>
-        <View style={styles.editMyPageActivityDataItem}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.editMyPageActivityDataItem}
+          onPress={() => {
+            setIsGrowthDialogVisible(true)
+            setGrowth('0.0')
+          }}
+        >
           <Ionicons name="body" size={24} color="black" />
           <Text style={styles.editMyPageActivityDataItemLabel}>
             Рост
           </Text>
-        </View>
-        <View style={styles.editMyPageActivityDataItem}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.editMyPageActivityDataItem}
+          onPress={() => {
+            setIsWeightDialogVisible(true)
+            setWeight('0.0')
+          }}
+        >
           <Entypo name="home" size={24} color="green" />
           <Text style={styles.editMyPageActivityDataItemLabel}>
             74,2 кг
           </Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.editMyPageActivityDataItem}>
           <FontAwesome name="birthday-cake" size={24} color="black" />
           <Text style={styles.editMyPageActivityDataItemLabel}>
@@ -3699,6 +3743,93 @@ export function EditMyPageActivity({ navigation }) {
           Уровень активности
         </Text>
         <View style={styles.editMyPageActivityActivities}>
+          <TouchableOpacity
+            style={styles.editMyPageActivityActivitiesItem}
+            onPress={() => setActivityLevel('Сидячий образ жизни')}  
+          >
+            <View
+              style={
+                [
+                  styles.editMyPageActivityActivitiesItemIcon,
+                  getSelectedActivityStyle()
+                ]
+              }
+            >
+              <MaterialCommunityIcons
+                name="human-handsdown"
+                size={48}
+                color={
+                  activityLevel === 'Сидячий образ жизни' ?
+                    'rgb(255, 255, 255)'
+                  :
+                    'rgb(175, 175, 175)'
+                }
+              />
+            </View>
+            <Text>
+              1
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.editMyPageActivityActivitiesItem}
+            onPress={() => setActivityLevel('Несущественная активность')}  
+          >
+            <View style={styles.editMyPageActivityActivitiesItemIcon}>
+              <FontAwesome5
+                name="walking"
+                size={48}
+                color={
+                  activityLevel === 'Несущественная активность' ?
+                    'rgb(255, 255, 255)'
+                  :
+                    'rgb(175, 175, 175)'
+                }
+              />
+            </View>
+            <Text>
+              1
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.editMyPageActivityActivitiesItem}
+            onPress={() => setActivityLevel('Активный')}  
+          >
+            <View style={styles.editMyPageActivityActivitiesItemIcon}>
+              <MaterialCommunityIcons
+                name="human-handsdown"
+                size={48}
+                color={
+                  activityLevel === 'Активный' ?
+                    'rgb(255, 255, 255)'
+                  :
+                    'rgb(175, 175, 175)'
+                }
+              />
+            </View>
+            <Text>
+              1
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.editMyPageActivityActivitiesItem}
+            onPress={() => setActivityLevel('Большая активность')}  
+          >
+            <View style={styles.editMyPageActivityActivitiesItemIcon}>
+              <FontAwesome5
+                name="running"
+                size={48}
+                color={
+                  activityLevel === 'Большая активность' ?
+                    'rgb(255, 255, 255)'
+                  :
+                    'rgb(175, 175, 175)'
+                }
+              />
+            </View>
+            <Text>
+              1
+            </Text>
+          </TouchableOpacity>
         </View>
         <Text style={styles.editMyPageActivityActiveName}>
           Сидячий образ жизни
@@ -3723,6 +3854,80 @@ export function EditMyPageActivity({ navigation }) {
           />
         </View>
       </View>
+      <Dialog
+        visible={isGenderDialogVisible}
+        onDismiss={() => setIsGenderDialogVisible(false)}
+      >
+        <Dialog.Title>Выбор пола</Dialog.Title>
+        <Dialog.Content>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="Женский"
+              label="Женский"
+              status={gender.checked === 'Женский' ? 'checked' : 'unchecked'}
+              onPress={() => { setGender({ checked: 'Женский' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Женский</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="Мужской"
+              label="Мужской"
+              status={gender.checked === 'Мужской' ? 'checked' : 'unchecked'}
+              onPress={() => { setGender({ checked: 'Мужской' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Мужской</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="Другое"
+              label="Другое"
+              status={gender.checked === 'Другое' ? 'checked' : 'unchecked'}
+              onPress={() => { setGender({ checked: 'Другое' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Другое</Text>  
+          </View>
+          <View style={styles.foodActivityRecordFoodType}>
+            <RadioButton
+              value="Не хочу указывать"
+              label="Не хочу указывать"
+              status={gender.checked === 'Не хочу указывать' ? 'checked' : 'unchecked'}
+              onPress={() => { setGender({ checked: 'Не хочу указывать' }) }}
+            />
+            <Text style={styles.foodActivityRecordFoodTypeLabel}>Не хочу указывать</Text>  
+          </View>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button title="Отмена" onPress={() => setIsGenderDialogVisible(false)} />
+          <Button disabled={gender === ''} title="Готово" onPress={() => setIsGenderDialogVisible(false)} />
+        </Dialog.Actions>
+      </Dialog>
+      <Dialog
+        visible={isGrowthDialogVisible}
+        onDismiss={() => setIsGrowthDialogVisible(false)}
+      >
+        <Dialog.Title>Рост</Dialog.Title>
+        <Dialog.Content>
+          
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button title="Отмена" onPress={() => setIsGrowthDialogVisible(false)} />
+          <Button title="Готово" onPress={() => setIsGrowthDialogVisible(false)} />
+        </Dialog.Actions>
+      </Dialog>
+      <Dialog
+        visible={isWeightDialogVisible}
+        onDismiss={() => setIsWeightDialogVisible(false)}
+      >
+        <Dialog.Title>Вес</Dialog.Title>
+        <Dialog.Content>
+          
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button title="Отмена" onPress={() => setIsWeightDialogVisible(false)} />
+          <Button title="Готово" onPress={() => setIsWeightDialogVisible(false)} />
+        </Dialog.Actions>
+      </Dialog>
     </View>
   )
 }
@@ -5766,9 +5971,24 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 20
   },
-  editMyPageActivityActiveActivities: {
+  editMyPageActivityActivities: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  editMyPageActivityActivitiesItem: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  editMyPageActivityActivitiesItemIcon: {
+    borderRadius: 1000,
+    backgroundColor: 'rgb(225, 225, 225)',
+    width: 75,
+    height: 75,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   editMyPageActivityActiveActivitiesItem: {
     width: '20%'
