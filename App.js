@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar'
 import { React, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch, Menu, MenuItem } from 'react-native'
+import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch, Menu, MenuItem, Touchable } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -3950,20 +3950,45 @@ export function SettingsGeneralMeasureActivity() {
   const [distanseMeasure, setDistanseMeasure] = useState('км')
   const [sugarMeasure, setSugarMeasure] = useState('ммоль/л')
   const [pressureMeasure, setPressureMeasure] = useState('мм рт. ст.')
-  const [hba1cMeasure, setHba1cWaterMeasure] = useState('%')
+  const [hba1cMeasure, setHba1cMeasure] = useState('%')
   const [waterMeasure, setWaterMeasure] = useState('мл')
-  
+
+  const [isGrowthContextMenuVisible, setIsGrowthContextMenuVisible] = useState(false)
+  const [isWeightContextMenuVisible, setIsWeightContextMenuVisible] = useState(false)
+  const [isTempContextMenuVisible, setIsTempContextMenuVisible] = useState(false)
+  const [isDistanseContextMenuVisible, setIsDistanseContextMenuVisible] = useState(false)
+  const [isSugarContextMenuVisible, setIsSugarContextMenuVisible] = useState(false)
+  const [isPressureContextMenuVisible, setIsPressureContextMenuVisible] = useState(false)
+  const [isHba1cContextMenuVisible, setIsHba1cContextMenuVisible] = useState(false)
+  const [isWaterContextMenuVisible, setIsWaterContextMenuVisible] = useState(false)
+
   return (
     <View style={styles.settingsGeneralMeasureActivityContainer}>
-      <MaterialMenu.Menu visible={false}>
-        <MaterialMenu.MenuItem>
+      <MaterialMenu.Menu
+        visible={isGrowthContextMenuVisible}
+        onRequestClose={() => setIsGrowthContextMenuVisible(false)}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsGrowthContextMenuVisible(false)
+            setGrowthMeasure('см')
+          }}
+        >
           см
         </MaterialMenu.MenuItem>
-        <MaterialMenu.MenuItem>
-          дюйм
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsGrowthContextMenuVisible(false)
+            setGrowthMeasure('фт., дюйм')
+          }}
+        >
+          фт., дюйм
         </MaterialMenu.MenuItem>
       </MaterialMenu.Menu>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      <TouchableOpacity
+        style={styles.settingsGeneralMeasureActivityItem}
+        onLongPress={() => setIsGrowthContextMenuVisible(true)}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           Рост
         </Text>
@@ -3972,8 +3997,34 @@ export function SettingsGeneralMeasureActivity() {
             growthMeasure
           }
         </Text>
-      </View>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      </TouchableOpacity>
+      <MaterialMenu.Menu
+        visible={isWeightContextMenuVisible}
+        onRequestClose={() => {
+          setIsWeightContextMenuVisible(false)
+        }}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsWeightContextMenuVisible(false)
+            setWeightMeasure('кг')
+          }}
+        >
+          кг
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsWeightContextMenuVisible(false)
+            setWeightMeasure('фунт')
+          }}
+        >
+          фунт
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <TouchableOpacity
+        onLongPress={() => setIsWeightContextMenuVisible(true)}
+        style={styles.settingsGeneralMeasureActivityItem}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           Вес
         </Text>
@@ -3982,8 +4033,32 @@ export function SettingsGeneralMeasureActivity() {
             weightMeasure
           }
         </Text>
-      </View>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      </TouchableOpacity>
+      <MaterialMenu.Menu
+        visible={isTempContextMenuVisible}
+        onRequestClose={() => setIsTempContextMenuVisible(false)}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsTempContextMenuVisible(false)
+            setTempMeasure('°C')
+          }}
+        >
+          °C
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsTempContextMenuVisible(false)
+            setTempMeasure('°F')
+          }}
+        >
+          °F
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <TouchableOpacity
+        style={styles.settingsGeneralMeasureActivityItem}
+        onLongPress={() => setIsTempContextMenuVisible(true)}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           Температура
         </Text>
@@ -3992,8 +4067,34 @@ export function SettingsGeneralMeasureActivity() {
             tempMeasure
           }
         </Text>
-      </View>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      </TouchableOpacity>
+      <MaterialMenu.Menu
+        visible={isDistanseContextMenuVisible}
+        onRequestClose={() => {
+          setIsDistanseContextMenuVisible(true)
+        }}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsDistanseContextMenuVisible(false)
+            setDistanseMeasure('км')
+          }}
+        >
+          км
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsDistanseContextMenuVisible(false)
+            setDistanseMeasure('ми, фт')
+          }}
+        >
+          ми, фт
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <TouchableOpacity
+        style={styles.settingsGeneralMeasureActivityItem}
+        onLongPress={() => setIsDistanseContextMenuVisible(true)}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           Расстояние
         </Text>
@@ -4002,8 +4103,34 @@ export function SettingsGeneralMeasureActivity() {
             distanseMeasure
           }
         </Text>
-      </View>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      </TouchableOpacity>
+      <MaterialMenu.Menu
+        visible={isSugarContextMenuVisible}
+        onRequestClose={() => {
+          setIsSugarContextMenuVisible(false)
+        }}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsSugarContextMenuVisible(false)
+            setSugarMeasure('мг/дл')
+          }}
+        >
+          мг/дл
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsSugarContextMenuVisible(false)
+            setSugarMeasure('ммоль/л')
+          }}
+        >
+          ммоль/л
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <TouchableOpacity
+        style={styles.settingsGeneralMeasureActivityItem}
+        onLongPress={() => setIsSugarContextMenuVisible(true)}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           Сахар крови
         </Text>
@@ -4012,8 +4139,34 @@ export function SettingsGeneralMeasureActivity() {
             sugarMeasure
           }
         </Text>
-      </View>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      </TouchableOpacity>
+      <MaterialMenu.Menu
+        visible={isPressureContextMenuVisible}
+        onRequestClose={() => {
+          setIsPressureContextMenuVisible(false)
+        }}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsPressureContextMenuVisible(false)
+            setPressureMeasure('мм рт. ст.')
+          }}
+        >
+          мм рт. ст.
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsPressureContextMenuVisible(false)
+            setPressureMeasure('кПа')
+          }}
+        >
+          кПа
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <TouchableOpacity
+        style={styles.settingsGeneralMeasureActivityItem}
+        onLongPress={() => setIsPressureContextMenuVisible(true)}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           Кровянное давление
         </Text>
@@ -4022,8 +4175,34 @@ export function SettingsGeneralMeasureActivity() {
             pressureMeasure
           }
         </Text>
-      </View>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      </TouchableOpacity>
+      <MaterialMenu.Menu
+        visible={isHba1cContextMenuVisible}
+        onRequestClose={() => {
+          setIsHba1cContextMenuVisible(false)
+        }}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsHba1cContextMenuVisible(false)
+            setHba1cMeasure('%')
+          }}
+        >
+          %
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsHba1cContextMenuVisible(false)
+            setHba1cMeasure('ммоль/моль')
+          }}
+        >
+          ммоль/моль
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <TouchableOpacity
+        style={styles.settingsGeneralMeasureActivityItem}
+        onLongPress={() => setIsHba1cContextMenuVisible(true)}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           HbA1c
         </Text>
@@ -4032,8 +4211,34 @@ export function SettingsGeneralMeasureActivity() {
             hba1cMeasure
           }
         </Text>
-      </View>
-      <View style={styles.settingsGeneralMeasureActivityItem}>
+      </TouchableOpacity>
+      <MaterialMenu.Menu
+        visible={isWaterContextMenuVisible}
+        onRequestClose={() => {
+          setIsWaterContextMenuVisible(false)
+        }}
+      >
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsWaterContextMenuVisible(false)
+            setWaterMeasure('мл')
+          }}
+        >
+          мл
+        </MaterialMenu.MenuItem>
+        <MaterialMenu.MenuItem
+          onPress={() => {
+            setIsWaterContextMenuVisible(false)
+            setWaterMeasure('жидк. унц.')
+          }}
+        >
+          жидк. унц.
+        </MaterialMenu.MenuItem>
+      </MaterialMenu.Menu>
+      <TouchableOpacity
+        style={styles.settingsGeneralMeasureActivityItem}
+        onLongPress={() => setIsWaterContextMenuVisible(true)}
+      >
         <Text style={styles.settingsGeneralMeasureActivityItemName}>
           Объем выпиваемой воды
         </Text>
@@ -4042,7 +4247,7 @@ export function SettingsGeneralMeasureActivity() {
             waterMeasure
           }
         </Text>
-      </View>
+      </TouchableOpacity>
     </View>
   )
 }
