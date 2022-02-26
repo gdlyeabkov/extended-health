@@ -22,11 +22,23 @@ import * as MaterialMenu from 'react-native-material-menu'
 
 const Tab = createBottomTabNavigator()
 
-function MainTabsActivity() {
+function MainTabsActivity({ navigation }) {
+  
+  const [isMainActivityContextMenuVisible, setIsMainActivityContextMenuVisible] = useState(false)
+  const [isTogetherActivityContextMenuVisible, setIsTogetherActivityContextMenuVisible] = useState(false)
+  const [isFitnesActivityContextMenuVisible, setIsFitnesActivityContextMenuVisible] = useState(false)
+  const [isMyPageActivityContextMenuVisible, setIsMyPageActivityContextMenuVisible] = useState(false)
+
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
   return (
-    <Tab.Navigator screenOptions={{
-      tabBarShowIcon: true
-    }}>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarShowIcon: true
+      }}
+    >
       <Tab.Screen
         name="Главная"
         component={MainPageActivity}
@@ -39,6 +51,61 @@ function MainTabsActivity() {
           tabBarIconStyle: {
             marginTop: -25,
             marginLeft: 75
+          },
+          headerRight: () => {
+            return (
+              <View>
+                <MaterialMenu.Menu
+                  onRequestClose={() => setIsMainActivityContextMenuVisible(false)}
+                  visible={isMainActivityContextMenuVisible}
+                >
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMainActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Управление
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMainActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Для вас
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMainActivityContextMenuVisible(false)
+                    }}
+                  >
+                    События
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMainActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Уведомления
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMainActivityContextMenuVisible(false)
+                      goToActivity(navigation, 'SettingsActivity')
+                    }}
+                  >
+                    Настр.
+                  </MaterialMenu.MenuItem>
+                </MaterialMenu.Menu>
+                <TouchableOpacity
+                  onLongPress={() => setIsMainActivityContextMenuVisible(true)}
+                >
+                <Feather
+                  name="more-vertical"
+                  size={24} color="black"
+                />
+                </TouchableOpacity>
+              </View>
+            )
           }
         }}
       />
@@ -54,6 +121,54 @@ function MainTabsActivity() {
           tabBarIconStyle: {
             marginTop: -25,
             marginLeft: 75
+          },
+          headerRight: () => {
+            return (
+              <View>
+                <MaterialMenu.Menu
+                  onRequestClose={() => setIsTogetherActivityContextMenuVisible(false)}
+                  visible={isTogetherActivityContextMenuVisible}
+                >
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsTogetherActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Для вас
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsTogetherActivityContextMenuVisible(false)
+                    }}
+                  >
+                    События
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsTogetherActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Уведомления
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsTogetherActivityContextMenuVisible(false)
+                      goToActivity(navigation, 'SettingsActivity')
+                    }}
+                  >
+                    Настр.
+                  </MaterialMenu.MenuItem>
+                </MaterialMenu.Menu>
+                <TouchableOpacity
+                  onLongPress={() => setIsTogetherActivityContextMenuVisible(true)}
+                >
+                <Feather
+                  name="more-vertical"
+                  size={24} color="black"
+                />
+                </TouchableOpacity>
+              </View>
+            )
           }
         }}
       />
@@ -69,6 +184,68 @@ function MainTabsActivity() {
           tabBarIconStyle: {
             marginTop: -25,
             marginLeft: 75
+          },
+          headerRight: () => {
+            return (
+              <View>
+                <MaterialMenu.Menu
+                  onRequestClose={() => setIsFitnesActivityContextMenuVisible(false)}
+                  visible={isFitnesActivityContextMenuVisible}
+                >
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsFitnesActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Направления
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsFitnesActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Журнал
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsFitnesActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Для вас
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsFitnesActivityContextMenuVisible(false)
+                    }}
+                  >
+                    События
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsFitnesActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Уведомления
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsFitnesActivityContextMenuVisible(false)
+                      goToActivity(navigation, 'SettingsActivity')
+                    }}
+                  >
+                    Настр.
+                  </MaterialMenu.MenuItem>
+                </MaterialMenu.Menu>
+                <TouchableOpacity
+                  onLongPress={() => setIsFitnesActivityContextMenuVisible(true)}
+                >
+                <Feather
+                  name="more-vertical"
+                  size={24} color="black"
+                />
+                </TouchableOpacity>
+              </View>
+            )
           }
         }}
       />
@@ -84,6 +261,54 @@ function MainTabsActivity() {
           tabBarIconStyle: {
             marginTop: -25,
             marginLeft: 75
+          },
+          headerRight: () => {
+            return (
+              <View>
+                <MaterialMenu.Menu
+                  onRequestClose={() => setIsMyPageActivityContextMenuVisible(false)}
+                  visible={isMyPageActivityContextMenuVisible}
+                >
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMyPageActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Для вас
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMyPageActivityContextMenuVisible(false)
+                    }}
+                  >
+                    События
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMyPageActivityContextMenuVisible(false)
+                    }}
+                  >
+                    Уведомления
+                  </MaterialMenu.MenuItem>
+                  <MaterialMenu.MenuItem
+                    onPress={() => {
+                      setIsMyPageActivityContextMenuVisible(false)
+                      goToActivity(navigation, 'SettingsActivity')
+                    }}
+                  >
+                    Настр.
+                  </MaterialMenu.MenuItem>
+                </MaterialMenu.Menu>
+                <TouchableOpacity
+                  onLongPress={() => setIsMyPageActivityContextMenuVisible(true)}
+                >
+                <Feather
+                  name="more-vertical"
+                  size={24} color="black"
+                />
+                </TouchableOpacity>
+              </View>
+            )
           }
         }}
       />
@@ -101,6 +326,109 @@ export function MainPageActivity({ navigation }) {
 
   const [indicators, setIndicators] = useState([])
   
+  const [isExerciseEnabled, setIsExerciseEnabled] = useState(false)
+
+  const [exerciseStartTime, setExerciseStartTime] = useState('')
+
+  const [exerciseType, setExerciseType] = useState('')
+
+  const [exerciseDuration, setExerciseDuration] = useState('00:00:00')
+  
+  const [isStarted, setIsStarted] = useState(true)
+  
+  const [startTimerTitle, setStartTimerTitle] = useState('00:00:00')
+
+  const [startedTimer, setStartedTimer] = useState(null)
+  
+  const millisecondsInSecond = 1000
+
+  const timePartsSeparator = ':'
+  
+  const initialSeconds = 0
+  
+  const initialMinutes = 0
+  
+  const countSecondsInMinute = 60
+  
+  const countMinutesInHour = 60
+  
+  const oneCharPrefix = 0
+
+  const [startedTimerHoursTime, setStartedTimerHoursTime] = useState('00')
+
+  const [startedTimerMinutesTime, setStartedTimerMinutesTime] = useState('00')
+
+  const [startedTimerSecondsTime, setStartedTimerSecondsTime] = useState('00')
+
+  const runStartedTimer = () => {
+    setIsStarted(true)
+    const initialStartedTitle = `${startedTimerHoursTime}:${startedTimerMinutesTime}:${startedTimerSecondsTime}`
+    setStartTimerTitle(initialStartedTitle)
+    let lastStartedTimerTitle = `${startedTimerHoursTime}:${startedTimerMinutesTime}:${startedTimerSecondsTime}`
+    setStartedTimer(
+      setInterval(() => {
+        const timeParts = lastStartedTimerTitle.split(timePartsSeparator)
+        const rawHours = timeParts[0]
+        const rawMinutes = timeParts[1]
+        const rawSeconds = timeParts[2]
+        let hours = Number(rawHours)
+        let minutes = Number(rawMinutes)
+        let seconds = Number(rawSeconds)
+        if (minutes >= 0) {
+          seconds = seconds + 1
+        }
+        const isToggleSecond = seconds == countSecondsInMinute
+        if (isToggleSecond) {
+          seconds = initialSeconds
+          minutes = minutes + 1
+          const isToggleHour = minutes == countMinutesInHour
+          if (isToggleHour) {
+            minutes = initialMinutes
+            hours = hours + 1
+          }
+        }
+        let updatedHoursText = hours.toString()
+        const countHoursChars = updatedHoursText.length
+        const isAddHoursPrefix = countHoursChars == 1
+        if (isAddHoursPrefix) {
+          updatedHoursText = oneCharPrefix + updatedHoursText
+        }
+        let updatedMinutesText = minutes.toString()
+        const countMinutesChars = updatedMinutesText.length
+        const isAddMinutesPrefix = countMinutesChars == 1
+        if (isAddMinutesPrefix) {
+          updatedMinutesText = oneCharPrefix + updatedMinutesText
+        }
+        let updatedSecondsText = seconds.toString()
+        const countSecondsChars = updatedSecondsText.length
+        const isAddSecondsPrefix = countSecondsChars === 1
+        if (isAddSecondsPrefix) {
+          updatedSecondsText = oneCharPrefix + updatedSecondsText
+        }
+        const currentTime = `${updatedHoursText}:${updatedMinutesText}:${updatedSecondsText}`
+        setStartedTimerHoursTime(updatedHoursText)
+        setStartedTimerMinutesTime(updatedMinutesText)
+        setStartedTimerSecondsTime(updatedSecondsText)
+        setStartTimerTitle(currentTime)
+        lastStartedTimerTitle = currentTime
+      
+        let sqlStatement = `UPDATE indicators SET exercise_duration=\"${lastStartedTimerTitle}\" WHERE _id=1;`
+        db.transaction(transaction => {
+          transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+            
+          })
+        })
+
+        const isTimerOver = false
+        if (isTimerOver) {
+          resetStartedTimer()
+          return;
+        }
+
+      }, millisecondsInSecond)
+    )
+  }
+
   db.transaction(transaction => {
     const sqlStatement = "SELECT * FROM indicators;"
     transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
@@ -111,7 +439,11 @@ export function MainPageActivity({ navigation }) {
           ...tempReceivedIndicators,
           {
             id: indicatorsItem[0],
-            water: indicatorsItem[2]
+            water: indicatorsItem[2],
+            isExerciseEnabled: indicatorsItem[5],
+            exerciseStartTime: indicatorsItem[6],
+            exerciseType: indicatorsItem[7],
+            exerciseDuration: indicatorsItem[8]
           }
         ]
       })
@@ -126,6 +458,21 @@ export function MainPageActivity({ navigation }) {
       const receiverdIndicators = indicators[0]
       const localCountGlasses = receiverdIndicators.water
       setCountGlasses(localCountGlasses)
+      const localIsExerciseEnabled = receiverdIndicators.isExerciseEnabled === 1 ? true : false
+      setIsExerciseEnabled(localIsExerciseEnabled)
+      const localExerciseStartTime = receiverdIndicators.exerciseStartTime
+      setExerciseStartTime(localExerciseStartTime)
+      const localExerciseType = receiverdIndicators.exerciseType
+      setExerciseType(localExerciseType)
+      const localExerciseDuration = receiverdIndicators.exerciseDuration
+      setExerciseDuration(localExerciseDuration)
+      if (isExerciseEnabled) {
+        const exerciseDurationParts = exerciseDuration.split(':')
+        setStartedTimerHoursTime(exerciseDurationParts[0])
+        setStartedTimerMinutesTime(exerciseDurationParts[1])
+        setStartedTimerSecondsTime(exerciseDurationParts[2])    
+        runStartedTimer()
+      }
     }
   }, [indicators])
 
@@ -290,56 +637,82 @@ export function MainPageActivity({ navigation }) {
           </View>
         </View>
       </TouchableOpacity>
-      <View
-        style={styles.mainPageContainerExerciseBlock}
-        onPress={() => goToActivity(navigation, 'ExerciseActivity')}
-      >
-        <View style={styles.mainPageContainerBlockHeader}>
-          <AntDesign name="minuscircle" size={24} color="red" />
-        </View>
-        <View style={styles.mainPageContainerExerciseBlockBody}>
-          <View style={styles.mainPageContainerExerciseBlockBodyHeader}>
-            <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLabel}>
-              Упражнение
+      {
+        isExerciseEnabled ?
+          <TouchableOpacity
+            style={styles.mainPageContainerExerciseStartedBlock}
+            onPress={() => goToActivity(navigation, 'RecordStartedExerciseActivity')}
+          >
+            <View style={styles.mainPageContainerExerciseStartedBlockHeader}>
+              <Text style={styles.mainPageContainerExerciseStartedBlockHeaderName}>
+                {
+                  exerciseType
+                }
+              </Text>
+              <Text style={styles.mainPageContainerExerciseStartedBlockHeaderStartTime}>
+                {
+                  `Начало: ${exerciseStartTime}`
+                }
+              </Text>
+            </View>    
+            <Text style={styles.mainPageContainerExerciseStartedBlockTitle}>
+              {
+                startTimerTitle
+              }
             </Text>
-            <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLog}>
-              Посмотреть журнал
-            </Text>
+          </TouchableOpacity>
+        :
+          <View
+            style={styles.mainPageContainerExerciseBlock}
+            onPress={() => goToActivity(navigation, 'ExerciseActivity')}
+          >
+            <View style={styles.mainPageContainerBlockHeader}>
+              <AntDesign name="minuscircle" size={24} color="red" />
+            </View>
+            <View style={styles.mainPageContainerExerciseBlockBody}>
+              <View style={styles.mainPageContainerExerciseBlockBodyHeader}>
+                <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLabel}>
+                  Упражнение
+                </Text>
+                <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLog}>
+                  Посмотреть журнал
+                </Text>
+              </View>
+              <View style={styles.mainPageContainerExerciseBlockBodyExercises}>
+                <TouchableOpacity
+                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                  onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                    exerciseType: 'Ходьба'
+                  })}
+                >
+                  <FontAwesome5 name="walking" size={36} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                  onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                    exerciseType: 'Бег'
+                  })}
+                >
+                  <FontAwesome5 name="running" size={36} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                  onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                    exerciseType: 'Велоспорт'
+                  })}
+                >
+                  <Ionicons name="bicycle-sharp" size={36} color="black" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                  onPress={() => goToActivity(navigation, 'ExercisesListActivity')}
+                >
+                  <Feather name="list" size={36} color="black" />
+                </TouchableOpacity>
+              </View>
+            </View>
           </View>
-          <View style={styles.mainPageContainerExerciseBlockBodyExercises}>
-            <TouchableOpacity
-              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-              onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
-                exerciseType: 'Ходьба'
-              })}
-            >
-              <FontAwesome5 name="walking" size={36} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-              onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
-                exerciseType: 'Бег'
-              })}
-            >
-              <FontAwesome5 name="running" size={36} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-              onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
-                exerciseType: 'Велоспорт'
-              })}
-            >
-              <Ionicons name="bicycle-sharp" size={36} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-              onPress={() => goToActivity(navigation, 'ExercisesListActivity')}
-            >
-              <Feather name="list" size={36} color="black" />
-            </TouchableOpacity>
-          </View>
-        </View>
-      </View>
+      }
       <TouchableOpacity style={styles.mainPageContainerFoodBlock} onPress={() => goToActivity(navigation, 'FoodActivity')}>
         <View style={styles.mainPageContainerBlockHeader}>
           <AntDesign name="minuscircle" size={24} color="red" />
@@ -1449,7 +1822,9 @@ export function MyPageActivity({ navigation }) {
           <View style={styles.myPageContainerUserHeaderEditBtnWrap}>
             <Button
               title="Изменить"
-              onPress={() => goToActivity(navigation, 'EditMyPageActivity')}
+              onPress={() => {
+                goToActivity(navigation, 'EditMyPageActivity')
+              }}
             />
           </View>
         </View>
@@ -2253,6 +2628,17 @@ export default function App() {
   //   })
   // })
 
+  // let sqlStatement = `DROP TABLE \"indicators\";`
+  // db.transaction(transaction => {
+  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+  //     let sqlStatement = `DROP TABLE \"controllers\";`
+  //     db.transaction(transaction => {
+  //       transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+  //       })
+      // })
+  //   })
+  // })
+
   // let sqlStatement = `DELETE DATABASE \"healthdatabase.db\";`
   // db.transaction(transaction => {
   //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
@@ -2279,6 +2665,21 @@ export default function App() {
                     transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
                       let sqlStatement = "CREATE TABLE IF NOT EXISTS awards (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, description TEXT, type TEXT);"
                       transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+                        
+                        sqlStatement = "SELECT * FROM indicators;"
+                        transaction.executeSql(sqlStatement, [], (tx, receivedAlarms) => {
+                          const indicators = Array.from(receivedAlarms.rows)
+                          const countIndicators = indicators.length
+                          const isPreInstall = countIndicators <= 0
+                          if (isPreInstall) {
+                            let sqlStatement = `INSERT INTO \"indicators\"(time, water, walk, food, is_exercise_enabled, exercise_start_time, exercise_type, exercise_duration, photo, name, gender, growth, weight, birthday, level) VALUES (\"\", 0, 0, 0, 0, \"\", \"\", \"\", \"\", \"\", \"\", 0.0, 0.0, \"\", \"\");`
+                            db.transaction(transaction => {
+                              transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
+                              })
+                            })
+                          }
+                        })
+
                       })
                     })
                   })
@@ -2323,47 +2724,7 @@ export default function App() {
                                   let sqlStatement = `INSERT INTO \"exercises\"(is_activated, name, is_favorite) VALUES (false, \"Йога\", false);`
                                   db.transaction(transaction => {
                                     transaction.executeSql(sqlStatement, [], (tx, receivedExercises) => {
-                                      let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"active\");`
-                                      db.transaction(transaction => {
-                                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
-                                          let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"walk\");`
-                                          db.transaction(transaction => {
-                                            transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
-                                              let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"exercise\");`
-                                              db.transaction(transaction => {
-                                                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
-                                                  let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"food\");`
-                                                  db.transaction(transaction => {
-                                                    transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
-                                                      let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"sleep\");`
-                                                      db.transaction(transaction => {
-                                                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
-                                                          let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"body\");`
-                                                          db.transaction(transaction => {
-                                                            transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
-                                                              let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"water\");`
-                                                              db.transaction(transaction => {
-                                                                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
-                                                                  // let sqlStatement = `DROP TABLE \"indicators\";`
-                                                                  // db.transaction(transaction => {
-                                                                  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-                                                                  
-                                                                  //   })
-                                                                  // })
-                                                                })
-                                                              })
-                                                            })
-                                                          })
-                                                        })
-                                                      })
-                                                    })
-                                                  })
-                                                })
-                                              })
-                                            })
-                                          })
-                                        })
-                                      })
+                                      
                                     })
                                   })        
                                 })
@@ -2378,6 +2739,93 @@ export default function App() {
               })
             }, (tx) => {
               console.log('ошибка получения индикаторов')
+            })
+          })
+          sqlStatement = `DELETE FROM \"controllers\";`
+          db.transaction(transaction => {
+            transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+              let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"active\");`
+              db.transaction(transaction => {
+                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                  let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"walk\");`
+                  db.transaction(transaction => {
+                    transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                      let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"exercise\");`
+                      db.transaction(transaction => {
+                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                          let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"food\");`
+                          db.transaction(transaction => {
+                            transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                              let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"sleep\");`
+                              db.transaction(transaction => {
+                                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                  let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"body\");`
+                                  db.transaction(transaction => {
+                                    transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                      let sqlStatement = `INSERT INTO \"controllers\"(is_activated, name) VALUES (true, \"water\");`
+                                      db.transaction(transaction => {
+                                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+
+                                        })
+                                      })
+                                    })
+                                  })
+                                })
+                              })
+                            })
+                          })
+                        })
+                      })
+                    })
+                  })
+                })
+              })
+            })
+          })
+          sqlStatement = `DELETE FROM \"measures\";`
+          db.transaction(transaction => {
+            transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+              let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"Рост\", \"см\");`
+              db.transaction(transaction => {
+                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                  let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"Вес\", \"кг\");`
+                  db.transaction(transaction => {
+                    transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                      let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"Температура\", \"°C\");`
+                      db.transaction(transaction => {
+                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                          let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"Расстояние\", \"км\");`
+                          db.transaction(transaction => {
+                            transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                              let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"Сахар крови\", \"ммоль/л\");`
+                              db.transaction(transaction => {
+                                transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                  let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"Кровянное давление\", \"мм рт. ст.\");`
+                                  db.transaction(transaction => {
+                                    transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                      let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"HbA1c\", \"%\");`
+                                      db.transaction(transaction => {
+                                        transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                          let sqlStatement = `INSERT INTO \"measures\"(name, value) VALUES (\"Вода\", \"мл\");`
+                                          db.transaction(transaction => {
+                                            transaction.executeSql(sqlStatement, [], (tx, receivedControllers) => {
+                                                
+                                            })
+                                          })    
+                                        })
+                                      })
+                                    })
+                                  })
+                                })
+                              })
+                            })
+                          })  
+                        })
+                      })
+                    })
+                  })   
+                })
+              })
             })
           })
         }
@@ -2903,6 +3351,32 @@ export function RecordExerciseActivity({ navigation, route }) {
     navigation.navigate(activityName, params)
   }
 
+  const startExercise = () => {
+    db.transaction(transaction => {
+      // let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${true} WHERE _id=1;`
+      // let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${true}, exercise_type=\"${exerciseType}\" WHERE _id=1;`
+      const currentDate = new Date()
+      const currentDateDay = currentDate.getDate()
+      const currentDateMonthIndex = currentDate.getMonth()
+      const currentDateMonth = currentDateMonthIndex + 1
+      const currentDateYear = currentDate.getFullYear()
+      let currentDateHours = currentDate.getHours()
+      if (currentDateHours < 10) {
+        currentDateHours = `0${currentDateHours}`
+      }
+      const currentDateMinutes = currentDate.getMinutes()
+      if (currentDateMinutes < 10) {
+        currentDateHours = `0${currentDateMinutes}`
+      }
+      // const exerciseStartTime = `${currentDateDay}.${currentDateMonth}.${currentDateYear}`
+      const exerciseStartTime = `${currentDateHours}:${currentDateMinutes}`
+      let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${true}, exercise_type=\"${exerciseType}\", exercise_start_time=\"${exerciseStartTime}\" WHERE _id=1;`
+      transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+        goToActivity(navigation, 'RecordStartedExerciseActivity')
+      })
+    })
+  }
+
   return (
     <View style={styles.recordExerciseActivityContainer}>
       <View style={styles.recordExerciseActivityHeader}>
@@ -2924,7 +3398,7 @@ export function RecordExerciseActivity({ navigation, route }) {
       <View style={styles.recordExerciseActivityStartBtnWrap}>
         <Button
           title="Начать"
-          onPress={() => goToActivity(navigation, 'RecordStartedExerciseActivity')}
+          onPress={() => startExercise()}
           style={styles.recordExerciseActivityStartBtn}
         />
       </View>
@@ -2969,7 +3443,10 @@ export function RecordStartedExerciseActivity({ navigation }) {
     let sqlStatement = `INSERT INTO \"exercise_records\"(type, datetime, duration) VALUES (\"Ходьба\", \"22.11.2000 00:00\", \"00:00\");`
     db.transaction(transaction => {
       transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
-        goToActivity(navigation, 'RecordExerciseResultsActivity')
+        let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${false} WHERE _id=1;`
+        transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+          goToActivity(navigation, 'RecordExerciseResultsActivity')          
+        })
       }, (tx) => {
         console.log('ошибка добавления записи')
       })
@@ -3027,7 +3504,14 @@ export function RecordStartedExerciseActivity({ navigation }) {
         setStartedTimerSecondsTime(updatedSecondsText)
         setStartTimerTitle(currentTime)
         lastStartedTimerTitle = currentTime
-      
+    
+        let sqlStatement = `UPDATE indicators SET exercise_duration=\"${lastStartedTimerTitle}\" WHERE _id=1;`
+        db.transaction(transaction => {
+          transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+            
+          })
+        })
+
         const isTimerOver = false
         if (isTimerOver) {
           resetStartedTimer()
@@ -3622,7 +4106,7 @@ export function EditMyPageActivity({ navigation }) {
   const saveData = () => {
     db.transaction(transaction => {
       // let sqlStatement = `UPDATE indicators SET gender=${gender}, growth=${growth}, weight=${weight}, level=${activityLevel} WHERE _id=1;`
-      let sqlStatement = `UPDATE indicators SET level=${activityLevel} WHERE _id=1;`
+      let sqlStatement = `UPDATE indicators SET level=\"${activityLevel}\" WHERE _id=1;`
       transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
         goToActivity(navigation, 'MainTabsActivity')
       })
@@ -4167,6 +4651,59 @@ export function SettingsGeneralMeasureActivity() {
   const [isHba1cContextMenuVisible, setIsHba1cContextMenuVisible] = useState(false)
   const [isWaterContextMenuVisible, setIsWaterContextMenuVisible] = useState(false)
 
+  const [measures, setMeasures] = useState([
+
+  ])
+
+  const updateMeasureInDB = (name, value) => {
+    db.transaction(transaction => {
+      let sqlStatement = `UPDATE measures SET value=\"${value}\" WHERE name=\"${name}\";`
+      transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+        
+      })
+    })
+  }
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM measures;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedMeasures) => {
+      let tempReceivedMeasures = []
+      Array.from(receivedMeasures.rows).forEach((measureRow, measureRowIdx) => {
+        const measure = Object.values(receivedMeasures.rows.item(measureRowIdx))
+        tempReceivedMeasures = [
+          ...tempReceivedMeasures,
+          {
+            id: measure[0],
+            value: measure[2]
+          }
+        ]
+      })
+      setMeasures(tempReceivedMeasures)
+    })
+  })
+
+  useEffect(() => {
+    measures.map(measure => {
+      if (measure.name === 'Рост') {
+        setGrowthMeasure(measure.value)
+      } else if (measure.name === 'Вес') {
+        setWeightMeasure(measure.value)
+      } else if (measure.name === 'Температура') {
+        setTemperatureMeasure(measure.value)
+      } else if (measure.name === 'Расстояние') {
+        setDistanseMeasure(measure.value)
+      } else if (measure.name === 'Сахар в крови') {
+        setSugarMeasure(measure.value)
+      } else if (measure.name === 'Кровянное давление') {
+        setPressureMeasure(measure.value)
+      } else if (measure.name === 'HbA1c') {
+        setHba1cMeasure(measure.value)
+      } else if (measure.name === 'Вода') {
+        setWaterMeasure(measure.value)
+      }
+    })
+  }, [measures])
+
   return (
     <View style={styles.settingsGeneralMeasureActivityContainer}>
       <MaterialMenu.Menu
@@ -4177,6 +4714,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsGrowthContextMenuVisible(false)
             setGrowthMeasure('см')
+            updateMeasureInDB('Рост', 'см')
           }}
         >
           см
@@ -4185,6 +4723,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsGrowthContextMenuVisible(false)
             setGrowthMeasure('фт., дюйм')
+            updateMeasureInDB('Рост', 'фт., дюйм')
           }}
         >
           фт., дюйм
@@ -4213,6 +4752,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsWeightContextMenuVisible(false)
             setWeightMeasure('кг')
+            updateMeasureInDB('Вес', 'кг')
           }}
         >
           кг
@@ -4221,6 +4761,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsWeightContextMenuVisible(false)
             setWeightMeasure('фунт')
+            updateMeasureInDB('Вес', 'фунт')
           }}
         >
           фунт
@@ -4247,6 +4788,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsTempContextMenuVisible(false)
             setTempMeasure('°C')
+            updateMeasureInDB('Температура', '°C')
           }}
         >
           °C
@@ -4255,6 +4797,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsTempContextMenuVisible(false)
             setTempMeasure('°F')
+            updateMeasureInDB('Температура', '°F')
           }}
         >
           °F
@@ -4283,6 +4826,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsDistanseContextMenuVisible(false)
             setDistanseMeasure('км')
+            updateMeasureInDB('Расстояние', 'км')
           }}
         >
           км
@@ -4291,6 +4835,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsDistanseContextMenuVisible(false)
             setDistanseMeasure('ми, фт')
+            updateMeasureInDB('Расстояние', 'ми, фт')
           }}
         >
           ми, фт
@@ -4319,6 +4864,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsSugarContextMenuVisible(false)
             setSugarMeasure('мг/дл')
+            updateMeasureInDB('Сахар в крови', 'мг/дл')
           }}
         >
           мг/дл
@@ -4327,6 +4873,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsSugarContextMenuVisible(false)
             setSugarMeasure('ммоль/л')
+            updateMeasureInDB('Сахар в крови', 'ммоль/л')
           }}
         >
           ммоль/л
@@ -4355,6 +4902,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsPressureContextMenuVisible(false)
             setPressureMeasure('мм рт. ст.')
+            updateMeasureInDB('Кровянное давление', 'мм рт. ст.')
           }}
         >
           мм рт. ст.
@@ -4363,6 +4911,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsPressureContextMenuVisible(false)
             setPressureMeasure('кПа')
+            updateMeasureInDB('Кровянное давление', 'кПа')
           }}
         >
           кПа
@@ -4391,6 +4940,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsHba1cContextMenuVisible(false)
             setHba1cMeasure('%')
+            updateMeasureInDB('HbA1c', '%')
           }}
         >
           %
@@ -4399,6 +4949,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsHba1cContextMenuVisible(false)
             setHba1cMeasure('ммоль/моль')
+            updateMeasureInDB('HbA1c', 'ммоль/моль')
           }}
         >
           ммоль/моль
@@ -4427,6 +4978,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsWaterContextMenuVisible(false)
             setWaterMeasure('мл')
+            updateMeasureInDB('Вода', 'мл')
           }}
         >
           мл
@@ -4435,6 +4987,7 @@ export function SettingsGeneralMeasureActivity() {
           onPress={() => {
             setIsWaterContextMenuVisible(false)
             setWaterMeasure('жидк. унц.')
+            updateMeasureInDB('Вода', 'жидк. унц.')
           }}
         >
           жидк. унц.
@@ -4843,6 +5396,29 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center'
+  },
+  mainPageContainerExerciseStartedBlock: {
+    backgroundColor: 'rgb(0, 150, 0)',
+    width: '95%',
+    padding: 15,
+    marginHorizontal: 'auto'
+  },
+  mainPageContainerExerciseStartedBlockHeader: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  mainPageContainerExerciseStartedBlockHeaderName: {
+    color: 'rgb(255, 255, 255)'
+  },
+  mainPageContainerExerciseStartedBlockHeaderStartTime: {
+    color: 'rgb(255, 255, 255)'
+  },
+  mainPageContainerExerciseStartedBlockTitle: {
+    fontSize: 36,
+    fontWeight: '400',
+    color: 'rgb(255, 255, 255)',
+    textAlign: 'center'
   },
   mainPageContainerFoodBlock: {
     width: '95%',
