@@ -62,6 +62,7 @@ function MainTabsActivity({ navigation }) {
                   <MaterialMenu.MenuItem
                     onPress={() => {
                       setIsMainActivityContextMenuVisible(false)
+                      setIsSelectionMode(true)
                     }}
                   >
                     Управление
@@ -360,6 +361,34 @@ export function MainPageActivity({ navigation }) {
 
   const [startedTimerSecondsTime, setStartedTimerSecondsTime] = useState('00')
 
+  const [controllers, setControllers] = useState([
+    false,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ])
+
+  var initialControllers = [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ]
+
+  const [isSelectionMode, setIsSelectionMode] = useState(false)
+
+  const resetStartedTimer = () => {
+    clearInterval(startedTimer)
+    setStartedTimer(null)
+    setIsStarted(false)
+  }
+
   const runStartedTimer = () => {
     setIsStarted(true)
     const initialStartedTitle = `${startedTimerHoursTime}:${startedTimerMinutesTime}:${startedTimerSecondsTime}`
@@ -471,7 +500,7 @@ export function MainPageActivity({ navigation }) {
         setStartedTimerHoursTime(exerciseDurationParts[0])
         setStartedTimerMinutesTime(exerciseDurationParts[1])
         setStartedTimerSecondsTime(exerciseDurationParts[2])    
-        runStartedTimer()
+        // runStartedTimer()
       }
     }
   }, [indicators])
@@ -536,6 +565,12 @@ export function MainPageActivity({ navigation }) {
     setSubscription(null)
   }
 
+  const updateControllers = (index) => {
+    const updatedControllers = controllers
+    updatedControllers[index] = !updatedControllers[index]
+    setControllers(updatedControllers)
+  }
+
   useEffect(() => {
     _subscribe()
     return () => _unsubscribe()
@@ -557,6 +592,8 @@ export function MainPageActivity({ navigation }) {
     setIsDetectStep(true)
   }
 
+  initialControllers = controllers
+
   return (
     <ScrollView style={styles.mainPageContainer}>
       <Text>
@@ -574,74 +611,143 @@ export function MainPageActivity({ navigation }) {
           `${z}`
         }
       </Text>
-      <TouchableOpacity style={styles.mainPageContainerActiveBlock} onPress={() => goToActivity(navigation, 'ActiveActivity')}>
-        <View style={styles.mainPageContainerBlockHeader}>
-          <AntDesign name="minuscircle" size={24} color="red" />
-        </View>
-        <View style={styles.mainPageContainerActiveBlockBody}>
-          <View style={styles.mainPageContainerActiveBlockBodyAside}>
-            <Text style={styles.mainPageContainerActiveBlockBodyAsideHeader}>
-              Активность
-            </Text>
-            <View style={styles.mainPageContainerActiveBlockBodyAsideBody}>
-              <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
-                <FontAwesome5 name="walking" size={36} color="green" />
-                <Text>
-                  0
+      <Button onPress={() => {
+        setIsSelectionMode(true)
+      }} title="Управление элементами" />
+      {
+        isSelectionMode || (!isSelectionMode && controllers[0]) ?
+          <View
+            style={styles.mainPageContainerActiveBlock}
+            onPress={() => goToActivity(navigation, 'ActiveActivity')}
+          >
+            {
+              isSelectionMode ?
+                <View style={styles.mainPageContainerBlockHeader}>
+                  <AntDesign
+                    name={
+                      controllers[0] ?
+                        'minuscircle'
+                      :
+                        'pluscircle'
+                    }
+                    size={24}
+                    color={
+                      controllers[0] ?
+                        'red'
+                      :
+                        'green'
+                    }
+                    onPress={() => updateControllers(0)}
+                  />
+                </View>
+              :
+                <View>
+                  
+                </View>
+            }
+            <View style={styles.mainPageContainerActiveBlockBody}>
+              <View style={styles.mainPageContainerActiveBlockBodyAside}>
+                <Text style={styles.mainPageContainerActiveBlockBodyAsideHeader}>
+                  Активность
                 </Text>
+                <View style={styles.mainPageContainerActiveBlockBodyAsideBody}>
+                  <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
+                    <FontAwesome5 name="walking" size={36} color="green" />
+                    <Text>
+                      0
+                    </Text>
+                  </View>
+                  <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
+                    <Ionicons name="time" size={36} color="blue" />
+                    <Text>
+                      0
+                    </Text>
+                  </View>
+                  <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
+                    <Octicons name="flame" size={36} color="red" />
+                    <Text>
+                      0
+                    </Text>
+                  </View>
+                </View>
               </View>
-              <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
-                <Ionicons name="time" size={36} color="blue" />
-                <Text>
-                  0
-                </Text>
-              </View>
-              <View style={styles.mainPageContainerActiveBlockBodyAsideBodyItem}>
-                <Octicons name="flame" size={36} color="red" />
-                <Text>
-                  0
-                </Text>
+              <Image source={activityLogo} style={styles.mainPageContainerActiveBlockBodyImg} />
+            </View>
+          </View>
+        :
+          <View>
+
+          </View>
+      }
+      {
+        isSelectionMode || (!isSelectionMode && controllers[1]) ?
+          <View style={styles.mainPageContainerWalkBlock} onPress={() => goToActivity(navigation, 'WalkActivity')}>
+            {
+              isSelectionMode ?
+                <View style={styles.mainPageContainerBlockHeader}>
+                  <AntDesign
+                    name={
+                      controllers[1] ?
+                        'minuscircle'
+                      :
+                        'pluscircle'
+                    }
+                    size={24}
+                    color={
+                      controllers[1] ?
+                        'red'
+                      :
+                        'green'
+                    }
+                    onPress={() => updateControllers(1)}
+                  />
+                </View>
+              :
+                <View>
+                  
+                </View>
+            }
+            <View style={styles.mainPageContainerWalkBlockBody}>
+              <Text style={styles.mainPageContainerWalkBlockBodyLabel}>
+                Шаги
+              </Text>
+              <View style={styles.mainPageContainerWalkBlockBodyRow}>
+                <View style={styles.mainPageContainerWalkBlockBodyRowAside}>
+                  <Text style={styles.mainPageContainerWalkBlockBodyRowCountLabel}>
+                    {
+                      stepsCount
+                    }
+                  </Text>
+                  <Text style={styles.mainPageContainerWalkBlockBodyRowMaxCountLabel}>
+                    /6000
+                  </Text>
+                </View>
+                <View>
+                  <Text>
+                    0%
+                  </Text>
+                  <Text>
+                    ------------------------------------
+                  </Text>
+                </View>
               </View>
             </View>
           </View>
-          <Image source={activityLogo} style={styles.mainPageContainerActiveBlockBodyImg} />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.mainPageContainerWalkBlock} onPress={() => goToActivity(navigation, 'WalkActivity')}>
-        <View style={styles.mainPageContainerBlockHeader}>
-          <AntDesign name="minuscircle" size={24} color="red" />
-        </View>
-        <View style={styles.mainPageContainerWalkBlockBody}>
-          <Text style={styles.mainPageContainerWalkBlockBodyLabel}>
-            Шаги
-          </Text>
-          <View style={styles.mainPageContainerWalkBlockBodyRow}>
-            <View style={styles.mainPageContainerWalkBlockBodyRowAside}>
-              <Text style={styles.mainPageContainerWalkBlockBodyRowCountLabel}>
-                {
-                  stepsCount
-                }
-              </Text>
-              <Text style={styles.mainPageContainerWalkBlockBodyRowMaxCountLabel}>
-                /6000
-              </Text>
-            </View>
-            <View>
-              <Text>
-                0%
-              </Text>
-              <Text>
-                ------------------------------------
-              </Text>
-            </View>
+        :
+          <View>
+            
           </View>
-        </View>
-      </TouchableOpacity>
+      }
       {
         isExerciseEnabled ?
           <TouchableOpacity
             style={styles.mainPageContainerExerciseStartedBlock}
-            onPress={() => goToActivity(navigation, 'RecordStartedExerciseActivity')}
+            onPress={() => {
+              resetStartedTimer()
+              goToActivity(navigation, 'RecordStartedExerciseActivity', {
+                exerciseType: exerciseType
+              })
+            }}
           >
             <View style={styles.mainPageContainerExerciseStartedBlockHeader}>
               <Text style={styles.mainPageContainerExerciseStartedBlockHeaderName}>
@@ -662,173 +768,348 @@ export function MainPageActivity({ navigation }) {
             </Text>
           </TouchableOpacity>
         :
+          isSelectionMode || (!isSelectionMode && controllers[2]) ?
+            <View
+              style={styles.mainPageContainerExerciseBlock}
+              onPress={() => goToActivity(navigation, 'ExerciseActivity')}
+            >
+              {
+                isSelectionMode ?
+                  <View style={styles.mainPageContainerBlockHeader}>
+                    <AntDesign
+                      name={
+                        controllers[2] ?
+                          'minuscircle'
+                        :
+                          'pluscircle'
+                      }
+                      size={24}
+                      color={
+                        controllers[2] ?
+                          'red'
+                        :
+                          'green'
+                      }
+                      onPress={() => updateControllers(2)}
+                    />
+                  </View>
+                :
+                  <View>
+
+                  </View>
+              }
+              <View style={styles.mainPageContainerExerciseBlockBody}>
+                <View style={styles.mainPageContainerExerciseBlockBodyHeader}>
+                  <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLabel}>
+                    Упражнение
+                  </Text>
+                  <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLog}>
+                    Посмотреть журнал
+                  </Text>
+                </View>
+                <View style={styles.mainPageContainerExerciseBlockBodyExercises}>
+                  <TouchableOpacity
+                    style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                    onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                      exerciseType: 'Ходьба'
+                    })}
+                  >
+                    <FontAwesome5 name="walking" size={36} color="black" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                    onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                      exerciseType: 'Бег'
+                    })}
+                  >
+                    <FontAwesome5 name="running" size={36} color="black" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                    onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
+                      exerciseType: 'Велоспорт'
+                    })}
+                  >
+                    <Ionicons name="bicycle-sharp" size={36} color="black" />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
+                    onPress={() => goToActivity(navigation, 'ExercisesListActivity')}
+                  >
+                    <Feather name="list" size={36} color="black" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          :
+            <View>
+            </View>
+      }
+      {
+        isSelectionMode || (!isSelectionMode && controllers[3]) ?
           <View
-            style={styles.mainPageContainerExerciseBlock}
-            onPress={() => goToActivity(navigation, 'ExerciseActivity')}
+            style={styles.mainPageContainerFoodBlock}
+            onPress={() => goToActivity(navigation, 'FoodActivity')}
           >
-            <View style={styles.mainPageContainerBlockHeader}>
-              <AntDesign name="minuscircle" size={24} color="red" />
+            {
+              isSelectionMode ?
+                <View style={styles.mainPageContainerBlockHeader}>
+                  <AntDesign
+                    name={
+                      controllers[3] ?
+                        'minuscircle'
+                      :
+                        'pluscircle'
+                    }
+                    size={24}
+                    color={
+                      controllers[3] ?
+                        'red'
+                      :
+                        'green'
+                    }
+                    onPress={() => updateControllers(3)}
+                  />
+                </View>
+              :
+                <View>
+                  
+                </View>
+            }
+            <View style={styles.mainPageContainerFoodBlockBody}>
+              <Text style={styles.mainPageContainerFoodBlockLabel}>
+                Еда
+              </Text>
+              <View style={styles.mainPageContainerFoodBlockRow}>
+                <View style={styles.mainPageContainerFoodBlockRowAside}>
+                  <Text style={styles.mainPageContainerFoodBlockRowAsideLabel}>
+                    0
+                  </Text>
+                  <Text style={styles.mainPageContainerFoodBlockRowAsideMaxCount}>
+                    /1779 ккал
+                  </Text>
+                </View>
+                <View style={styles.mainPageContainerFoodBlockRecordBtnWrap}>
+                  <Button title="Запись" style={styles.mainPageContainerFoodBlockRecordBtn} />
+                </View>
+              </View>        
             </View>
-            <View style={styles.mainPageContainerExerciseBlockBody}>
-              <View style={styles.mainPageContainerExerciseBlockBodyHeader}>
-                <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLabel}>
-                  Упражнение
-                </Text>
-                <Text style={styles.mainPageContainerExerciseBlockBodyHeaderLog}>
-                  Посмотреть журнал
-                </Text>
-              </View>
-              <View style={styles.mainPageContainerExerciseBlockBodyExercises}>
-                <TouchableOpacity
-                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-                  onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
-                    exerciseType: 'Ходьба'
-                  })}
-                >
-                  <FontAwesome5 name="walking" size={36} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-                  onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
-                    exerciseType: 'Бег'
-                  })}
-                >
-                  <FontAwesome5 name="running" size={36} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-                  onPress={() => goToActivity(navigation, 'RecordExerciseActivity', {
-                    exerciseType: 'Велоспорт'
-                  })}
-                >
-                  <Ionicons name="bicycle-sharp" size={36} color="black" />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.mainPageContainerExerciseBlockBodyExercisesItem}
-                  onPress={() => goToActivity(navigation, 'ExercisesListActivity')}
-                >
-                  <Feather name="list" size={36} color="black" />
-                </TouchableOpacity>
-              </View>
-            </View>
+          </View>
+        :
+          <View>
+            
           </View>
       }
-      <TouchableOpacity style={styles.mainPageContainerFoodBlock} onPress={() => goToActivity(navigation, 'FoodActivity')}>
-        <View style={styles.mainPageContainerBlockHeader}>
-          <AntDesign name="minuscircle" size={24} color="red" />
-        </View>
-        <View style={styles.mainPageContainerFoodBlockBody}>
-          <Text style={styles.mainPageContainerFoodBlockLabel}>
-            Еда
-          </Text>
-          <View style={styles.mainPageContainerFoodBlockRow}>
-            <View style={styles.mainPageContainerFoodBlockRowAside}>
-              <Text style={styles.mainPageContainerFoodBlockRowAsideLabel}>
-                0
+      {
+        isSelectionMode || (!isSelectionMode && controllers[4]) ?
+          <View
+            style={styles.mainPageContainerSleepBlock}
+            onPress={() => goToActivity(navigation, 'SleepActivity')}
+          >
+            {
+              isSelectionMode ?
+                <View style={styles.mainPageContainerBlockHeader}>
+                  <AntDesign
+                    name={
+                      controllers[4] ?
+                        'minuscircle'
+                      :
+                        'pluscircle'
+                    }
+                    size={24}
+                    color={
+                      controllers[4] ?
+                        'red'
+                      :
+                        'green'
+                    }
+                    onPress={() => updateControllers(4)}
+                  />
+                </View>
+              :
+                <View>
+
+                </View>
+            }
+            <View style={styles.mainPageContainerSleepBlockBody}>
+              <Text style={styles.mainPageContainerSleepBlockLabel}>
+                Сон
               </Text>
-              <Text style={styles.mainPageContainerFoodBlockRowAsideMaxCount}>
-                /1779 ккал
-              </Text>
-            </View>
-            <View style={styles.mainPageContainerFoodBlockRecordBtnWrap}>
-              <Button title="Запись" style={styles.mainPageContainerFoodBlockRecordBtn} />
-            </View>
-          </View>        
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.mainPageContainerSleepBlock} onPress={() => goToActivity(navigation, 'SleepActivity')}>
-        <View style={styles.mainPageContainerBlockHeader}>
-          <AntDesign name="minuscircle" size={24} color="red" />
-        </View>
-        <View style={styles.mainPageContainerSleepBlockBody}>
-          <Text style={styles.mainPageContainerSleepBlockLabel}>
-            Сон
-          </Text>
-          <View style={styles.mainPageContainerSleepBlockRow}>
-            <Text style={styles.mainPageContainerSleepBlockRowLabel}>
-              Как вам спалось?
-            </Text>
-            <View style={styles.mainPageContainerSleepBlockRecordBtnWrap}>
-              <Button title="Запись" style={styles.mainPageContainerSleepBlockRecordBtn} />
+              <View style={styles.mainPageContainerSleepBlockRow}>
+                <Text style={styles.mainPageContainerSleepBlockRowLabel}>
+                  Как вам спалось?
+                </Text>
+                <View style={styles.mainPageContainerSleepBlockRecordBtnWrap}>
+                  <Button title="Запись" style={styles.mainPageContainerSleepBlockRecordBtn} />
+                </View>
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.mainPageContainerBodyBlock} onPress={() => goToActivity(navigation, 'BodyActivity')}>
-        <View style={styles.mainPageContainerBlockHeader}>
-          <AntDesign name="minuscircle" size={24} color="red" />
-        </View>
-        <View style={styles.mainPageContainerBodyBlockBody}>
-          <Text style={styles.mainPageContainerBodyBlockBodyHeader}>
-            Состав тела
-          </Text>
-          <View style={styles.mainPageContainerBodyBlockBodyRow}>
-            <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
-              <Entypo name="home" size={24} color="green" />
-              <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
-                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
-                  0
-                </Text>
-                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
-                  кг
-                </Text>
-              </View>              
-            </View>
-            <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
-              <Fontisto name="spinner-fidget" size={24} color="brown" />
-              <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
-                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
-                  0
-                </Text>
-                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
-                  %
-                </Text>
-              </View>              
-            </View>
-            <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
-              <MaterialCommunityIcons name="human" size={24} color="blue" />
-              <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
-                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
-                  0
-                </Text>
-                <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
-                  кг
-                </Text>
-              </View>              
-            </View>
+        :
+          <View>
+            
           </View>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.mainPageContainerWaterBlock} onPress={() => goToActivity(navigation, 'WaterActivity')}>
-        <View style={styles.mainPageContainerBlockHeader}>
-          <AntDesign name="minuscircle" size={24} color="red" />
-        </View>
-        <View style={styles.mainPageContainerWaterBody}>
-          <View style={styles.mainPageContainerWaterBodyAside}>
-            <Text style={styles.mainPageContainerWaterBodyAsideLabel}>
-              Вода
-            </Text>
-            <View style={styles.mainPageContainerWaterBodyAsideRow}>
-              <Text style={styles.mainPageContainerWaterBodyAsideRowCount}>
-                {
-                  countGlasses
-                }
+      }
+      {
+        isSelectionMode || (!isSelectionMode && controllers[5]) ?
+          <View style={styles.mainPageContainerBodyBlock} onPress={() => goToActivity(navigation, 'BodyActivity')}>
+            {
+              isSelectionMode ?
+                <View style={styles.mainPageContainerBlockHeader}>
+                  <AntDesign
+                    name={
+                      controllers[5] ?
+                        'minuscircle'
+                      :
+                        'pluscircle'
+                    }
+                    size={24}
+                    color={
+                      controllers[5] ?
+                        'red'
+                      :
+                        'green'
+                    }
+                    onPress={() => updateControllers(5)}
+                  />
+                </View>
+              :
+                <View>
+                  
+                </View>
+            }
+            <View style={styles.mainPageContainerBodyBlockBody}>
+              <Text style={styles.mainPageContainerBodyBlockBodyHeader}>
+                Состав тела
               </Text>
-              <Text style={styles.mainPageContainerWaterBodyAsideRowMeasure}>
-                стак.
-              </Text>
+              <View style={styles.mainPageContainerBodyBlockBodyRow}>
+                <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
+                  <Entypo name="home" size={24} color="green" />
+                  <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
+                    <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
+                      0
+                    </Text>
+                    <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
+                      кг
+                    </Text>
+                  </View>              
+                </View>
+                <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
+                  <Fontisto name="spinner-fidget" size={24} color="brown" />
+                  <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
+                    <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
+                      0
+                    </Text>
+                    <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
+                      %
+                    </Text>
+                  </View>              
+                </View>
+                <View style={styles.mainPageContainerBodyBlockBodyRowItem}>
+                  <MaterialCommunityIcons name="human" size={24} color="blue" />
+                  <View style={styles.mainPageContainerBodyBlockBodyRowItemFooter}>
+                    <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterLabel}>
+                      0
+                    </Text>
+                    <Text style={styles.mainPageContainerBodyBlockBodyRowItemFooterMeasure}>
+                      кг
+                    </Text>
+                  </View>              
+                </View>
+              </View>
             </View>
           </View>
-          <View style={styles.mainPageContainerWaterBodyRow}>
-            <View style={styles.mainPageContainerWaterBodyRowRemoveBtnWrap}>
-              <Button title="-" style={styles.mainPageContainerWaterBodyRowRemoveBtn} disabled={isRemoveGlassBtnDisabled} onPress={() => removeGlass()} />
-            </View>
-            <View style={styles.mainPageContainerWaterBodyRowAddBtnWrap}>
-              <Button title="+" style={styles.mainPageContainerWaterBodyRowAddBtn} onPress={() => addGlass()} />
+        :
+          <View>
+            
+          </View>
+      }
+      {
+        isSelectionMode || (!isSelectionMode && controllers[6]) ?
+          <View
+            style={styles.mainPageContainerWaterBlock}
+            onPress={() => goToActivity(navigation, 'WaterActivity')}
+          >
+            {
+              isSelectionMode ?
+                <View style={styles.mainPageContainerBlockHeader}>
+                  <AntDesign
+                    name={
+                      controllers[6] ?
+                        'minuscircle'
+                      :
+                        'pluscircle'
+                    }
+                    size={24}
+                    color={
+                      controllers[6] ?
+                        'red'
+                      :
+                        'green'
+                    }
+                    onPress={() => updateControllers(6)}
+                  />
+                </View>
+              :
+                <View>
+                  
+                </View>
+            }
+            <View style={styles.mainPageContainerWaterBody}>
+              <View style={styles.mainPageContainerWaterBodyAside}>
+                <Text style={styles.mainPageContainerWaterBodyAsideLabel}>
+                  Вода
+                </Text>
+                <View style={styles.mainPageContainerWaterBodyAsideRow}>
+                  <Text style={styles.mainPageContainerWaterBodyAsideRowCount}>
+                    {
+                      countGlasses
+                    }
+                  </Text>
+                  <Text style={styles.mainPageContainerWaterBodyAsideRowMeasure}>
+                    стак.
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.mainPageContainerWaterBodyRow}>
+                <View style={styles.mainPageContainerWaterBodyRowRemoveBtnWrap}>
+                  <Button title="-" style={styles.mainPageContainerWaterBodyRowRemoveBtn} disabled={isRemoveGlassBtnDisabled} onPress={() => removeGlass()} />
+                </View>
+                <View style={styles.mainPageContainerWaterBodyRowAddBtnWrap}>
+                  <Button title="+" style={styles.mainPageContainerWaterBodyRowAddBtn} onPress={() => addGlass()} />
+                </View>
+              </View>
             </View>
           </View>
-        </View>
-      </TouchableOpacity>
+        :
+          <View>
+            
+          </View>
+      }
+      {
+        isSelectionMode ?
+          <View>
+            <View>
+              <Button
+                title="Отмена"
+                onPress={() => {
+                  setIsSelectionMode(false)
+                  setControllers(initialControllers)
+                }}
+              />
+            </View>
+            <View>
+              <Button
+                title="Сохранить"
+                onPress={() => setIsSelectionMode(false)}
+              />
+            </View>
+          </View>
+        :
+          <View>
+
+          </View>
+      }
     </ScrollView>
   )
 }
@@ -1814,6 +2095,55 @@ export function MyPageActivity({ navigation }) {
     navigation.navigate(activityName, params)
   }
 
+  const [awards, setAwards] = useState([])
+
+  const monthsLabels = {
+    '1': 'янв',
+    '2': 'февр.',
+    '3': 'мар.',
+    '4': 'апр.',
+    '5': 'мая',
+    '6': 'июн.',
+    '7': 'июл.',
+    '8': 'авг.',
+    '9': 'сен.',
+    '10': 'окт.',
+    '11': 'ноя.',
+    '12': 'дек.'
+  }
+
+  const getAwardDate = (desc) => {
+    const awardDateAndTime = desc.split(' ')
+    const awardDate = awardDateAndTime[0]
+    const awardTime = awardDateAndTime[1]
+    const awardDateParts = awardDate.split('.')
+    const rawAwardDateDay = awardDateParts[0]
+    const rawAwardDateMonth = awardDateParts[1]
+    const awardDateMonth = monthsLabels[rawAwardDateMonth]
+    const representationAwardDate = `${rawAwardDateDay} ${awardDateMonth}`
+    return representationAwardDate
+  }
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM awards;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedAwards) => {
+      let tempReceivedAwards = []
+      Array.from(receivedAwards.rows).forEach((awardRow, awardRowIdx) => {
+        const award = Object.values(receivedAwards.rows.item(awardRowIdx))
+        tempReceivedAwards = [
+          ...tempReceivedAwards,
+          {
+            id: award[0],
+            name: award[1],
+            description: award[2],
+            type: award[3]
+          }
+        ]
+      })
+      setAwards(tempReceivedAwards)
+    })
+  })
+
   return (
     <ScrollView style={styles.myPageContainer}>
       <View style={styles.myPageContainerUserHeader}>
@@ -1957,10 +2287,44 @@ export function MyPageActivity({ navigation }) {
           <Text style={styles.myPageContainerUserAwardsHeaderLabel}>
             Значки
           </Text>
-          <Ionicons name="chevron-forward" size={24} color="black" />
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color="black"
+            onPress={() => goToActivity(navigation, 'AwardsActivity')}
+          />
         </View>
         <ScrollView style={styles.myPageContainerUserAwardsShortcuts} horizontal={true}>
-          <View style={styles.myPageContainerUserAwardsShortcut}>
+          {
+            awards.map((award, awardIndex) => {
+              return (
+                <TouchableOpacity
+                  style={styles.myPageContainerUserAwardsShortcut}
+                  onPress={() => {
+                    goToActivity(navigation, 'AwardActivity', {
+                      awardName: award.name,
+                      awardDesc: award.description,
+                      awardType: award.type
+                    })
+                  }}
+                  key={awardIndex}
+                >
+                  <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
+                  <Text>
+                    {
+                      award.name
+                    }
+                  </Text>
+                  <Text>
+                    {
+                      getAwardDate(award.description)
+                    }
+                  </Text>
+                </TouchableOpacity>
+              )
+            })
+          }
+          {/* <View style={styles.myPageContainerUserAwardsShortcut}>
             <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
             <Text>
               Упражнение
@@ -2004,7 +2368,7 @@ export function MyPageActivity({ navigation }) {
             <Text>
               11 февр.
             </Text>
-          </View>
+          </View> */}
         </ScrollView>
       </View>
     </ScrollView>
@@ -2621,8 +2985,8 @@ export default function App() {
   db = SQLite.openDatabase('healthdatabase.db')
   
   const testActivity = 'MainTabsActivity'
-
-  // let sqlStatement = `DROP TABLE \"controllers\";`
+  
+  // let sqlStatement = `DROP TABLE \"awards\";`
   // db.transaction(transaction => {
   //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
   //   })
@@ -2989,7 +3353,7 @@ export default function App() {
           name="AwardsActivity"
           component={AwardsActivity}
           options={{
-            title: ''
+            title: 'Значки'
           }}
         />
         <Stack.Screen
@@ -3003,7 +3367,8 @@ export default function App() {
           name="AwardActivity"
           component={AwardActivity}
           options={{
-            title: ''
+            title: 'Награды',
+            headerRight: () => <FontAwesome5 name="share-alt" size={24} color="black" />
           }}
         />
       </Stack.Navigator>
@@ -3372,7 +3737,9 @@ export function RecordExerciseActivity({ navigation, route }) {
       const exerciseStartTime = `${currentDateHours}:${currentDateMinutes}`
       let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${true}, exercise_type=\"${exerciseType}\", exercise_start_time=\"${exerciseStartTime}\" WHERE _id=1;`
       transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-        goToActivity(navigation, 'RecordStartedExerciseActivity')
+        goToActivity(navigation, 'RecordStartedExerciseActivity', {
+          exerciseType: exerciseType
+        })
       })
     })
   }
@@ -3406,7 +3773,7 @@ export function RecordExerciseActivity({ navigation, route }) {
   )
 }
 
-export function RecordStartedExerciseActivity({ navigation }) {
+export function RecordStartedExerciseActivity({ navigation, route }) {
   
   const [isStarted, setIsStarted] = useState(true)
   
@@ -3434,18 +3801,77 @@ export function RecordStartedExerciseActivity({ navigation }) {
 
   const [startedTimerSecondsTime, setStartedTimerSecondsTime] = useState('00')
 
+  const [exerciseRecords, setExerciseRecords] = useState([])
+
+  const { exerciseType } = route.params
+
   const goToActivity = (navigation, activityName, params = {}) => {
     navigation.navigate(activityName, params)
   }
 
   const completeExercise = () => {
+
+    const currentExerciseRecordDuration = startTimerTitle
+    const currentExerciseRecordDurationParts = currentExerciseRecordDuration.split(':')
+    const currentRawExerciseRecordDurationHours = currentExerciseRecordDurationParts[0]
+    const currentRawExerciseRecordDurationMinutes = currentExerciseRecordDurationParts[1]
+    const currentRawExerciseRecordDurationSeconds = currentExerciseRecordDurationParts[2]
+    const currentExerciseRecordDurationHours = Number.parseInt(currentRawExerciseRecordDurationHours)
+    const currentExerciseRecordDurationMinutes = Number.parseInt(currentRawExerciseRecordDurationMinutes)
+    const currentExerciseRecordDurationSeconds = Number.parseInt(currentRawExerciseRecordDurationSeconds)
+    const currentExerciseRecordDurationTotalSeconds = currentExerciseRecordDurationSeconds + (currentExerciseRecordDurationMinutes * 60) + (currentExerciseRecordDurationHours * 60 * 60)
+
     resetStartedTimer()
-    let sqlStatement = `INSERT INTO \"exercise_records\"(type, datetime, duration) VALUES (\"Ходьба\", \"22.11.2000 00:00\", \"00:00\");`
+    
+    const currentDate = new Date()
+    const currentDateDay = currentDate.getDate()
+    const currentDateMonthIndex = currentDate.getMonth()
+    const currentDateMonth = currentDateMonthIndex + 1
+    const currentDateYear = currentDate.getFullYear()
+    let currentDateHours = currentDate.getHours()
+    if (currentDateHours < 10) {
+      currentDateHours = `0${currentDateHours}`
+    }
+    const currentDateMinutes = currentDate.getMinutes()
+    if (currentDateMinutes < 10) {
+      currentDateHours = `0${currentDateMinutes}`
+    }
+    const dateTime = `${currentDateDay}.${currentDateMonth}.${currentDateYear} ${currentDateHours}:${currentDateMinutes}`
+    
+    let sqlStatement = `INSERT INTO \"exercise_records\"(type, datetime, duration) VALUES (\"${exerciseType}\", \"${dateTime}\", \"${startTimerTitle}\");`
     db.transaction(transaction => {
       transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
         let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${false} WHERE _id=1;`
         transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-          goToActivity(navigation, 'RecordExerciseResultsActivity')          
+          let cursorOfWins = 0
+          for (let exerciseRecord of exerciseRecords) {
+            const exerciseRecordDuration = exerciseRecord.duration
+            const exerciseRecordDurationParts = exerciseRecordDuration.split(':')
+            const rawExerciseRecordDurationHours = exerciseRecordDurationParts[0]
+            const rawExerciseRecordDurationMinutes = exerciseRecordDurationParts[1]
+            const rawExerciseRecordDurationSeconds = exerciseRecordDurationParts[2]
+            const exerciseRecordDurationHours = Number.parseInt(rawExerciseRecordDurationHours)
+            const exerciseRecordDurationMinutes = Number.parseInt(rawExerciseRecordDurationMinutes)
+            const exerciseRecordDurationSeconds = Number.parseInt(rawExerciseRecordDurationSeconds)
+            const exerciseRecordDurationTotalSeconds = exerciseRecordDurationSeconds + (exerciseRecordDurationMinutes * 60) + (exerciseRecordDurationHours * 60 * 60)
+            const isDurationGt = currentExerciseRecordDurationTotalSeconds > exerciseRecordDurationTotalSeconds
+            if (isDurationGt) {
+              cursorOfWins++
+            }
+          }
+          const isAddDurationAward = cursorOfWins >= exerciseRecords.length
+          console.log(`isAddDurationAward: ${isAddDurationAward}, cursorOfWins: ${cursorOfWins}, exerciseRecords.length: ${exerciseRecords.length}`)
+          if (isAddDurationAward) {
+            let sqlStatement = `INSERT INTO \"awards\"(name, description, type) VALUES (\"Самая большая длительность\", \"${dateTime}\", \"${exerciseType}\");`
+            db.transaction(transaction => {
+              transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
+                goToActivity(navigation, 'RecordExerciseResultsActivity')
+              })
+            })
+          } else {
+            goToActivity(navigation, 'RecordExerciseResultsActivity')
+          }
+          // goToActivity(navigation, 'RecordExerciseResultsActivity')
         })
       }, (tx) => {
         console.log('ошибка добавления записи')
@@ -3538,6 +3964,24 @@ export function RecordStartedExerciseActivity({ navigation }) {
     :
       'rgb(175, 175, 175)'
   }
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM exercise_records;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedExerciseRecords) => {
+      let tempReceivedExerciseRecords = []
+      Array.from(receivedExerciseRecords.rows).forEach((exerciseRecordRow, exerciseRecordRowIdx) => {
+        const exerciseRecord = Object.values(receivedExerciseRecords.rows.item(exerciseRecordRowIdx))
+        tempReceivedExerciseRecords = [
+          ...tempReceivedExerciseRecords,
+          {
+            id: exerciseRecord[0],
+            duration: exerciseRecord[3]
+          }
+        ]
+      })
+      setExerciseRecords(tempReceivedExerciseRecords)
+    })
+  })
 
   return (
     <View style={styles.recordStartedExerciseActivityContainer}>
@@ -4091,6 +4535,8 @@ export function EditMyPageActivity({ navigation }) {
 
   const [activityLevel, setActivityLevel] = useState('')
 
+  const [indicators, setIndicators] = useState([])
+
   const goToActivity = (navigation, activityName, params = {}) => {
     navigation.navigate(activityName, params)
   }
@@ -4121,6 +4567,39 @@ export function EditMyPageActivity({ navigation }) {
     }
     return {}
   }
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM indicators;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
+      let tempReceivedIndicators = []
+      Array.from(receivedIndicators.rows).forEach((indicatorsItemRow, indicatorsItemRowIdx) => {
+        const indicatorsItem = Object.values(receivedIndicators.rows.item(indicatorsItemRowIdx))
+        tempReceivedIndicators = [
+          ...tempReceivedIndicators,
+          {
+            id: indicatorsItem[0],
+            water: indicatorsItem[2],
+            isExerciseEnabled: indicatorsItem[5],
+            exerciseStartTime: indicatorsItem[6],
+            exerciseType: indicatorsItem[7],
+            exerciseDuration: indicatorsItem[8]
+          }
+        ]
+      })
+      setIndicators(tempReceivedIndicators)
+    })
+  })
+
+  useEffect(() => {
+    const countIndicators = indicators.length
+    const isIndicatorsExists = countIndicators >= 1
+    console.log(`isIndicatorsExists: ${isIndicatorsExists}`)
+    if (isIndicatorsExists) {
+      const receiverdIndicators = indicators[0]
+      const localActivityLevel = receiverdIndicators.level
+      setActivityLevel(localActivityLevel)
+    }
+  })
 
   return (
     <View style={styles.editMyPageActivityContainer}>
@@ -4235,7 +4714,7 @@ export function EditMyPageActivity({ navigation }) {
               style={
                 [
                   styles.editMyPageActivityActivitiesItemIcon,
-                  getSelectedActivityStyle()
+                  getSelectedActivityStyle('Сидячий образ жизни')
                 ]
               }
             >
@@ -4258,7 +4737,14 @@ export function EditMyPageActivity({ navigation }) {
             style={styles.editMyPageActivityActivitiesItem}
             onPress={() => setActivityLevel('Несущественная активность')}  
           >
-            <View style={styles.editMyPageActivityActivitiesItemIcon}>
+            <View
+              style={
+                [
+                  styles.editMyPageActivityActivitiesItemIcon,
+                  getSelectedActivityStyle('Несущественная активность')
+                ]
+              }
+            >
               <FontAwesome5
                 name="walking"
                 size={48}
@@ -4416,32 +4902,445 @@ export function EditMyPageActivity({ navigation }) {
   )
 }
 
-export function AwardsActivity() {
+export function AwardsActivity({ navigation }) {
+  
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  const [isAwardExerciseExists, setIsAwardExerciseExists] = useState(false)
+
+  const [awards, setAwards] = useState([])
+
+  const monthsLabels = {
+    '1': 'янв',
+    '2': 'февр.',
+    '3': 'мар.',
+    '4': 'апр.',
+    '5': 'мая',
+    '6': 'июн.',
+    '7': 'июл.',
+    '8': 'авг.',
+    '9': 'сен.',
+    '10': 'окт.',
+    '11': 'ноя.',
+    '12': 'дек.'
+  }
+
+  const getAwardDate = (desc) => {
+    const awardDateAndTime = desc.split(' ')
+    const awardDate = awardDateAndTime[0]
+    const awardTime = awardDateAndTime[1]
+    const awardDateParts = awardDate.split('.')
+    const rawAwardDateDay = awardDateParts[0]
+    const rawAwardDateMonth = awardDateParts[1]
+    const awardDateMonth = monthsLabels[rawAwardDateMonth]
+    const representationAwardDate = `${rawAwardDateDay} ${awardDateMonth}`
+    return representationAwardDate
+  }
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM awards;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedAwards) => {
+      let tempReceivedAwards = []
+      Array.from(receivedAwards.rows).forEach((awardRow, awardRowIdx) => {
+        const award = Object.values(receivedAwards.rows.item(awardRowIdx))
+        if (award[3] === 'Плавание' || award[3] === 'Велоспорт' || award[3] === 'Поход' || award[3] === 'Йога' || award[3] === 'Ходьба' || award[3] === 'Бег') {
+          setIsAwardExerciseExists(true)
+        }
+        tempReceivedAwards = [
+          ...tempReceivedAwards,
+          {
+            id: award[0],
+            name: award[1],
+            description: award[2],
+            type: award[3]
+          }
+        ]
+      })
+      setAwards(tempReceivedAwards)
+    })
+  })
+  
   return (
-    <View>
-      <Text>
-        AwardsActivity
-      </Text>
-    </View>
+    <ScrollView style={styles.awardsActivityContainer}>
+      <View style={styles.awardsActivityItem}>
+        <Text style={styles.awardsActivityItemHeader}>
+          Шаги
+        </Text>
+        <View style={styles.awardsActivityItemRow}>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Цель достигнута
+            </Text>
+          </View>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              {
+                'Наибольшее колич.\nшагов'
+              }
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.awardsActivityItem}>
+        <Text style={styles.awardsActivityItemHeader}>
+          Пища
+        </Text>
+        <View style={styles.awardsActivityItemRow}>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Цель достигнута
+            </Text>
+          </View>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="transparent"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              {
+                ''
+              }
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.awardsActivityItem}>
+        <Text style={styles.awardsActivityItemHeader}>
+          Программы
+        </Text>
+        <View style={styles.awardsActivityItemRow}>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Идеально
+            </Text>
+          </View>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Отличная работа
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View style={styles.awardsActivityItem}>
+        <Text style={styles.awardsActivityItemHeader}>
+          Упражнение
+        </Text>
+        <View style={styles.awardsActivityItemRow}>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Общее расстояние
+            </Text>
+          </View>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Общее расстояние
+            </Text>
+          </View>
+        </View>
+        <View style={styles.awardsActivityItemRow}>
+          {
+            isAwardExerciseExists ?
+              <TouchableOpacity
+                style={styles.awardsActivityItemRowElement}
+                onPress={() => goToActivity(navigation, 'AwardsCategoryActivity', {
+                  category: 'Упражнение'
+                })}
+              >
+                <FontAwesome5
+                  name="trophy"
+                  size={96}
+                  color="rgb(255, 255, 50)"
+                />
+                <Text style={styles.awardsActivityItemRowElementLabel}>
+                  Записи
+                </Text>
+                <Text style={styles.awardsActivityItemRowElementLabel}>
+                  6 значков
+                </Text>
+                <Text style={styles.awardsActivityItemRowElementLabel}>
+                  сегодня
+                </Text>
+              </TouchableOpacity>
+            :
+            <View style={styles.awardsActivityItemRowElement}>
+              <FontAwesome5
+                name="trophy"
+                size={96}
+                color="rgb(255, 255, 50)"
+              />
+              <Text style={styles.awardsActivityItemRowElementLabel}>
+                Записи
+              </Text>
+            </View>
+          }
+          <View style={styles.awardsActivityItemRowElement}>
+              
+          </View>
+        </View>
+      </View>
+      <View style={styles.awardsActivityItem}>
+        <Text style={styles.awardsActivityItemHeader}>
+          Сон
+        </Text>
+        <View style={styles.awardsActivityItemRow}>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              {
+                'Хорошее соблюдение\nрежима'
+              }
+            </Text>
+          </View>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Пробуждение: вовремя
+            </Text>
+          </View>
+        </View>
+        <View style={styles.awardsActivityItemRow}>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              Отход ко сну: вовремя
+            </Text>
+          </View>
+          <View style={styles.awardsActivityItemRowElement}>
+            <FontAwesome5
+              name="trophy"
+              size={96}
+              color="rgb(255, 255, 50)"
+            />
+            <Text style={styles.awardsActivityItemRowElementLabel}>
+              {
+                'Наибольшее колич.\nшагов'
+              }
+            </Text>
+          </View>
+        </View>
+      </View>
+    </ScrollView>
   )
 }
 
-export function AwardsCategoryActivity() {
+export function AwardsCategoryActivity({ navigation, route }) {
+  
+  const { category } = route.params
+  
+  const goToActivity = (navigation, activityName, params = {}) => {
+    navigation.navigate(activityName, params)
+  }
+
+  const [awards, setAwards] = useState([])
+
+  const monthsLabels = {
+    '1': 'янв',
+    '2': 'февр.',
+    '3': 'мар.',
+    '4': 'апр.',
+    '5': 'мая',
+    '6': 'июн.',
+    '7': 'июл.',
+    '8': 'авг.',
+    '9': 'сен.',
+    '10': 'окт.',
+    '11': 'ноя.',
+    '12': 'дек.'
+  }
+
+  const getAwardDate = (desc) => {
+    const awardDateAndTime = desc.split(' ')
+    const awardDate = awardDateAndTime[0]
+    const awardTime = awardDateAndTime[1]
+    const awardDateParts = awardDate.split('.')
+    const rawAwardDateDay = awardDateParts[0]
+    const rawAwardDateMonth = awardDateParts[1]
+    const awardDateMonth = monthsLabels[rawAwardDateMonth]
+    const representationAwardDate = `${rawAwardDateDay} ${awardDateMonth}`
+    return representationAwardDate
+  }
+
+  db.transaction(transaction => {
+    const sqlStatement = "SELECT * FROM awards;"
+    transaction.executeSql(sqlStatement, [], (tx, receivedAwards) => {
+      let tempReceivedAwards = []
+      Array.from(receivedAwards.rows).forEach((awardRow, awardRowIdx) => {
+        const award = Object.values(receivedAwards.rows.item(awardRowIdx))
+        tempReceivedAwards = [
+          ...tempReceivedAwards,
+          {
+            id: award[0],
+            name: award[1],
+            description: award[2],
+            type: award[3]
+          }
+        ]
+      })
+      setAwards(tempReceivedAwards)
+    })
+  })
+
   return (
-    <View>
-      <Text>
-        AwardsCategoryActivity
-      </Text>
-    </View>
+    <ScrollView style={styles.awardsActivityContainer}>
+      <View style={styles.awardsActivityItem}>
+        <Text style={styles.awardsActivityItemHeader}>
+          {
+            category
+          }
+        </Text>
+        <View style={styles.awardsActivityItemRow}>
+          {
+            awards.map((award, awardIndex) => {
+              if (category === 'Упражнение' && award.type === 'Велоспорт' || award.type === 'Ходьба' || award.type === 'Бег' || award.type === 'Йога' || award.type === 'Плавание' || award.type === 'Поход') {
+                return (
+                  <TouchableOpacity
+                    style={
+                      [
+                        styles.awardsActivityItemRowElement,
+                        styles.awardsCategoryActivityElement
+                      ]
+                    }
+                    key={awardIndex}
+                    onPress={() => goToActivity(navigation, 'AwardActivity', {
+                      awardName: award.name,
+                      awardDesc: award.description,
+                      awardType: award.type
+                    })}
+                  >
+                    <FontAwesome5
+                      name="trophy"
+                      size={96}
+                      color="rgb(255, 255, 50)"
+                    />
+                    <Text style={styles.awardsActivityItemRowElementLabel}>
+                      {
+                        award.name
+                      }
+                    </Text>
+                    <Text style={styles.awardsActivityItemRowElementLabel}>
+                      {
+                        award.description.split(' ')[1]
+                      }
+                    </Text>
+                    <Text style={styles.awardsActivityItemRowElementLabel}>
+                      {
+                        award.description.split(' ')[0]
+                      }
+                    </Text>
+                  </TouchableOpacity>
+                )
+              }
+            })
+          }
+        </View>
+      </View>
+    </ScrollView>
   )
 }
 
-export function AwardActivity() {
+export function AwardActivity({ route }) {
+  
+  const { awardName, awardDesc, awardType } = route.params
+  
   return (
-    <View>
-      <Text>
-        AwardActivity
+    <View style={styles.awardActivityContainer}>
+      <View style={styles.awardActivityCalendar}>
+        <Entypo
+          name="chevron-left"
+          size={24}
+          color="black"
+          onPress={() => {
+
+          }}
+        />
+        <Text>
+          {
+            awardDesc.split(' ')[0]
+          }
+        </Text>
+        <Ionicons
+          name="chevron-forward"
+          size={24}
+          color="black"
+          onPress={() => {
+            
+          }}
+        />
+      </View>
+      <Text style={styles.awardActivityType}>
+        {
+          awardType
+        }
       </Text>
+      <Text style={styles.awardActivityName}>
+        {
+          awardName
+        }
+      </Text>
+      <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
+      <Text style={styles.awardActivityTime}>
+        {
+          awardDesc.split(' ')[1]
+        }
+      </Text>
+      <Text style={styles.awardActivityLabel}>
+        {
+          'Невероятно вы установили новый рекорд,\nсбросив на 2953 ккал больше веса по\nсравнению с предыдущим рекордом.'
+        }
+      </Text>
+      <View>
+
+      </View>
     </View>
   )
 }
@@ -6640,6 +7539,60 @@ const styles = StyleSheet.create({
     fontWeight: 700
   },
   settingsGeneralMeasureActivityItemValue: {
+
+  },
+  awardsActivityContainer: {
+
+  },
+  awardsActivityItem: {
+    backgroundColor: 'rgb(255, 255, 255)',
+    padding: 15,
+    width: '95%',
+    marginHorizontal: 'auto'
+  },
+  awardsActivityItemHeader: {
+    fontWeight: '700',
+    fontSize: 18
+  },
+  awardsActivityItemRow: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },
+  awardsActivityItemRowElement: {
+    display: 'flex',
+    flexDirection: 'column',
+    width: '50%',
+    alignItems: 'center'
+  },
+  awardsActivityItemRowElementLabel: {
+    color: 'rgb(165, 165, 165)',
+    textAlign: 'center'
+  },
+  awardsCategoryActivityElement: {
+    width: 'auto'
+  },
+  awardActivityContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  awardActivityCalendar: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around'  
+  },
+  awardActivityType: {
+    color: 'rgb(0, 150, 0)'
+  },
+  awardActivityName: {
+    fontSize: 24
+  },
+  awardActivityTime: {
+    fontSize: 24,
+    color: 'rgb(0, 150, 0)'
+  },
+  awardActivityLabel: {
 
   }
 })
