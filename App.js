@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar'
-import { React, useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch, Menu, MenuItem, Touchable } from 'react-native'
+import { React, useState, useEffect, useRef } from 'react'
+import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch, Menu, MenuItem, Platform, } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createStackNavigator } from '@react-navigation/stack'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
@@ -19,6 +19,17 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import MapView from 'react-native-maps'
 // Menu, MenuItem, MenuDivider
 import * as MaterialMenu from 'react-native-material-menu'
+import * as Notifications from 'expo-notifications'
+import Constants from 'expo-constants'
+import { ProgressBar, Colors } from 'react-native-paper'
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+})
 
 const Tab = createBottomTabNavigator()
 
@@ -383,6 +394,14 @@ export function MainPageActivity({ navigation }) {
 
   const [isSelectionMode, setIsSelectionMode] = useState(false)
 
+  const [expoPushToken, setExpoPushToken] = useState('')
+  
+  const [notification, setNotification] = useState(false)
+  
+  const notificationListener = useRef()
+  
+  const responseListener = useRef()
+
   const resetStartedTimer = () => {
     clearInterval(startedTimer)
     setStartedTimer(null)
@@ -571,6 +590,102 @@ export function MainPageActivity({ navigation }) {
     setControllers(updatedControllers)
   }
 
+  async function schedulePushNotification() {
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: `${stepsCount} шагов`,
+        body: (
+          stepsCount === 0 ?
+            'Нет данных о шагах за сегодня'
+          :
+            'Цель: 6000 шага (-ов)'
+        ),
+        data: { data: '' },
+      },
+      trigger: { seconds: 15 }
+    })
+  }
+  
+  async function sendPushNotification(expoPushToken) {
+    const message = {
+      to: expoPushToken,
+      sound: 'default',
+      title: 'Original Title',
+      body: 'And here is the body!',
+      data: { someData: 'goes here' },
+    };
+  
+    await fetch('https://exp.host/--/api/v2/push/send', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Accept-encoding': 'gzip, deflate',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(message),
+    })
+  }
+
+  // registerForPushNotificationsAsync = async () => {
+  //   if (Device.isDevice) {
+  //     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
+  //     let finalStatus = existingStatus
+  //     if (existingStatus !== 'granted') {
+  //       const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
+  //       finalStatus = status
+  //     }
+  //     if (finalStatus !== 'granted') {
+  //       alert('Failed to get push token for push notification!')
+  //       return
+  //     }
+  //     const token = await Notifications.getExpoPushTokenAsync()
+  //     console.log(token)
+  //     this.setState({ expoPushToken: token })
+  //   } else {
+  //     alert('Must use physical device for Push Notifications')
+  //   }
+  
+  //   if (Platform.OS === 'android') {
+  //     Notifications.createChannelAndroidAsync('default', {
+  //       name: 'default',
+  //       sound: true,
+  //       priority: 'max',
+  //       vibrate: [0, 250, 250, 250],
+  //     })
+  //   }
+  // }
+
+  async function registerForPushNotificationsAsync() {
+    let token
+    if (Constants.isDevice) {
+      const { status: existingStatus } = await Notifications.getPermissionsAsync()
+      let finalStatus = existingStatus
+      if (existingStatus !== 'granted') {
+        const { status } = await Notifications.requestPermissionsAsync()
+        finalStatus = status
+      }
+      if (finalStatus !== 'granted') {
+        alert('Failed to get push token for push notification!')
+        return
+      }
+      token = (await Notifications.getExpoPushTokenAsync()).data
+      console.log(token)
+    } else {
+      alert('Must use physical device for Push Notifications')
+    }
+  
+    if (Platform.OS === 'android') {
+      Notifications.setNotificationChannelAsync('default', {
+        name: 'default',
+        importance: Notifications.AndroidImportance.MAX,
+        vibrationPattern: [0, 250, 250, 250],
+        lightColor: '#FF231F7C'
+      })
+    }
+  
+    return token
+  }
+
   useEffect(() => {
     _subscribe()
     return () => _unsubscribe()
@@ -579,6 +694,8 @@ export function MainPageActivity({ navigation }) {
   const { x, y, z } = data
   const [isDetectStep, setIsDetectStep] = useState(false)
   const [stepsCount, setStepsCount] = useState(0)
+  const [stepsCountProgress, setStepsCountProgress] = useState(0)
+  const [isDebugMode, setDebugMode] = useState(false)
   const isXGt = x > 0
   const isXLess = x < 0
   const isFirstPhase = isXGt && isDetectStep
@@ -588,29 +705,90 @@ export function MainPageActivity({ navigation }) {
     const updatedStepsCount = lastStepsCount + 1
     setStepsCount(updatedStepsCount)
     setIsDetectStep(false)
+    // loadedSize / this.currentFileSize * 100
+    // setStepsCountProgress(Number.parseInt(updatedStepsCount / 6000))
+    setStepsCountProgress(updatedStepsCount / 6000)
+    // setStepsCountProgress(Number.parseInt(updatedStepsCount / 6000 * 100))
+    // setStepsCountProgress(Number.parseInt(6000 - 6000 / updatedStepsCount))
+    schedulePushNotification()
   } else if (isSecondPhase) {
     setIsDetectStep(true)
   }
 
   initialControllers = controllers
 
+  useEffect(() => {
+    
+    registerForPushNotificationsAsync().then(token => setExpoPushToken(token))
+
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification)
+    })
+
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response)
+    })
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current)
+      Notifications.removeNotificationSubscription(responseListener.current)
+    }
+
+  })
+
   return (
     <ScrollView style={styles.mainPageContainer}>
-      <Text>
-        {
-          `${x}`
-        }
-      </Text>
-      <Text>
-        {
-          `${y}`
-        }
-      </Text>
-      <Text>
-        {
-          `${z}`
-        }
-      </Text>
+      {
+        isDebugMode ?
+          <>
+           <Text>
+              {
+                `${x}`
+              }
+            </Text>
+            <Text>
+              {
+                `${y}`
+              }
+            </Text>
+            <Text>
+              {
+                `${z}`
+              }
+            </Text>
+          </>
+        :
+          <Text>
+
+          </Text>
+      }
+      {
+        isDebugMode ?
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'space-around',
+            }}>
+            <Text>Your expo push token: {expoPushToken}</Text>
+            <View style={{ alignItems: 'center', justifyContent: 'center' }}>
+              <Text>Title: {notification && notification.request.content.title} </Text>
+              <Text>Body: {notification && notification.request.content.body}</Text>
+              <Text>Data: {notification && JSON.stringify(notification.request.content.data)}</Text>
+            </View>
+            <Button
+              title="Press to schedule a notification"
+              onPress={async () => {
+                // await sendPushNotification()
+                await schedulePushNotification()
+              }}
+            />
+          </View>
+        :
+          <View>
+
+          </View>
+      }
       <Button onPress={() => {
         setIsSelectionMode(true)
       }} title="Управление элементами" />
@@ -724,11 +902,15 @@ export function MainPageActivity({ navigation }) {
                 </View>
                 <View>
                   <Text>
-                    0%
+                    {
+                      Number.parseInt(stepsCountProgress * 100)
+                    }%
                   </Text>
-                  <Text>
-                    ------------------------------------
-                  </Text>
+                  <ProgressBar
+                    style={{width: 150}}
+                    progress={stepsCountProgress}
+                    color="#49B5F2"
+                  />
                 </View>
               </View>
             </View>
@@ -3805,6 +3987,8 @@ export function RecordStartedExerciseActivity({ navigation, route }) {
 
   const { exerciseType } = route.params
 
+  const [exerciseStartTime, setExerciseStartTime] = useState(new Date())
+
   const goToActivity = (navigation, activityName, params = {}) => {
     navigation.navigate(activityName, params)
   }
@@ -3861,15 +4045,35 @@ export function RecordStartedExerciseActivity({ navigation, route }) {
           }
           const isAddDurationAward = cursorOfWins >= exerciseRecords.length
           console.log(`isAddDurationAward: ${isAddDurationAward}, cursorOfWins: ${cursorOfWins}, exerciseRecords.length: ${exerciseRecords.length}`)
+          let exerciseStartTimeHours = exerciseStartTime.getHours()
+          if (exerciseStartTimeHours < 10) {
+            exerciseStartTimeHours = `0${exerciseStartTimeHours}`
+          }
+          let exerciseStartTimeMinutes = exerciseStartTime.getMinutes()
+          if (exerciseStartTimeMinutes < 10) {
+            exerciseStartTimeMinutes = `0${exerciseStartTimeMinutes}`
+          }
           if (isAddDurationAward) {
             let sqlStatement = `INSERT INTO \"awards\"(name, description, type) VALUES (\"Самая большая длительность\", \"${dateTime}\", \"${exerciseType}\");`
             db.transaction(transaction => {
               transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
-                goToActivity(navigation, 'RecordExerciseResultsActivity')
+                goToActivity(navigation, 'RecordExerciseResultsActivity', {
+                  exerciseType: `${exerciseType}`,
+                  exerciseDate: `${currentDateDay}.${currentDateMonth - 1}.${currentDateYear}`,
+                  exerciseStartTime: `${exerciseStartTimeHours}:${exerciseStartTimeMinutes}`,
+                  exerciseEndTime: `${currentDateHours}:${currentDateMinutes}`,
+                  exerciseDuration: `${startTimerTitle}`
+                })
               })
             })
           } else {
-            goToActivity(navigation, 'RecordExerciseResultsActivity')
+            goToActivity(navigation, 'RecordExerciseResultsActivity', {
+              exerciseType: `${exerciseType}`,
+              exerciseDate: `${currentDateDay}.${currentDateMonth - 1}.${currentDateYear}`,
+              exerciseStartTime: `${exerciseStartTimeHours}:${exerciseStartTimeMinutes}`,
+              exerciseEndTime: `${currentDateHours}:${currentDateMinutes}`,
+              exerciseDuration: `${startTimerTitle}`
+            })
           }
           // goToActivity(navigation, 'RecordExerciseResultsActivity')
         })
@@ -4430,6 +4634,43 @@ export function FoodHistoryActivity() {
 }
 
 export function RecordExerciseResultsActivity({ navigation, route }) {
+  
+  const { exerciseType, exerciseDate, exerciseStartTime, exerciseEndTime, exerciseDuration } = route.params
+  
+  const monthsLabels = [
+    'янв.',
+    'февр.',
+    'мар.',
+    'апр.',
+    'мая',
+    'июн.',
+    'июл.',
+    'авг.',
+    'сен.',
+    'окт.',
+    'ноя.',
+    'дек.'
+  ]
+
+  const weeksLabels = [
+    'пн',
+    'вт',
+    'ср',
+    'чт',
+    'пт',
+    'сб',
+    'вс'
+  ]
+
+  const getRepresentationeDate = (date) => {
+    const exerciseDateParts = date.split('.')
+    const rawExerciseDateDay = exerciseDateParts[0]
+    const rawExerciseDateMonth = exerciseDateParts[1]
+    const exerciseDateMonth = monthsLabels[rawExerciseDateMonth]
+    const representationExerciseDate = `${rawExerciseDateDay} ${exerciseDateMonth}`
+    return representationExerciseDate
+  }
+
   return (
     <View style={styles.recordExerciseResultsActivityContainer}>
       <View style={styles.recordExerciseResultsActivityHeader}>
@@ -4441,7 +4682,9 @@ export function RecordExerciseResultsActivity({ navigation, route }) {
             onPress={() => goToActivity(navigation, 'MainActivity')}
           />
           <Text>
-            Бег
+            {
+              exerciseType
+            }
           </Text>
         </View>
         <View style={styles.recordExerciseResultsActivityHeaderBtns}>
@@ -4450,10 +4693,14 @@ export function RecordExerciseResultsActivity({ navigation, route }) {
         </View>
       </View>
       <Text style={styles.recordExerciseResultsActivityDateLabel}>
-        вс, 20 февр.
+        {
+          `${getRepresentationeDate(exerciseDate)}`
+        }
       </Text>
       <Text style={styles.recordExerciseResultsActivityTimeLabel}>
-        19:21 - 19:31
+        {
+          `${exerciseStartTime} - ${exerciseEndTime}`
+        }
       </Text>
       <View style={styles.recordExerciseResultsActivityDistanseAndTime}>
 
@@ -4468,7 +4715,9 @@ export function RecordExerciseResultsActivity({ navigation, route }) {
               Время тренировки
             </Text>
             <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
-              00:01:06
+              {
+                exerciseDuration
+              }
             </Text>
           </View>
           <View style={styles.recordExerciseResultsActivityDetailsRowItem}>
@@ -4476,7 +4725,9 @@ export function RecordExerciseResultsActivity({ navigation, route }) {
               Время тренировки
             </Text>
             <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
-              00:01:06
+              {
+                exerciseDuration
+              }
             </Text>
           </View>
         </View>
@@ -4486,7 +4737,9 @@ export function RecordExerciseResultsActivity({ navigation, route }) {
               Время тренировки
             </Text>
             <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
-              00:01:06
+              {
+                exerciseDuration
+              }
             </Text>
           </View>
           <View style={styles.recordExerciseResultsActivityDetailsRowItem}>
@@ -4494,7 +4747,9 @@ export function RecordExerciseResultsActivity({ navigation, route }) {
               Время тренировки
             </Text>
             <Text style={styles.recordExerciseResultsActivityDetailsRowItemContent}>
-              00:01:06
+              {
+                exerciseDuration
+              }
             </Text>
           </View>
         </View>
@@ -7536,7 +7791,7 @@ const styles = StyleSheet.create({
     padding: 15
   },
   settingsGeneralMeasureActivityItemName: {
-    fontWeight: 700
+    fontWeight: '700'
   },
   settingsGeneralMeasureActivityItemValue: {
 

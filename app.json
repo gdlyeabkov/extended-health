@@ -5,6 +5,15 @@
     "version": "1.0.0",
     "assetBundlePatterns": [
       "**/*"
+    ],
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "color": "#ffffff",
+          "icon": "./assets/steps_logo.png"
+        }
+      ]
     ]
   },
   "name": "health"
