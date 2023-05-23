@@ -1,4 +1,3 @@
-import { StatusBar } from 'expo-status-bar'
 import { React, useState, useEffect, useRef } from 'react'
 import { StyleSheet, Text, View, Image, Button, ScrollView, CheckBox, Dimensions, Switch, Menu, MenuItem, Platform, } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
@@ -8,20 +7,16 @@ import { FontAwesome5, MaterialCommunityIcons, MaterialIcons, Octicons, Foundati
 import { TouchableOpacity, TextInput } from 'react-native-gesture-handler'
 import * as SQLite from 'expo-sqlite'
 import {
-  Paragraph,
   Dialog,
-  Portal,
-  Provider,
   RadioButton
 } from 'react-native-paper'
-import { Accelerometer, Gyroscope, Magnetometer } from 'expo-sensors'
+import { Accelerometer } from 'expo-sensors'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import MapView from 'react-native-maps'
-// Menu, MenuItem, MenuDivider
 import * as MaterialMenu from 'react-native-material-menu'
 import * as Notifications from 'expo-notifications'
 import Constants from 'expo-constants'
-import { ProgressBar, Colors } from 'react-native-paper'
+import { ProgressBar } from 'react-native-paper'
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -519,7 +514,6 @@ export function MainPageActivity({ navigation }) {
         setStartedTimerHoursTime(exerciseDurationParts[0])
         setStartedTimerMinutesTime(exerciseDurationParts[1])
         setStartedTimerSecondsTime(exerciseDurationParts[2])    
-        // runStartedTimer()
       }
     }
   }, [indicators])
@@ -606,55 +600,6 @@ export function MainPageActivity({ navigation }) {
     })
   }
   
-  async function sendPushNotification(expoPushToken) {
-    const message = {
-      to: expoPushToken,
-      sound: 'default',
-      title: 'Original Title',
-      body: 'And here is the body!',
-      data: { someData: 'goes here' },
-    };
-  
-    await fetch('https://exp.host/--/api/v2/push/send', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Accept-encoding': 'gzip, deflate',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(message),
-    })
-  }
-
-  // registerForPushNotificationsAsync = async () => {
-  //   if (Device.isDevice) {
-  //     const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS)
-  //     let finalStatus = existingStatus
-  //     if (existingStatus !== 'granted') {
-  //       const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS)
-  //       finalStatus = status
-  //     }
-  //     if (finalStatus !== 'granted') {
-  //       alert('Failed to get push token for push notification!')
-  //       return
-  //     }
-  //     const token = await Notifications.getExpoPushTokenAsync()
-  //     console.log(token)
-  //     this.setState({ expoPushToken: token })
-  //   } else {
-  //     alert('Must use physical device for Push Notifications')
-  //   }
-  
-  //   if (Platform.OS === 'android') {
-  //     Notifications.createChannelAndroidAsync('default', {
-  //       name: 'default',
-  //       sound: true,
-  //       priority: 'max',
-  //       vibrate: [0, 250, 250, 250],
-  //     })
-  //   }
-  // }
-
   async function registerForPushNotificationsAsync() {
     let token
     if (Constants.isDevice) {
@@ -665,13 +610,12 @@ export function MainPageActivity({ navigation }) {
         finalStatus = status
       }
       if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!')
+        // Failed to get push token for push notification!
         return
       }
       token = (await Notifications.getExpoPushTokenAsync()).data
-      console.log(token)
     } else {
-      alert('Must use physical device for Push Notifications')
+      // Must use physical device for Push Notifications
     }
   
     if (Platform.OS === 'android') {
@@ -705,11 +649,7 @@ export function MainPageActivity({ navigation }) {
     const updatedStepsCount = lastStepsCount + 1
     setStepsCount(updatedStepsCount)
     setIsDetectStep(false)
-    // loadedSize / this.currentFileSize * 100
-    // setStepsCountProgress(Number.parseInt(updatedStepsCount / 6000))
     setStepsCountProgress(updatedStepsCount / 6000)
-    // setStepsCountProgress(Number.parseInt(updatedStepsCount / 6000 * 100))
-    // setStepsCountProgress(Number.parseInt(6000 - 6000 / updatedStepsCount))
     schedulePushNotification()
   } else if (isSecondPhase) {
     setIsDetectStep(true)
@@ -726,7 +666,6 @@ export function MainPageActivity({ navigation }) {
     })
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response)
     })
 
     return () => {
@@ -779,7 +718,6 @@ export function MainPageActivity({ navigation }) {
             <Button
               title="Press to schedule a notification"
               onPress={async () => {
-                // await sendPushNotification()
                 await schedulePushNotification()
               }}
             />
@@ -2506,51 +2444,6 @@ export function MyPageActivity({ navigation }) {
               )
             })
           }
-          {/* <View style={styles.myPageContainerUserAwardsShortcut}>
-            <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
-            <Text>
-              Упражнение
-            </Text>
-            <Text>
-              11 февр.
-            </Text>
-          </View>
-          <View style={styles.myPageContainerUserAwardsShortcut}>
-            <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
-            <Text>
-              Упражнение
-            </Text>
-            <Text>
-              11 февр.
-            </Text>
-          </View>
-          <View style={styles.myPageContainerUserAwardsShortcut}>
-            <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
-            <Text>
-              Упражнение
-            </Text>
-            <Text>
-              11 февр.
-            </Text>
-          </View>
-          <View style={styles.myPageContainerUserAwardsShortcut}>
-            <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
-            <Text>
-              Упражнение
-            </Text>
-            <Text>
-              11 февр.
-            </Text>
-          </View>
-          <View style={styles.myPageContainerUserAwardsShortcut}>
-            <FontAwesome5 name="trophy" size={96} color="rgb(255, 255, 50)" />
-            <Text>
-              Упражнение
-            </Text>
-            <Text>
-              11 февр.
-            </Text>
-          </View> */}
         </ScrollView>
       </View>
     </ScrollView>
@@ -3166,30 +3059,8 @@ export default function App() {
 
   db = SQLite.openDatabase('healthdatabase.db')
   
-  const testActivity = 'MainTabsActivity'
+  const startActivity = 'MainTabsActivity'
   
-  // let sqlStatement = `DROP TABLE \"awards\";`
-  // db.transaction(transaction => {
-  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-  //   })
-  // })
-
-  // let sqlStatement = `DROP TABLE \"indicators\";`
-  // db.transaction(transaction => {
-  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-  //     let sqlStatement = `DROP TABLE \"controllers\";`
-  //     db.transaction(transaction => {
-  //       transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-  //       })
-      // })
-  //   })
-  // })
-
-  // let sqlStatement = `DELETE DATABASE \"healthdatabase.db\";`
-  // db.transaction(transaction => {
-  //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-  //   })
-  // })
   db.transaction(transaction => {
     let sqlStatement = "CREATE TABLE IF NOT EXISTS indicators (_id INTEGER PRIMARY KEY AUTOINCREMENT, time TEXT, water INTEGER, walk INTEGER, food INTEGER, is_exercise_enabled BOOLEAN, exercise_start_time TEXT, exercise_type TEXT, exercise_duration TEXT, photo TEXT, name TEXT, gender TEXT, growth REAL, weight REAL, birthday TEXT, level TEXT);"
     transaction.executeSql(sqlStatement, [], (tx, receivedTable) => {
@@ -3236,13 +3107,6 @@ export default function App() {
         })
       })
       
-
-      // sqlStatement = `DELETE DATABASE \"healthdatabase.db\";`
-      // db.transaction(transaction => {
-      //   transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
-      //   })
-      // })
-
       sqlStatement = "SELECT * FROM indicators;"
       transaction.executeSql(sqlStatement, [], (tx, receivedAlarms) => {
         const indicators = Array.from(receivedAlarms.rows)
@@ -3284,7 +3148,7 @@ export default function App() {
                 })
               })
             }, (tx) => {
-              console.log('ошибка получения индикаторов')
+              // ошибка получения индикаторов
             })
           })
           sqlStatement = `DELETE FROM \"controllers\";`
@@ -3381,7 +3245,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName={testActivity}>
+      <Stack.Navigator initialRouteName={startActivity}>
         <Stack.Screen name="MainTabsActivity" component={MainTabsActivity}
           options={{ title: 'Softtrack Здоровье' }} />
         <Stack.Screen
@@ -3609,7 +3473,7 @@ export function RecordSleepActivity({ navigation }) {
       transaction.executeSql(sqlStatement, [], (tx, receivedRecords) => {
         goToActivity(navigation, 'SleepActivity')
       }, (tx) => {
-        console.log('ошибка добавления записей')
+        // ошибка добавления записей
       })
     })
   }
@@ -3681,7 +3545,7 @@ export function RecordBodyActivity({ navigation }) {
       transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
         goToActivity(navigation, 'BodyActivity')  
       }, (tx) => {
-        console.log('ошибка получения индикаторов')
+        // ошибка получения индикаторов
       })
     })
   }
@@ -3790,7 +3654,7 @@ export function RecordFoodActivity({
       transaction.executeSql(sqlStatement, [], (tx, receivedRecords) => {
         goToActivity(navigation, 'FoodActivity')  
       }, (tx) => {
-        console.log('ошибка добавления записей')
+        // ошибка добавления записей
       })
     })
   }
@@ -3900,8 +3764,6 @@ export function RecordExerciseActivity({ navigation, route }) {
 
   const startExercise = () => {
     db.transaction(transaction => {
-      // let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${true} WHERE _id=1;`
-      // let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${true}, exercise_type=\"${exerciseType}\" WHERE _id=1;`
       const currentDate = new Date()
       const currentDateDay = currentDate.getDate()
       const currentDateMonthIndex = currentDate.getMonth()
@@ -3915,7 +3777,6 @@ export function RecordExerciseActivity({ navigation, route }) {
       if (currentDateMinutes < 10) {
         currentDateHours = `0${currentDateMinutes}`
       }
-      // const exerciseStartTime = `${currentDateDay}.${currentDateMonth}.${currentDateYear}`
       const exerciseStartTime = `${currentDateHours}:${currentDateMinutes}`
       let sqlStatement = `UPDATE indicators SET is_exercise_enabled=${true}, exercise_type=\"${exerciseType}\", exercise_start_time=\"${exerciseStartTime}\" WHERE _id=1;`
       transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
@@ -4044,7 +3905,6 @@ export function RecordStartedExerciseActivity({ navigation, route }) {
             }
           }
           const isAddDurationAward = cursorOfWins >= exerciseRecords.length
-          console.log(`isAddDurationAward: ${isAddDurationAward}, cursorOfWins: ${cursorOfWins}, exerciseRecords.length: ${exerciseRecords.length}`)
           let exerciseStartTimeHours = exerciseStartTime.getHours()
           if (exerciseStartTimeHours < 10) {
             exerciseStartTimeHours = `0${exerciseStartTimeHours}`
@@ -4075,10 +3935,9 @@ export function RecordStartedExerciseActivity({ navigation, route }) {
               exerciseDuration: `${startTimerTitle}`
             })
           }
-          // goToActivity(navigation, 'RecordExerciseResultsActivity')
         })
       }, (tx) => {
-        console.log('ошибка добавления записи')
+        // ошибка добавления записи
       })
     })
   }
@@ -4515,18 +4374,6 @@ export function AddExerciseActivity({ navigation }) {
             return (
               !exercise.isActivated ?
                 <View key={exerciseIndex} style={styles.exercisesListActivityListItem}>
-                  {/* <RadioButton
-                    value={exercise.name}
-                    label={exercise.name}
-                    status={
-                      exerciseType == exercise.name ? 'checked' : 'unchecked'
-                    }
-                    onPress={() => { 
-                      setExerciseType({
-                        checked: exercise.name
-                      })
-                    }}
-                  /> */}
                   <CheckBox
                     value={exercisesCheckboxes[exerciseIndex]}
                     onValueChange={() => {
@@ -4575,7 +4422,7 @@ export function AddFoodItemActivity({ navigation }) {
       transaction.executeSql(sqlStatement, [], (tx, receivedItems) => {
         goToActivity(navigation, 'RecordFoodActivity')  
       }, (tx) => {
-        console.log('ошибка добавления элементов')
+        // ошибка добавления элементов
       })
     })
   }
@@ -4806,7 +4653,6 @@ export function EditMyPageActivity({ navigation }) {
 
   const saveData = () => {
     db.transaction(transaction => {
-      // let sqlStatement = `UPDATE indicators SET gender=${gender}, growth=${growth}, weight=${weight}, level=${activityLevel} WHERE _id=1;`
       let sqlStatement = `UPDATE indicators SET level=\"${activityLevel}\" WHERE _id=1;`
       transaction.executeSql(sqlStatement, [], (tx, receivedIndicators) => {
         goToActivity(navigation, 'MainTabsActivity')
@@ -4848,7 +4694,6 @@ export function EditMyPageActivity({ navigation }) {
   useEffect(() => {
     const countIndicators = indicators.length
     const isIndicatorsExists = countIndicators >= 1
-    console.log(`isIndicatorsExists: ${isIndicatorsExists}`)
     if (isIndicatorsExists) {
       const receiverdIndicators = indicators[0]
       const localActivityLevel = receiverdIndicators.level
@@ -6179,7 +6024,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(225, 225, 225)'
   },
   myPageContainerUserHeader: {
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto',
     width: '95%',
     borderRadius: 8,
@@ -6188,8 +6032,7 @@ const styles = StyleSheet.create({
   myPageContainerUserHeaderPhotoAndEditBtn: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    // marginVertical: 'alignItems'
+    justifyContent: 'space-around'
   },
   myPageContainerUserHeaderPhoto: {
     width: 100,
@@ -6209,7 +6052,6 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserReportPerWeek: {
     borderRadius: 8,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
     marginHorizontal: 'auto',
@@ -6238,7 +6080,6 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserRecords: {
     padding: 25,
-    // marginVertical: 'alignItems',
     borderRadius: 8,
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
@@ -6251,8 +6092,7 @@ const styles = StyleSheet.create({
   myPageContainerUserRecordsRow: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    // marginVertical: 'alignItems'
+    justifyContent: 'space-around'
   },
   myPageContainerUserRecord: {
     width: '33%',
@@ -6276,7 +6116,6 @@ const styles = StyleSheet.create({
   },
   myPageContainerUserAwards: {
     padding: 25,
-    // marginVertical: 'alignItems',
     borderRadius: 8,
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
@@ -6292,7 +6131,6 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   myPageContainerUserAwardsShortcuts: {
-    // marginVertical: 'alignItems'
   },
   myPageContainerUserAwardsShortcut: {
     display: 'flex',
@@ -6307,8 +6145,7 @@ const styles = StyleSheet.create({
     width: '95%',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto',
-    padding: 15,
-    // marginVertical: 'alignItems'
+    padding: 15
   },
   fitnessContainerInnovation: {
     width: 250
@@ -6316,8 +6153,7 @@ const styles = StyleSheet.create({
   fitnessContainerInnovationsHeader: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    // marginVertical: 'alignItems'
+    justifyContent: 'space-between'
   },
   fitnessContainerInnovationsHeaderLabel: {
     fontWeight: '700',
@@ -6328,8 +6164,7 @@ const styles = StyleSheet.create({
   },
   fitnessContainerInnovationImg: {
     width: 100,
-    height: 100,
-    // marginVertical: 'alignItems'
+    height: 100
   },
   fitnessContainerInnovationName: {
     fontWeight: '700'
@@ -6345,8 +6180,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: 'auto',
-    width: '95%',
-    // marginVertical: 'alignItems'
+    width: '95%'
   },
   togetherContainerHeaderImg: {
     width: 50,
@@ -6374,8 +6208,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 15,
     width: '95%',
-    marginHorizontal: 'auto',
-    // marginVertical: 'alignItems'
+    marginHorizontal: 'auto'
   },
   togetherContainerFriendsAside: {
     display: 'flex',
@@ -6400,8 +6233,7 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
-    marginHorizontal: 'auto',
-    // marginVertical: 'alignItems'
+    marginHorizontal: 'auto'
   },
   togetherContainerStrongerTogetherHeader: {
     fontWeight: '700'
@@ -6442,7 +6274,6 @@ const styles = StyleSheet.create({
   mainPageContainerActiveBlock: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6481,7 +6312,6 @@ const styles = StyleSheet.create({
   mainPageContainerWalkBlock: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6513,7 +6343,6 @@ const styles = StyleSheet.create({
   mainPageContainerExerciseBlock: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6535,13 +6364,11 @@ const styles = StyleSheet.create({
     color: 'rgb(150, 150, 150)'
   },
   mainPageContainerExerciseBlockBodyExercises: {
-    // marginVertical: 'alignItems',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-around'
   },
   mainPageContainerExerciseBlockBodyExercisesItem: {
-    // borderRadius: '100%',
     borderRadius: 1000,
     borderColor: 'rgb(0, 0, 0)',
     borderWidth: 1,
@@ -6577,7 +6404,6 @@ const styles = StyleSheet.create({
   mainPageContainerFoodBlock: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6612,7 +6438,6 @@ const styles = StyleSheet.create({
   mainPageContainerSleepBlock: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6637,7 +6462,6 @@ const styles = StyleSheet.create({
   mainPageContainerBodyBlock: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6673,7 +6497,6 @@ const styles = StyleSheet.create({
   mainPageContainerWaterBlock: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6712,7 +6535,6 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 1000
-    // borderRadius: '100%'
   },
   mainPageContainerWaterBodyRowRemoveBtn: {
     
@@ -6722,7 +6544,6 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 1000
-    // borderRadius: '100%'
   },
   mainPageContainerWaterBodyRowAddBtn: {
 
@@ -6775,7 +6596,6 @@ const styles = StyleSheet.create({
   activeActivityBody: {
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     marginHorizontal: 'auto'
   },
@@ -6853,7 +6673,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: 'auto',
     width: '95%',
-    // marginVertical: 'alignItems'
   },
   walkActivityBodyHeader: {
 
@@ -6904,7 +6723,6 @@ const styles = StyleSheet.create({
     padding: 15,
     marginHorizontal: 'auto',
     width: '95%',
-    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyPeriod: {
     fontWeight: '700'
@@ -6941,7 +6759,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 5
   },
   exerciseActivityBodyRecord: {
-    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyRecordHeader: {
     display: 'flex',
@@ -6949,7 +6766,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     borderBottomWidth: 1,
     borderBottomColor: 'rgb(0, 0, 0)',
-    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyRecordHeaderDate: {
     fontWeight: '700'
@@ -6960,7 +6776,6 @@ const styles = StyleSheet.create({
   exerciseActivityBodyRecordContent: {
     display: 'flex',
     flexDirection: 'row',
-    // marginVertical: 'alignItems'
   },
   exerciseActivityBodyRecordContentName: {
     marginLeft: 15
@@ -6968,7 +6783,6 @@ const styles = StyleSheet.create({
   foodActivityData: {
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto',
     width: '95%'
   },
@@ -7008,8 +6822,7 @@ const styles = StyleSheet.create({
   },
   foodActivityRecordFoodType: {
     display: 'flex',
-    flexDirection: 'row',
-    // justifyContent: 'space-between'
+    flexDirection: 'row'
   },
   foodActivityRecordFoodTypeLabel: {
     marginLeft: 25,
@@ -7021,7 +6834,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     width: '95%',
     marginHorizontal: 'auto',
-    // marginVertical: 'alignItems',
     padding: 15,
     backgroundColor: 'rgb(255, 255, 255)'
   },
@@ -7078,11 +6890,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
     padding: 15,
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   bodyActivityRecord: {
-    // marginVertical: 'alignItems',
     borderBottomColor: 'rgb(150, 150, 150)',
     borderBottomWidth: 1
   },
@@ -7106,13 +6916,11 @@ const styles = StyleSheet.create({
     marginHorizontal: 5
   },
   bodyActivityRecordTime: {
-    color: 'rgb(175, 175, 175)',
-    // marginVertical: 'alignItems'
+    color: 'rgb(175, 175, 175)'
   },
   sleepActivityData: {
     padding: 15,
     marginHorizontal: 'auto',
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%'
   },
@@ -7155,8 +6963,7 @@ const styles = StyleSheet.create({
 
   },
   sleepActivityRecordLabel: {
-    textAlign: 'center',
-    // marginVertical: 'alignItems'
+    textAlign: 'center'
   },
   sleepActivityRecordBtnWrap: {
     width: 275,
@@ -7189,8 +6996,7 @@ const styles = StyleSheet.create({
   recordBodyActivityFat: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    // marginVertical: 'alignItems'
+    justifyContent: 'space-between'
   },
   recordBodyActivityFatLabel: {
 
@@ -7204,8 +7010,7 @@ const styles = StyleSheet.create({
   recordBodyActivityMusculature: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    // marginVertical: 'alignItems'
+    justifyContent: 'space-between'
   },
   recordBodyActivityMusculatureLabel: {
 
@@ -7240,7 +7045,6 @@ const styles = StyleSheet.create({
   sleepActivityBody: {
     backgroundColor: 'rgb(255, 255, 255)',
     width: '95%',
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto',
     padding: 15
   },
@@ -7282,7 +7086,6 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderRadius: 1000
-    // borderRadius: '100%'
   },
   recordFoodActivityContainer: {
 
@@ -7328,15 +7131,12 @@ const styles = StyleSheet.create({
   recordFoodActivityProductsList: {
     width: '95%',
     marginHorizontal: 'auto',
-    // marginVertical: 'alignItems',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 25
   },
   recordFoodActivityProductsListAdd: {
-    // marginVertical: 'alignItems'
   },
   recordFoodActivityProductsListItem: {
-    // marginVertical: 'alignItems'
   },
   recordFoodActivityProductsListAddLabel: {
     textAlign: 'center',
@@ -7368,7 +7168,6 @@ const styles = StyleSheet.create({
   },
   recordExerciseActivityMap: {
     width: Dimensions.get('window').width,
-    // height: Dimeansions.get('window').height
     height: '100%'
   },
   recordExerciseActivityStartBtnWrap: {
@@ -7397,7 +7196,6 @@ const styles = StyleSheet.create({
     width: '95%',
     marginHorizontal: 'auto',
     padding: 15,
-    // marginVertical: 'alignItems'
   },
   exercisesListActivityListItem: {
     display: 'flex',
@@ -7454,7 +7252,6 @@ const styles = StyleSheet.create({
   },
   addFoodActivityAddNutrientsBtnWrap: {
     width: 250,
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   addFoodActivityAddNutrientsBtn: {
@@ -7527,7 +7324,6 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   recordExerciseResultsActivityDetailsHeader: {
@@ -7537,8 +7333,7 @@ const styles = StyleSheet.create({
   recordExerciseResultsActivityDetailsRow: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    // marginVertical: 'alignItems'
+    justifyContent: 'space-around'
   },
   recordExerciseResultsActivityDetailsRowItem: {
     display: 'flex',
@@ -7559,7 +7354,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   recordExerciseResultsActivityImagesLabel: {
@@ -7571,7 +7365,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'rgb(255, 255, 255)',
     padding: 15,
-    // marginVertical: 'alignItems',
     marginHorizontal: 'auto'
   },
   recordExerciseResultsActivityNotesLabel: {
@@ -7615,8 +7408,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     width: '95%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    // marginVertical: 'alignItems'
+    justifyContent: 'space-between'
   },
   recordStartedExerciseActivityBodyRowItem: {
     width: '50%',
